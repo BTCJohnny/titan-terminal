@@ -6,7 +6,7 @@ import { Chat } from "@/components/chat"
 import { StatsCard } from "@/components/stats-card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { getMorningReport, getStats, MorningReport, Stats } from "@/lib/api"
+import { getMorningReport, getStats, checkHealth, MorningReport, Stats } from "@/lib/api"
 
 export default function Home() {
   const [report, setReport] = useState<MorningReport | null>(null)
@@ -14,10 +14,21 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null)
+  const [backendStatus, setBackendStatus] = useState<{ ok: boolean; message: string } | null>(null)
 
   const fetchData = useCallback(async (refresh: boolean = false) => {
     setIsLoading(true)
     setError(null)
+
+    // Health check first
+    const health = await checkHealth()
+    setBackendStatus(health)
+
+    if (!health.ok) {
+      setError(health.message)
+      setIsLoading(false)
+      return
+    }
 
     try {
       const [reportData, statsData] = await Promise.all([
@@ -54,6 +65,11 @@ export default function Home() {
             <p className="text-sm text-zinc-400">Multi-Agent Trading Intelligence</p>
           </div>
           <div className="flex items-center gap-4">
+            {backendStatus && (
+              <Badge variant={backendStatus.ok ? "default" : "destructive"}>
+                {backendStatus.ok ? "Backend Connected" : "Backend Unreachable"}
+              </Badge>
+            )}
             {lastRefresh && (
               <span className="text-xs text-zinc-500">
                 Last refresh: {lastRefresh.toLocaleTimeString()}
