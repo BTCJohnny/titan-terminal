@@ -53,6 +53,10 @@ class Orchestrator(BaseAgent):
         self.risk_levels = RiskLevelsAgent()
         self.mentor = MentorCriticAgent()
 
+    def analyze(self, symbol: str, context: dict) -> dict:
+        """Required by BaseAgent - delegates to analyze_symbol."""
+        return self.analyze_symbol(symbol, context)
+
     def analyze_symbol(self, symbol: str, market_data: dict) -> dict:
         """Run full analysis pipeline for a single symbol."""
 
