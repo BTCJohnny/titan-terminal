@@ -18,11 +18,12 @@ app = FastAPI(
     version="0.1.0"
 )
 
-# CORS for Next.js frontend - MUST be immediately after app creation
+# CORS for Next.js frontend - permissive for dev, tighten in production
+# Using allow_credentials=False with "*" origins for maximum compatibility
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:8001"],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
     expose_headers=["*"],
@@ -93,6 +94,12 @@ def get_orchestrator() -> Orchestrator:
 async def root():
     """Health check endpoint."""
     return {"status": "ok", "service": "Titan Terminal API", "version": "0.1.0"}
+
+
+@app.get("/api/health-test")
+async def api_health_test():
+    """Simple /api/* health check - no DB, no external calls."""
+    return {"status": "ok", "path": "/api/health-test", "cors": "enabled"}
 
 
 @app.get("/api/morning-report", response_model=MorningReportResponse)

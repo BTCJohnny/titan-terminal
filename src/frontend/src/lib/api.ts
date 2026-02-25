@@ -3,7 +3,8 @@
  */
 
 // Force fallback if env var not picked up (Next.js client-side quirk)
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+// Backend runs on port 8001 by default
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8001"
 
 // Debug: log the API base URL on load
 console.log("[Titan API] Base URL:", API_BASE)
@@ -48,18 +49,31 @@ export interface Stats {
 }
 
 /**
- * Health check - test backend connectivity
+ * Health check - test backend connectivity AND /api/* CORS
  */
 export async function checkHealth(): Promise<{ ok: boolean; message: string }> {
-  const url = `${API_BASE}/`
-  console.log("[Titan API] Health check:", url)
+  // Test root endpoint first
+  const rootUrl = `${API_BASE}/`
+  console.log("[Titan API] Health check (root):", rootUrl)
   try {
-    const res = await fetch(url, { method: "GET" })
-    if (res.ok) {
-      const data = await res.json()
-      return { ok: true, message: `Connected: ${data.service} v${data.version}` }
+    const rootRes = await fetch(rootUrl, { method: "GET" })
+    if (!rootRes.ok) {
+      return { ok: false, message: `Backend returned ${rootRes.status}` }
     }
-    return { ok: false, message: `Backend returned ${res.status}` }
+    const rootData = await rootRes.json()
+    console.log("[Titan API] Root OK:", rootData)
+
+    // Test /api/* endpoint to verify CORS on API routes
+    const apiUrl = `${API_BASE}/api/health-test`
+    console.log("[Titan API] Health check (api):", apiUrl)
+    const apiRes = await fetch(apiUrl, { method: "GET" })
+    if (!apiRes.ok) {
+      return { ok: false, message: `API routes returned ${apiRes.status}` }
+    }
+    const apiData = await apiRes.json()
+    console.log("[Titan API] API health-test OK:", apiData)
+
+    return { ok: true, message: `Connected: ${rootData.service} v${rootData.version}` }
   } catch (err) {
     console.error("[Titan API] Health check failed:", err)
     return { ok: false, message: `Cannot reach backend at ${API_BASE}` }
