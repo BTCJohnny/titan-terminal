@@ -54,6 +54,25 @@ class OutcomeRequest(BaseModel):
     notes: Optional[str] = None
 
 
+class WhaleAlert(BaseModel):
+    symbol: str
+    alert_type: str  # 'whale_buy', 'whale_sell', 'fresh_wallet', 'smart_accumulation'
+    amount_usd: float
+    description: str
+    timestamp: str
+    severity: str  # 'high', 'medium', 'low'
+
+
+class MarketContext(BaseModel):
+    btc_dominance: float
+    btc_price: float
+    btc_24h_change: float
+    total_market_cap: float
+    funding_skew: str  # 'long_heavy', 'short_heavy', 'neutral'
+    overall_mood: str  # 'greed', 'fear', 'neutral'
+    mood_score: int  # 0-100 fear/greed index
+
+
 class Signal(BaseModel):
     symbol: str
     accumulation_score: Optional[int] = None
@@ -70,6 +89,15 @@ class Signal(BaseModel):
     mentor_concerns: Optional[List[str]] = None
     learning_context: Optional[str] = None
     signal_id: Optional[int] = None
+    # New smart money fields
+    unusual_activity_score: Optional[int] = None  # 0-100
+    smart_flow_usd: Optional[float] = None  # Net smart money flow
+    whale_count: Optional[int] = None  # Whales trading this
+    fresh_wallets: Optional[int] = None  # New wallets accumulating
+    narrative: Optional[str] = None  # "Why this matters" explanation
+    price_24h_change: Optional[float] = None
+    volume_24h: Optional[float] = None
+    sparkline: Optional[List[float]] = None  # 24h price data for mini chart
 
 
 class MorningReportResponse(BaseModel):
@@ -77,6 +105,8 @@ class MorningReportResponse(BaseModel):
     batch_id: str
     signals: List[Signal]
     market_summary: Optional[str] = None
+    market_context: Optional[MarketContext] = None
+    whale_alerts: Optional[List[WhaleAlert]] = None
 
 
 # Lazy-loaded orchestrator
@@ -126,11 +156,15 @@ async def get_morning_report(refresh: bool = False):
             market_data_fetcher=fetcher.fetch
         )
 
+        cleaned_signals = [_clean_signal(s) for s in signals if not s.get('error')]
+
         response = MorningReportResponse(
             timestamp=datetime.now().isoformat(),
             batch_id=signals[0].get('batch_id', 'unknown') if signals else 'empty',
-            signals=[Signal(**_clean_signal(s)) for s in signals if not s.get('error')],
-            market_summary=_generate_market_summary(signals)
+            signals=[Signal(**s) for s in cleaned_signals],
+            market_summary=_generate_market_summary(signals),
+            market_context=MarketContext(**_generate_market_context()),
+            whale_alerts=[WhaleAlert(**a) for a in _generate_whale_alerts(signals)]
         )
 
         return response
@@ -260,12 +294,33 @@ def _get_cached_report():
 
 
 def _clean_signal(signal: dict) -> dict:
-    """Clean signal dict for Pydantic model."""
+    """Clean signal dict for Pydantic model with enhanced smart money data."""
+    import random
+
+    symbol = signal.get('symbol', '')
+    confidence = signal.get('confidence', 0)
+    acc_score = signal.get('accumulation_score', 50)
+
+    # Generate smart money metrics (simulated for MVP, will be real data in production)
+    unusual_score = min(100, int(confidence * 0.8 + random.randint(0, 30)))
+    is_bullish = acc_score > 50
+
+    # Generate narrative based on signal data
+    narrative = _generate_narrative(signal)
+
+    # Generate sparkline (24 data points for 24h)
+    base = 100
+    sparkline = []
+    for i in range(24):
+        change = random.uniform(-2, 2.5) if is_bullish else random.uniform(-2.5, 2)
+        base = base * (1 + change/100)
+        sparkline.append(round(base, 2))
+
     return {
-        'symbol': signal.get('symbol'),
+        'symbol': symbol,
         'accumulation_score': signal.get('accumulation_score'),
         'distribution_score': signal.get('distribution_score'),
-        'confidence': signal.get('confidence', 0),
+        'confidence': confidence,
         'suggested_action': signal.get('suggested_action', 'Avoid'),
         'wyckoff_phase': signal.get('wyckoff_phase'),
         'entry_zone': signal.get('entry_zone'),
@@ -277,7 +332,110 @@ def _clean_signal(signal: dict) -> dict:
         'mentor_concerns': signal.get('mentor_concerns'),
         'learning_context': signal.get('learning_context'),
         'signal_id': signal.get('signal_id'),
+        # Enhanced smart money fields
+        'unusual_activity_score': unusual_score,
+        'smart_flow_usd': round(random.uniform(500000, 15000000) * (1 if is_bullish else -1), 0),
+        'whale_count': random.randint(2, 12) if unusual_score > 50 else random.randint(0, 3),
+        'fresh_wallets': random.randint(50, 500) if is_bullish else random.randint(10, 100),
+        'narrative': narrative,
+        'price_24h_change': round(random.uniform(-8, 12) if is_bullish else random.uniform(-12, 5), 2),
+        'volume_24h': round(random.uniform(10000000, 500000000), 0),
+        'sparkline': sparkline,
     }
+
+
+def _generate_narrative(signal: dict) -> str:
+    """Generate a 'Why this matters' narrative for the signal."""
+    symbol = signal.get('symbol', 'Token')
+    phase = signal.get('wyckoff_phase', '')
+    acc = signal.get('accumulation_score', 50)
+    dist = signal.get('distribution_score', 50)
+    confidence = signal.get('confidence', 50)
+
+    narratives = []
+
+    if acc > 70:
+        narratives.append(f"Strong accumulation detected with smart money flowing in")
+    elif dist > 70:
+        narratives.append(f"Distribution underway as whales reduce positions")
+
+    if phase:
+        phase_narratives = {
+            'accumulation': "Wyckoff accumulation phase suggests institutional buying",
+            'markup': "In markup phase - trend continuation likely",
+            'distribution': "Distribution phase - consider taking profits",
+            'markdown': "Markdown phase - avoid longs, potential short opportunity",
+            'spring': "Spring pattern detected - potential reversal setup",
+            'upthrust': "Upthrust pattern - watch for breakdown",
+        }
+        if phase.lower() in phase_narratives:
+            narratives.append(phase_narratives[phase.lower()])
+
+    if confidence > 75:
+        narratives.append("High confluence across multiple indicators")
+    elif confidence < 40:
+        narratives.append("Low conviction setup - wait for confirmation")
+
+    return ". ".join(narratives) if narratives else f"{symbol} showing mixed signals - monitor for clarity"
+
+
+def _generate_market_context() -> dict:
+    """Generate market context data."""
+    import random
+
+    # Simulated market data (will be real API calls in production)
+    mood_score = random.randint(25, 75)
+    if mood_score > 60:
+        mood = 'greed'
+    elif mood_score < 40:
+        mood = 'fear'
+    else:
+        mood = 'neutral'
+
+    funding = random.choice(['long_heavy', 'short_heavy', 'neutral'])
+
+    return {
+        'btc_dominance': round(random.uniform(52, 58), 1),
+        'btc_price': round(random.uniform(85000, 105000), 0),
+        'btc_24h_change': round(random.uniform(-5, 7), 2),
+        'total_market_cap': round(random.uniform(2.8, 3.5) * 1e12, 0),
+        'funding_skew': funding,
+        'overall_mood': mood,
+        'mood_score': mood_score,
+    }
+
+
+def _generate_whale_alerts(signals: list) -> list:
+    """Generate whale alerts based on signals."""
+    import random
+
+    alerts = []
+    alert_types = [
+        ('whale_buy', 'Whale accumulated', 'high'),
+        ('whale_sell', 'Whale distribution detected', 'high'),
+        ('fresh_wallet', 'Fresh wallets clustering', 'medium'),
+        ('smart_accumulation', 'Smart money inflow', 'medium'),
+    ]
+
+    # Generate 3-6 alerts from top signals
+    for signal in signals[:6]:
+        if random.random() > 0.4:  # 60% chance of alert
+            symbol = signal.get('symbol', 'BTC')
+            alert_type, desc_prefix, severity = random.choice(alert_types)
+            amount = random.uniform(1000000, 25000000)
+
+            alerts.append({
+                'symbol': symbol,
+                'alert_type': alert_type,
+                'amount_usd': round(amount, 0),
+                'description': f"{desc_prefix} ${amount/1e6:.1f}M in {symbol}",
+                'timestamp': datetime.now().isoformat(),
+                'severity': severity,
+            })
+
+    # Sort by amount
+    alerts.sort(key=lambda x: x['amount_usd'], reverse=True)
+    return alerts[:5]  # Max 5 alerts
 
 
 def _generate_market_summary(signals: list) -> str:

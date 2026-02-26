@@ -10,6 +10,25 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8001"
 console.log("[Titan API] Base URL:", API_BASE)
 console.log("[Titan API] Env var:", process.env.NEXT_PUBLIC_API_URL)
 
+export interface WhaleAlert {
+  symbol: string
+  alert_type: 'whale_buy' | 'whale_sell' | 'fresh_wallet' | 'smart_accumulation'
+  amount_usd: number
+  description: string
+  timestamp: string
+  severity: 'high' | 'medium' | 'low'
+}
+
+export interface MarketContext {
+  btc_dominance: number
+  btc_price: number
+  btc_24h_change: number
+  total_market_cap: number
+  funding_skew: 'long_heavy' | 'short_heavy' | 'neutral'
+  overall_mood: 'greed' | 'fear' | 'neutral'
+  mood_score: number
+}
+
 export interface Signal {
   symbol: string
   accumulation_score: number | null
@@ -26,6 +45,15 @@ export interface Signal {
   mentor_concerns: string[] | null
   learning_context: string | null
   signal_id: number | null
+  // Smart money fields
+  unusual_activity_score: number | null
+  smart_flow_usd: number | null
+  whale_count: number | null
+  fresh_wallets: number | null
+  narrative: string | null
+  price_24h_change: number | null
+  volume_24h: number | null
+  sparkline: number[] | null
 }
 
 export interface MorningReport {
@@ -33,6 +61,8 @@ export interface MorningReport {
   batch_id: string
   signals: Signal[]
   market_summary: string | null
+  market_context: MarketContext | null
+  whale_alerts: WhaleAlert[] | null
 }
 
 export interface ChatResponse {

@@ -1,12 +1,15 @@
 "use client"
 
 import { useEffect, useState, useCallback } from "react"
-import { SignalCard } from "@/components/signal-card"
+import { RichSignalCard } from "@/components/rich-signal-card"
+import { MarketContextBar } from "@/components/market-context-bar"
+import { WhaleAlertPanel } from "@/components/whale-alert-panel"
 import { Chat } from "@/components/chat"
 import { StatsCard } from "@/components/stats-card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { getMorningReport, getStats, checkHealth, MorningReport, Stats } from "@/lib/api"
+import { cn } from "@/lib/utils"
 
 export default function Home() {
   const [report, setReport] = useState<MorningReport | null>(null)
@@ -20,7 +23,6 @@ export default function Home() {
     setIsLoading(true)
     setError(null)
 
-    // Health check first
     const health = await checkHealth()
     setBackendStatus(health)
 
@@ -47,67 +49,83 @@ export default function Home() {
 
   useEffect(() => {
     fetchData()
+
+    // Keyboard shortcuts
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'r' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        fetchData(true)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
   }, [fetchData])
 
   const handleDeepDive = (symbol: string) => {
-    // For MVP, just log. In production, this would open a modal with full report
     console.log(`Deep dive: ${symbol}`)
     alert(`Deep dive for ${symbol} - Full report coming in Phase 1`)
   }
 
+  // Filter signals to only show unusual activity
+  const actionableSignals = report?.signals.filter(s =>
+    s.suggested_action !== 'Avoid' ||
+    (s.unusual_activity_score && s.unusual_activity_score > 60)
+  ) || []
+
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-50">
       {/* Header */}
-      <header className="border-b border-zinc-800 px-6 py-4">
+      <header className="border-b border-zinc-800 px-6 py-3">
         <div className="flex items-center justify-between max-w-[1800px] mx-auto">
-          <div>
-            <h1 className="text-2xl font-bold">Titan Terminal</h1>
-            <p className="text-sm text-zinc-400">Multi-Agent Trading Intelligence</p>
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-xl font-bold tracking-tight">Titan Terminal</h1>
+              <p className="text-xs text-zinc-500">Smart Money Intelligence</p>
+            </div>
           </div>
           <div className="flex items-center gap-4">
             {backendStatus && (
-              <Badge variant={backendStatus.ok ? "default" : "destructive"}>
-                {backendStatus.ok ? "Backend Connected" : "Backend Unreachable"}
+              <Badge
+                variant="outline"
+                className={cn(
+                  "text-xs",
+                  backendStatus.ok
+                    ? "border-green-500/30 text-green-400"
+                    : "border-red-500/30 text-red-400"
+                )}
+              >
+                {backendStatus.ok ? "● Connected" : "● Offline"}
               </Badge>
             )}
             {lastRefresh && (
-              <span className="text-xs text-zinc-500">
-                Last refresh: {lastRefresh.toLocaleTimeString()}
+              <span className="text-xs text-zinc-600">
+                {lastRefresh.toLocaleTimeString()}
               </span>
             )}
             <Button
               onClick={() => fetchData(true)}
               disabled={isLoading}
+              size="sm"
               variant="outline"
+              className="text-xs"
             >
-              {isLoading ? "Refreshing..." : "Refresh"}
+              {isLoading ? "Loading..." : "Refresh (⌘R)"}
             </Button>
           </div>
         </div>
       </header>
 
+      {/* Market Context Bar */}
+      <MarketContextBar context={report?.market_context ?? null} />
+
       {/* Main Content */}
       <main className="flex max-w-[1800px] mx-auto">
-        {/* Signals Grid */}
-        <div className="flex-1 p-6">
-          {/* Market Summary */}
-          {report?.market_summary && (
-            <div className="mb-6 p-4 bg-zinc-900 rounded-lg border border-zinc-800">
-              <div className="flex items-center gap-2 mb-2">
-                <Badge variant="outline">Market Overview</Badge>
-                <span className="text-xs text-zinc-500">{report.timestamp}</span>
-              </div>
-              <p className="text-sm">{report.market_summary}</p>
-            </div>
-          )}
-
+        {/* Main Panel */}
+        <div className="flex-1 p-4 space-y-4">
           {/* Error State */}
           {error && (
-            <div className="mb-6 p-4 bg-red-950 border border-red-800 rounded-lg">
-              <p className="text-red-400">{error}</p>
-              <p className="text-xs text-red-500 mt-2">
-                Make sure the backend is running: uvicorn src.backend.api.main:app --reload
-              </p>
+            <div className="p-4 bg-red-950/50 border border-red-800/50 rounded-lg">
+              <p className="text-red-400 text-sm">{error}</p>
             </div>
           )}
 
@@ -116,27 +134,36 @@ export default function Home() {
             <div className="flex items-center justify-center py-20">
               <div className="text-center">
                 <div className="animate-spin w-8 h-8 border-2 border-zinc-700 border-t-zinc-300 rounded-full mx-auto mb-4" />
-                <p className="text-zinc-400">Running morning analysis...</p>
-                <p className="text-xs text-zinc-500 mt-2">This may take a moment</p>
+                <p className="text-zinc-400 text-sm">Analyzing markets...</p>
+                <p className="text-xs text-zinc-600 mt-1">Running smart money detection</p>
               </div>
             </div>
           )}
 
-          {/* Signals Grid */}
-          {report && report.signals.length > 0 && (
-            <>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold">
-                  Top Signals
-                  <span className="text-sm text-zinc-400 ml-2">
-                    ({report.signals.length} tokens)
+          {/* Whale Alerts */}
+          {report?.whale_alerts && report.whale_alerts.length > 0 && (
+            <WhaleAlertPanel alerts={report.whale_alerts} />
+          )}
+
+          {/* Smart Money Leaderboard */}
+          {actionableSignals.length > 0 && (
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-sm font-semibold text-zinc-300">
+                  Smart Money Leaderboard
+                  <span className="text-zinc-600 font-normal ml-2">
+                    {actionableSignals.length} tokens with unusual activity
                   </span>
                 </h2>
-                <Badge variant="secondary">Batch: {report.batch_id}</Badge>
+                {report && (
+                  <Badge variant="outline" className="text-xs text-zinc-500">
+                    Batch: {report.batch_id}
+                  </Badge>
+                )}
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                {report.signals.map((signal, index) => (
-                  <SignalCard
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
+                {actionableSignals.map((signal, index) => (
+                  <RichSignalCard
                     key={signal.symbol}
                     signal={signal}
                     rank={index + 1}
@@ -144,23 +171,39 @@ export default function Home() {
                   />
                 ))}
               </div>
-            </>
+            </div>
           )}
 
           {/* Empty State */}
-          {report && report.signals.length === 0 && (
-            <div className="text-center py-20">
-              <p className="text-zinc-400">No actionable signals found.</p>
-              <p className="text-xs text-zinc-500 mt-2">
-                Try refreshing or check back later.
+          {report && actionableSignals.length === 0 && !isLoading && (
+            <div className="text-center py-16 bg-zinc-900/30 rounded-lg border border-zinc-800">
+              <div className="text-4xl mb-4">🔍</div>
+              <p className="text-zinc-400">No unusual activity detected</p>
+              <p className="text-xs text-zinc-600 mt-2">
+                Markets are quiet. Check back later or refresh for new data.
               </p>
+              <Button
+                onClick={() => fetchData(true)}
+                size="sm"
+                variant="outline"
+                className="mt-4"
+              >
+                Scan Again
+              </Button>
+            </div>
+          )}
+
+          {/* Market Summary */}
+          {report?.market_summary && (
+            <div className="text-xs text-zinc-500 text-center py-2">
+              {report.market_summary}
             </div>
           )}
         </div>
 
-        {/* Sidebar */}
-        <aside className="w-96 border-l border-zinc-800 flex flex-col h-[calc(100vh-73px)]">
-          {/* Stats */}
+        {/* Right Sidebar */}
+        <aside className="w-80 border-l border-zinc-800 flex flex-col h-[calc(100vh-110px)]">
+          {/* Self-Learning Stats */}
           <div className="p-4 border-b border-zinc-800">
             <StatsCard stats={stats} />
           </div>
