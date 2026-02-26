@@ -20,9 +20,9 @@ Requirements for Project Scaffold milestone. Each maps to roadmap phases.
 - [x] **MODL-01**: TASignal model (symbol, timeframe, direction, confidence, indicators)
 - [x] **MODL-02**: TAMentorSignal model (overall_direction, confidence, conflicts, warnings)
 - [x] **MODL-03**: NansenSignal model (5-signal framework: exchange_flows, fresh_wallets, smart_money, top_pnl, whale_activity)
-- [ ] **MODL-04**: TelegramSignal model (symbol, source, timestamp, raw_text)
-- [ ] **MODL-05**: RiskOutput model (position_size, stop_loss, take_profit, risk_reward_ratio)
-- [ ] **MODL-06**: OrchestratorOutput model (combined signals, final recommendation)
+- [x] **MODL-04**: TelegramSignal model (symbol, source, timestamp, raw_text)
+- [x] **MODL-05**: RiskOutput model (position_size, stop_loss, take_profit, risk_reward_ratio)
+- [x] **MODL-06**: OrchestratorOutput model (combined signals, final recommendation)
 
 ### Configuration
 
@@ -93,9 +93,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MODL-01 | Phase 2 | Complete |
 | MODL-02 | Phase 2 | Complete |
 | MODL-03 | Phase 2 | Complete |
-| MODL-04 | Phase 2 | Pending |
-| MODL-05 | Phase 2 | Pending |
-| MODL-06 | Phase 2 | Pending |
+| MODL-04 | Phase 2 | Complete |
+| MODL-05 | Phase 2 | Complete |
+| MODL-06 | Phase 2 | Complete |
 | CONF-01 | Phase 3 | Pending |
 | CONF-02 | Phase 3 | Pending |
 | TEST-01 | Phase 4 | Pending |

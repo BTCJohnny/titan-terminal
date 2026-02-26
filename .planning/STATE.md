@@ -23,32 +23,31 @@ See: .planning/PROJECT.md (updated 2026-02-26)
 ## Current Position
 
 Phase: 2 of 4 (Pydantic Models)
-Plan: 1 of 2 in current phase
+Plan: 2 of 2 in current phase
 Status: Executing
-Last activity: 2026-02-26 — Completed 02-01-PLAN.md (Core signal Pydantic models)
+Last activity: 2026-02-26 — Completed 02-02-PLAN.md (Integration agent models)
 
-Progress: [████░░░░░░] 40%
+Progress: [████░░░░░░] 50%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 3.5 min
-- Total execution time: 0.12 hours
+- Total plans completed: 3
+- Average duration: 3.7 min
+- Total execution time: 0.19 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-agent-structure | 1 | 5min | 5min |
-| 02-pydantic-models | 1 | 2min | 2min |
+| 02-pydantic-models | 2 | 5.4min | 2.7min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (5min), 02-01 (2min)
+- Last 5 plans: 01-01 (5min), 02-01 (2min), 02-02 (3.4min)
 - Trend: Accelerating
 
 *Updated after each plan completion*
-| Phase 02-pydantic-models P02 | 205 | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -60,9 +59,13 @@ Recent decisions affecting current work:
 - **01-01**: Keep old agent files with deprecation notices for safe rollback during v0.1
 - **01-01**: TAMentor synthesizes 3 timeframes with weekly > daily > 4h precedence
 - **01-01**: Dict stubs for agent returns (Pydantic integration in Phase 2)
-- [Phase 02-01]: Use nested Pydantic models for complex signal structures
-- [Phase 02-01]: Standardize confidence scoring as 0-100 integers across all models
-- [Phase 02-01]: Use Literal types for enums (bias, direction, strength, etc.)
+- **02-01**: Use nested Pydantic models for complex signal structures
+- **02-01**: Standardize confidence scoring as 0-100 integers across all models
+- **02-01**: Use Literal types for enums (bias, direction, strength, etc.)
+- **02-02**: TelegramChannelSignal as nested model captures per-channel signal details
+- **02-02**: TelegramSignal aggregates multiple channel signals with overall sentiment
+- **02-02**: RiskOutput uses nested models for clarity (EntryZone, StopLoss, ThreeLawsCheck)
+- **02-02**: OrchestratorOutput includes helper properties for easy signal classification
 
 ### Pending Todos
 
@@ -74,6 +77,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-26T16:49:51Z
-Stopped at: Completed 02-01-PLAN.md - Core signal Pydantic models (TASignal, TAMentorSignal, NansenSignal)
-Resume file: .planning/phases/02-pydantic-models/02-01-SUMMARY.md
+Last session: 2026-02-26T16:49:13Z
+Stopped at: Completed 02-02-PLAN.md - Integration agent models (TelegramSignal, RiskOutput, OrchestratorOutput)
+Resume file: .planning/phases/02-pydantic-models/02-02-SUMMARY.md
