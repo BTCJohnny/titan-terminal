@@ -1,9 +1,4 @@
-"""Nansen On-Chain Agent - Whale flows and smart money analysis.
-
-DEPRECATED: This file has been replaced by nansen_agent.py
-to follow the *_agent.py naming convention. Use nansen_agent.py instead.
-This file will be removed in v1.0.
-"""
+"""Nansen On-Chain Agent - Whale flows and smart money analysis."""
 from .base import BaseAgent
 
 NANSEN_SYSTEM_PROMPT = """You are an expert on-chain analyst specializing in:
@@ -28,7 +23,10 @@ Output ONLY valid JSON, no additional text."""
 
 
 class NansenAgent(BaseAgent):
-    """Nansen on-chain analysis agent."""
+    """Nansen on-chain analysis agent.
+
+    TODO: Phase 2 - Replace dict returns with Pydantic NansenSignal model
+    """
 
     def __init__(self):
         super().__init__(
@@ -37,7 +35,10 @@ class NansenAgent(BaseAgent):
         )
 
     def analyze(self, symbol: str, context: dict) -> dict:
-        """Analyze on-chain data for a symbol."""
+        """Analyze on-chain data for a symbol.
+
+        TODO: Phase 2 - Replace return dict with Pydantic NansenSignal model
+        """
 
         # In production, this would call actual Nansen API
         # For MVP, we simulate with Claude's knowledge + any provided data

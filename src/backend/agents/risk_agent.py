@@ -1,12 +1,7 @@
-"""Risk/Levels Agent - Calculates clean trading levels and applies risk rules.
-
-DEPRECATED: This file has been replaced by risk_agent.py
-to follow the *_agent.py naming convention. Use risk_agent.py instead.
-This file will be removed in v1.0.
-"""
+"""Risk/Levels Agent - Calculates clean trading levels and applies risk rules."""
 from .base import BaseAgent
 
-RISK_LEVELS_SYSTEM_PROMPT = """You are a professional risk manager and trade planning specialist.
+RISK_AGENT_SYSTEM_PROMPT = """You are a professional risk manager and trade planning specialist.
 
 You apply THE 3 LAWS of trading:
 1. Never risk more than 2% of capital per trade
@@ -29,17 +24,25 @@ Output clean, specific numbers that can be directly used for orders.
 Output ONLY valid JSON, no additional text."""
 
 
-class RiskLevelsAgent(BaseAgent):
-    """Risk management and levels calculation agent."""
+class RiskAgent(BaseAgent):
+    """Risk management and levels calculation agent.
+
+    Renamed from RiskLevelsAgent to match *_agent.py convention.
+
+    TODO: Phase 2 - Replace dict returns with Pydantic RiskOutput model
+    """
 
     def __init__(self):
         super().__init__(
             name="Risk/Levels",
-            system_prompt=RISK_LEVELS_SYSTEM_PROMPT
+            system_prompt=RISK_AGENT_SYSTEM_PROMPT
         )
 
     def analyze(self, symbol: str, context: dict) -> dict:
-        """Calculate trading levels and apply risk rules."""
+        """Calculate trading levels and apply risk rules.
+
+        TODO: Phase 2 - Replace return dict with Pydantic RiskOutput model
+        """
 
         current_price = context.get('current_price')
         wyckoff_data = context.get('wyckoff_data', {})

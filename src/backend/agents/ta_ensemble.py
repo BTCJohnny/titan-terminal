@@ -1,4 +1,10 @@
-"""TA Ensemble Agent - Technical analysis with multiple indicators."""
+"""TA Ensemble Agent - Technical analysis with multiple indicators.
+
+DEPRECATED: This file has been replaced by ta_ensemble/ package
+with multi-timeframe subagents (weekly, daily, 4h) and TAMentor.
+Use the ta_ensemble package instead.
+This file will be removed in v1.0.
+"""
 from .base import BaseAgent
 
 TA_ENSEMBLE_SYSTEM_PROMPT = """You are an expert technical analyst combining multiple indicators and patterns.

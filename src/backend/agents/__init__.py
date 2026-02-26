@@ -1,10 +1,10 @@
 """Multi-agent system for Titan Terminal."""
 from .base import BaseAgent
 from .wyckoff import WyckoffAgent
-from .nansen import NansenAgent
-from .telegram import TelegramAgent
+from .nansen_agent import NansenAgent
+from .telegram_agent import TelegramAgent
 from .ta_ensemble import WeeklySubagent, DailySubagent, FourHourSubagent, TAMentor
-from .risk_levels import RiskLevelsAgent
+from .risk_agent import RiskAgent
 from .mentor import MentorCriticAgent
 from .orchestrator import Orchestrator
 
@@ -17,7 +17,7 @@ __all__ = [
     'DailySubagent',
     'FourHourSubagent',
     'TAMentor',
-    'RiskLevelsAgent',
+    'RiskAgent',
     'MentorCriticAgent',
     'Orchestrator',
 ]

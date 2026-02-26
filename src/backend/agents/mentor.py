@@ -1,4 +1,9 @@
-"""Mentor Critic Agent - Second opinion on final signals."""
+"""Mentor Critic Agent - Second opinion on final signals.
+
+DEPRECATED: MentorCriticAgent will be refactored in Phase 2.
+The TA Mentor functionality has been moved to ta_ensemble/ta_mentor.py
+This file will be removed in v1.0.
+"""
 from .base import BaseAgent
 from ..config import config
 

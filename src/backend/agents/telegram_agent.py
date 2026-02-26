@@ -1,9 +1,4 @@
-"""Telegram Alpha Agent - Scans Telegram signals from SQLite.
-
-DEPRECATED: This file has been replaced by telegram_agent.py
-to follow the *_agent.py naming convention. Use telegram_agent.py instead.
-This file will be removed in v1.0.
-"""
+"""Telegram Alpha Agent - Scans Telegram signals from SQLite."""
 from .base import BaseAgent
 from ..db import get_connection
 
@@ -29,7 +24,10 @@ Output ONLY valid JSON, no additional text."""
 
 
 class TelegramAgent(BaseAgent):
-    """Telegram signal scanning agent."""
+    """Telegram signal scanning agent.
+
+    TODO: Phase 2 - Replace dict returns with Pydantic TelegramSignal model
+    """
 
     def __init__(self):
         super().__init__(
@@ -38,7 +36,10 @@ class TelegramAgent(BaseAgent):
         )
 
     def analyze(self, symbol: str, context: dict) -> dict:
-        """Scan Telegram signals for a specific symbol."""
+        """Scan Telegram signals for a specific symbol.
+
+        TODO: Phase 2 - Replace return dict with Pydantic TelegramSignal model
+        """
 
         # Query SQLite for recent Telegram signals
         signals = self._get_recent_signals(symbol)

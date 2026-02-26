@@ -6,10 +6,10 @@ import uuid
 
 from .base import BaseAgent
 from .wyckoff import WyckoffAgent
-from .nansen import NansenAgent
-from .telegram import TelegramAgent
+from .nansen_agent import NansenAgent
+from .telegram_agent import TelegramAgent
 from .ta_ensemble import WeeklySubagent, DailySubagent, FourHourSubagent, TAMentor
-from .risk_levels import RiskLevelsAgent
+from .risk_agent import RiskAgent
 from .mentor import MentorCriticAgent
 from ..db import record_signal, get_similar_patterns, get_pattern_stats
 from ..config import config
@@ -49,10 +49,12 @@ class Orchestrator(BaseAgent):
         self.wyckoff = WyckoffAgent()
         self.nansen = NansenAgent()
         self.telegram = TelegramAgent()
-        # TODO: Task 2 - Update to use new ta_ensemble structure properly
-        # Temporary stub for compatibility
-        self.ta_ensemble = None  # Will be updated in Task 2
-        self.risk_levels = RiskLevelsAgent()
+        # Initialize ta_ensemble subagents
+        self.weekly_subagent = WeeklySubagent()
+        self.daily_subagent = DailySubagent()
+        self.fourhour_subagent = FourHourSubagent()
+        self.ta_mentor = TAMentor()
+        self.risk = RiskAgent()
         self.mentor = MentorCriticAgent()
 
     def analyze(self, symbol: str, context: dict) -> dict:
@@ -83,12 +85,18 @@ class Orchestrator(BaseAgent):
         # Telegram Alpha Scan
         telegram_result = self.telegram.analyze(symbol, market_data)
 
-        # TA Ensemble Analysis
-        ta_result = self.ta_ensemble.analyze(symbol, market_data)
+        # TA Ensemble Multi-Timeframe Analysis
+        # Run all 3 timeframe subagents
+        weekly_result = self.weekly_subagent.analyze(symbol, market_data)
+        daily_result = self.daily_subagent.analyze(symbol, market_data)
+        fourhour_result = self.fourhour_subagent.analyze(symbol, market_data)
+
+        # Synthesize with TA Mentor
+        ta_result = self.ta_mentor.synthesize(weekly_result, daily_result, fourhour_result)
 
         # Determine bias for risk/levels agent
         wyckoff_bias = wyckoff_result.get('composite_analysis', {}).get('overall_bias', 'neutral')
-        ta_bias = ta_result.get('overall', {}).get('bias', 'neutral')
+        ta_bias = ta_result.get('unified_signal', {}).get('bias', 'neutral')
 
         # Risk/Levels Calculation
         risk_context = {
@@ -97,7 +105,7 @@ class Orchestrator(BaseAgent):
             'ta_data': ta_result,
             'suggested_bias': wyckoff_bias if wyckoff_bias != 'neutral' else ta_bias
         }
-        risk_result = self.risk_levels.analyze(symbol, risk_context)
+        risk_result = self.risk.analyze(symbol, risk_context)
 
         # 3. Synthesize all results
         synthesis = self._synthesize_results(
