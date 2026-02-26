@@ -27,7 +27,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. ta_ensemble/ folder exists with weekly_subagent.py, daily_subagent.py, fourhour_subagent.py, ta_mentor.py
   2. nansen_agent.py, telegram_agent.py, risk_agent.py, orchestrator.py exist at src/backend/agents/ root
   3. All agent files contain stub functions that can be imported without errors
-**Plans**: TBD
+**Plans:** 1 plan
+
+Plans:
+- [ ] 01-01-PLAN.md — Create ta_ensemble/ folder structure and refactor root-level agents
 
 ### Phase 2: Pydantic Models
 **Goal**: All agents have type-safe output models defined
@@ -66,11 +69,11 @@ Decimal phases appear between their surrounding integers in numeric order.
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Agent Structure | 0/TBD | Not started | - |
+| 1. Agent Structure | 0/1 | Ready | - |
 | 2. Pydantic Models | 0/TBD | Not started | - |
 | 3. Configuration | 0/TBD | Not started | - |
 | 4. Smoke Tests | 0/TBD | Not started | - |
