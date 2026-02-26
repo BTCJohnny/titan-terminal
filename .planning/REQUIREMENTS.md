@@ -26,8 +26,8 @@ Requirements for Project Scaffold milestone. Each maps to roadmap phases.
 
 ### Configuration
 
-- [ ] **CONF-01**: settings.py loads env vars with python-dotenv
-- [ ] **CONF-02**: .env.example with ANTHROPIC_API_KEY, NANSEN_API_KEY, HYPERLIQUID_API_KEY, TELEGRAM_BOT_TOKEN, SIGNALS_DB_PATH
+- [x] **CONF-01**: settings.py loads env vars with python-dotenv
+- [x] **CONF-02**: .env.example with ANTHROPIC_API_KEY, NANSEN_API_KEY, HYPERLIQUID_API_KEY, TELEGRAM_BOT_TOKEN, SIGNALS_DB_PATH
 
 ### Testing
 
@@ -96,8 +96,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MODL-04 | Phase 2 | Complete |
 | MODL-05 | Phase 2 | Complete |
 | MODL-06 | Phase 2 | Complete |
-| CONF-01 | Phase 3 | Pending |
-| CONF-02 | Phase 3 | Pending |
+| CONF-01 | Phase 3 | Complete |
+| CONF-02 | Phase 3 | Complete |
 | TEST-01 | Phase 4 | Pending |
 | TEST-02 | Phase 4 | Pending |
 | TEST-03 | Phase 4 | Pending |
