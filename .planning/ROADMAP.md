@@ -71,7 +71,11 @@ Plans:
   3. Nansen, Telegram, Risk, Orchestrator agents have smoke tests verifying valid output models
   4. All tests passing (pytest runs without failures)
   5. Developer can run `pytest` and see green pass indicators for all agent stubs
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — Test infrastructure + TA subagent and TAMentor smoke tests
+- [ ] 04-02-PLAN.md — Nansen, Telegram, Risk, Orchestrator smoke tests + full test verification
 
 ## Progress
 
@@ -83,4 +87,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | 1. Agent Structure | 1/1 | ✓ Complete | 2026-02-26 |
 | 2. Pydantic Models | 0/2 | Planned | - |
 | 3. Configuration | 0/1 | Planned | - |
-| 4. Smoke Tests | 0/TBD | Not started | - |
+| 4. Smoke Tests | 0/2 | Planned | - |
