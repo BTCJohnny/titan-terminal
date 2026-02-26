@@ -1,17 +1,25 @@
 # Milestones: Titan Terminal
 
-## v0.1 Project Scaffold (In Progress)
+## Completed Milestones
 
-**Started:** 2026-02-26
-**Goal:** Set up full project structure with agent stubs, Pydantic models, config, and passing smoke tests.
+### v0.1 Project Scaffold — Shipped 2026-02-26
 
-**Scope:**
-- Nested agent folder structure
-- Pydantic output models for each agent type
-- Environment configuration with python-dotenv
-- Smoke tests for all agent stubs
+**Delivered:** Complete project scaffold with multi-agent architecture, type-safe Pydantic models, environment configuration, and 100% smoke test coverage.
 
-**Phases:** TBD (roadmap pending)
+**Stats:** 4 phases, 6 plans, ~18 tasks, 4,458 Python LOC
+
+**Key accomplishments:**
+1. Multi-timeframe TA ensemble with weekly/daily/4h subagents and TAMentor synthesizer
+2. Type-safe Pydantic v2 models for all 6 signal types (TASignal, TAMentorSignal, NansenSignal, TelegramSignal, RiskOutput, OrchestratorOutput)
+3. Centralized settings module with python-dotenv and comprehensive .env.example
+4. Complete smoke test suite with 11/11 tests passing in 0.67s
+
+**Tech Debt Accepted:**
+- Agents return dict (Pydantic integration via TODO comments)
+- Two parallel config systems (old Config + new Settings)
+- Deprecated agent files kept for rollback
+
+**Archive:** `.planning/milestones/v0.1-*`
 
 ---
 
@@ -29,3 +37,6 @@
 - FastAPI endpoints (/morning-report, /chat)
 - Next.js dashboard with signal cards
 - Chat interface
+
+---
+

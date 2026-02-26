@@ -2,44 +2,49 @@
 
 ## What This Is
 
-A multi-agent crypto trading dashboard that aggregates technical analysis, on-chain intelligence, and alpha signals into actionable trading opportunities. Backend in Python/FastAPI, frontend in Next.js, with specialized agents for different analysis dimensions.
+A multi-agent crypto trading dashboard that aggregates technical analysis, on-chain intelligence, and alpha signals into actionable trading opportunities. Backend in Python/FastAPI with 9 specialized agents, frontend in Next.js, type-safe Pydantic output models, and comprehensive test coverage.
 
 ## Core Value
 
 Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
 
-## Current Milestone: v0.1 Project Scaffold
+## Current State
 
-**Goal:** Set up full project structure with agent stubs, Pydantic models, config, and passing smoke tests.
+**Shipped:** v0.1 Project Scaffold (2026-02-26)
 
-**Target features:**
-- Nested agent folder structure under src/backend/agents/
-- Pydantic output models for each agent type
-- Environment configuration with python-dotenv
-- Smoke tests verifying each agent stub returns valid output
+**Codebase:** 4,458 Python LOC across 9 agents, 6 Pydantic models, and 11 smoke tests.
+
+**Agent Architecture:**
+- `ta_ensemble/` — WeeklySubagent, DailySubagent, FourHourSubagent, TAMentor
+- Root agents — NansenAgent, TelegramAgent, RiskAgent, Orchestrator
+
+**Test Status:** 11/11 smoke tests passing (0.67s)
+
+**Tech Debt:**
+- Agents return dict (Pydantic integration via model_validate in tests)
+- Two parallel config systems (old Config + new Settings)
+- Deprecated agent files kept for rollback
 
 ## Requirements
 
 ### Validated
 
 - ✓ Project structure established — existing
-- ✓ Agent shell files created (orchestrator, nansen, telegram, ta_ensemble, risk_levels, mentor, wyckoff) — existing
+- ✓ Agent shell files created — existing
 - ✓ FastAPI backend scaffolding — existing
 - ✓ Next.js frontend scaffolding — existing
+- ✓ Nested ta_ensemble/ folder with 4 subagent files — v0.1
+- ✓ Root-level agents (nansen_agent, telegram_agent, risk_agent, orchestrator) — v0.1
+- ✓ TASignal, TAMentorSignal, NansenSignal Pydantic models — v0.1
+- ✓ TelegramSignal, RiskOutput, OrchestratorOutput Pydantic models — v0.1
+- ✓ Settings module with python-dotenv — v0.1
+- ✓ .env.example with all required keys — v0.1
+- ✓ Smoke tests for all agents returning valid Pydantic output — v0.1
+- ✓ All 11 smoke tests passing — v0.1
 
 ### Active
 
-- [ ] Nested agent folders (ta_ensemble/, nansen/, telegram/, risk/, orchestrator/)
-- [ ] TA subagent stubs (weekly, daily, fourhour) with Pydantic output models
-- [ ] TAMentor stub with conflict resolution output model
-- [ ] Nansen agent stub with 5-signal Pydantic model
-- [ ] Telegram agent stub with signals Pydantic model
-- [ ] Risk agent stub with position sizing Pydantic model
-- [ ] Orchestrator stub that coordinates all agents
-- [ ] Config module with python-dotenv loading all env vars
-- [ ] .env.example with all required keys
-- [ ] Smoke tests for every agent stub (assert returns valid Pydantic model)
-- [ ] All tests passing
+(Next milestone requirements TBD)
 
 ### Future (v1.0+)
 
@@ -116,6 +121,11 @@ Scoring: 4-5 bullish → ACCUMULATION, 2-3 → MIXED, 0-1 → DISTRIBUTION
 | S/R levels from TA drive stops/targets | Technical levels more meaningful than arbitrary ATR multiples | — Pending |
 | Dynamic watchlist | System discovers opportunities vs fixed list maintenance | — Pending |
 | Morning report = top opportunities only | Focus on highest conviction, not information overload | — Pending |
+| Multi-timeframe TA pattern (v0.1) | Separate subagents per timeframe, TAMentor synthesizes with confluence scoring | ✓ Good |
+| Nested Pydantic models (v0.1) | Better type safety and validation for hierarchical data | ✓ Good |
+| Confidence 0-100 integers (v0.1) | Consistent confidence representation makes signal comparison easier | ✓ Good |
+| Keep deprecated files for rollback (v0.1) | Safe migration path during scaffold phase | ⚠️ Revisit in v1.0 |
+| Parallel config systems (v0.1) | New Settings module created, old Config still used | ⚠️ Revisit in v1.0 |
 
 ---
-*Last updated: 2026-02-26 after milestone v0.1 started*
+*Last updated: 2026-02-26 after v0.1 milestone completed*

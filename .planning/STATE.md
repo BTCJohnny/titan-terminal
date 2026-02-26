@@ -1,14 +1,14 @@
 ---
 gsd_state_version: 1.0
-milestone: v0.1
-milestone_name: milestone
-status: unknown
-last_updated: "2026-02-26T18:15:00.722Z"
+milestone: v1.0
+milestone_name: Core Agents
+status: planning
+last_updated: "2026-02-26T18:45:00Z"
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 6
-  completed_plans: 6
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-26)
 
 **Core value:** Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
-**Current focus:** Phase 4 - Smoke Tests
+**Current focus:** Planning next milestone (v1.0 Core Agents)
 
 ## Current Position
 
-Phase: 4 of 4 (Smoke Tests)
-Plan: 2 of 2 in current phase
-Status: Complete
-Last activity: 2026-02-26 — Completed 04-02-PLAN.md (Agent smoke tests)
+Milestone v0.1 SHIPPED (2026-02-26)
+Next: v1.0 Core Agents (planning)
+Status: Between milestones
+Last activity: 2026-02-26 — Completed milestone v0.1 Project Scaffold
 
-Progress: [██████████] 100%
+Progress: Planning next milestone
 
 ## Performance Metrics
 
@@ -91,6 +91,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-26T18:09:45Z
-Stopped at: Completed 04-02-PLAN.md - Agent smoke tests
-Resume file: .planning/phases/04-smoke-tests/04-02-SUMMARY.md
+Last session: 2026-02-26T18:45:00Z
+Stopped at: Completed milestone v0.1 Project Scaffold
+Resume: Start new milestone with /gsd:new-milestone
