@@ -17,9 +17,9 @@ Requirements for Project Scaffold milestone. Each maps to roadmap phases.
 
 ### Pydantic Models
 
-- [ ] **MODL-01**: TASignal model (symbol, timeframe, direction, confidence, indicators)
-- [ ] **MODL-02**: TAMentorSignal model (overall_direction, confidence, conflicts, warnings)
-- [ ] **MODL-03**: NansenSignal model (5-signal framework: exchange_flows, fresh_wallets, smart_money, top_pnl, whale_activity)
+- [x] **MODL-01**: TASignal model (symbol, timeframe, direction, confidence, indicators)
+- [x] **MODL-02**: TAMentorSignal model (overall_direction, confidence, conflicts, warnings)
+- [x] **MODL-03**: NansenSignal model (5-signal framework: exchange_flows, fresh_wallets, smart_money, top_pnl, whale_activity)
 - [ ] **MODL-04**: TelegramSignal model (symbol, source, timestamp, raw_text)
 - [ ] **MODL-05**: RiskOutput model (position_size, stop_loss, take_profit, risk_reward_ratio)
 - [ ] **MODL-06**: OrchestratorOutput model (combined signals, final recommendation)
@@ -90,9 +90,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AGNT-03 | Phase 1 | ✓ Complete |
 | AGNT-04 | Phase 1 | ✓ Complete |
 | AGNT-05 | Phase 1 | ✓ Complete |
-| MODL-01 | Phase 2 | Pending |
-| MODL-02 | Phase 2 | Pending |
-| MODL-03 | Phase 2 | Pending |
+| MODL-01 | Phase 2 | Complete |
+| MODL-02 | Phase 2 | Complete |
+| MODL-03 | Phase 2 | Complete |
 | MODL-04 | Phase 2 | Pending |
 | MODL-05 | Phase 2 | Pending |
 | MODL-06 | Phase 2 | Pending |
