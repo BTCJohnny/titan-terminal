@@ -8,7 +8,7 @@ from .base import BaseAgent
 from .wyckoff import WyckoffAgent
 from .nansen import NansenAgent
 from .telegram import TelegramAgent
-from .ta_ensemble import TAEnsembleAgent
+from .ta_ensemble import WeeklySubagent, DailySubagent, FourHourSubagent, TAMentor
 from .risk_levels import RiskLevelsAgent
 from .mentor import MentorCriticAgent
 from ..db import record_signal, get_similar_patterns, get_pattern_stats
@@ -49,7 +49,9 @@ class Orchestrator(BaseAgent):
         self.wyckoff = WyckoffAgent()
         self.nansen = NansenAgent()
         self.telegram = TelegramAgent()
-        self.ta_ensemble = TAEnsembleAgent()
+        # TODO: Task 2 - Update to use new ta_ensemble structure properly
+        # Temporary stub for compatibility
+        self.ta_ensemble = None  # Will be updated in Task 2
         self.risk_levels = RiskLevelsAgent()
         self.mentor = MentorCriticAgent()
 
