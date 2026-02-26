@@ -42,7 +42,11 @@ Plans:
   3. NansenSignal model exists with 5-signal framework fields (exchange_flows, fresh_wallets, smart_money, top_pnl, whale_activity)
   4. TelegramSignal, RiskOutput, OrchestratorOutput models exist with appropriate fields
   5. All models can be instantiated and serialized to JSON without errors
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Core signal models (TASignal, TAMentorSignal, NansenSignal)
+- [ ] 02-02-PLAN.md — Integration models (TelegramSignal, RiskOutput, OrchestratorOutput)
 
 ### Phase 3: Configuration
 **Goal**: Environment variables loaded from .env with all required keys documented
@@ -74,6 +78,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Agent Structure | 1/1 | ✓ Complete | 2026-02-26 |
-| 2. Pydantic Models | 0/TBD | Not started | - |
+| 2. Pydantic Models | 0/2 | Planned | - |
 | 3. Configuration | 0/TBD | Not started | - |
 | 4. Smoke Tests | 0/TBD | Not started | - |
