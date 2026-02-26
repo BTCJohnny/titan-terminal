@@ -50,6 +50,7 @@ class TelegramAgent(BaseAgent):
                 "signals_found": 0,
                 "relevant_signals": [],
                 "overall_sentiment": "neutral",
+                "confluence_count": 0,
                 "confidence": 0,
                 "notes": "No recent Telegram signals found for this symbol"
             }
