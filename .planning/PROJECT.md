@@ -8,6 +8,16 @@ A multi-agent crypto trading dashboard that aggregates technical analysis, on-ch
 
 Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
 
+## Current Milestone: v0.1 Project Scaffold
+
+**Goal:** Set up full project structure with agent stubs, Pydantic models, config, and passing smoke tests.
+
+**Target features:**
+- Nested agent folder structure under src/backend/agents/
+- Pydantic output models for each agent type
+- Environment configuration with python-dotenv
+- Smoke tests verifying each agent stub returns valid output
+
 ## Requirements
 
 ### Validated
@@ -18,6 +28,20 @@ Surface high-conviction trading setups by combining multi-timeframe technical an
 - ✓ Next.js frontend scaffolding — existing
 
 ### Active
+
+- [ ] Nested agent folders (ta_ensemble/, nansen/, telegram/, risk/, orchestrator/)
+- [ ] TA subagent stubs (weekly, daily, fourhour) with Pydantic output models
+- [ ] TAMentor stub with conflict resolution output model
+- [ ] Nansen agent stub with 5-signal Pydantic model
+- [ ] Telegram agent stub with signals Pydantic model
+- [ ] Risk agent stub with position sizing Pydantic model
+- [ ] Orchestrator stub that coordinates all agents
+- [ ] Config module with python-dotenv loading all env vars
+- [ ] .env.example with all required keys
+- [ ] Smoke tests for every agent stub (assert returns valid Pydantic model)
+- [ ] All tests passing
+
+### Future (v1.0+)
 
 - [ ] TA Ensemble with 3 timeframe subagents (Weekly, Daily, 4H)
 - [ ] Wyckoff phase detection (A-E, springs, upthrusts, SOS/SOW)
@@ -94,4 +118,4 @@ Scoring: 4-5 bullish → ACCUMULATION, 2-3 → MIXED, 0-1 → DISTRIBUTION
 | Morning report = top opportunities only | Focus on highest conviction, not information overload | — Pending |
 
 ---
-*Last updated: 2026-02-26 after initialization*
+*Last updated: 2026-02-26 after milestone v0.1 started*
