@@ -56,7 +56,10 @@ Plans:
   1. settings.py loads environment variables using python-dotenv
   2. .env.example exists with all required keys (ANTHROPIC_API_KEY, NANSEN_API_KEY, HYPERLIQUID_API_KEY, TELEGRAM_BOT_TOKEN, SIGNALS_DB_PATH)
   3. Developer can import settings and access config values without errors
-**Plans**: TBD
+**Plans:** 1 plan
+
+Plans:
+- [ ] 03-01-PLAN.md — Create settings.py module and update .env.example with all required keys
 
 ### Phase 4: Smoke Tests
 **Goal**: Every agent stub verified to return valid Pydantic output
@@ -79,5 +82,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 |-------|----------------|--------|-----------|
 | 1. Agent Structure | 1/1 | ✓ Complete | 2026-02-26 |
 | 2. Pydantic Models | 0/2 | Planned | - |
-| 3. Configuration | 0/TBD | Not started | - |
+| 3. Configuration | 0/1 | Planned | - |
 | 4. Smoke Tests | 0/TBD | Not started | - |
