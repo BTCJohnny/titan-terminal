@@ -33,11 +33,11 @@ Requirements for Project Scaffold milestone. Each maps to roadmap phases.
 
 - [x] **TEST-01**: Smoke test for each TA subagent (weekly, daily, fourhour)
 - [x] **TEST-02**: Smoke test for TAMentor
-- [ ] **TEST-03**: Smoke test for Nansen agent
-- [ ] **TEST-04**: Smoke test for Telegram agent
-- [ ] **TEST-05**: Smoke test for Risk agent
-- [ ] **TEST-06**: Smoke test for Orchestrator
-- [ ] **TEST-07**: All tests passing
+- [x] **TEST-03**: Smoke test for Nansen agent
+- [x] **TEST-04**: Smoke test for Telegram agent
+- [x] **TEST-05**: Smoke test for Risk agent
+- [x] **TEST-06**: Smoke test for Orchestrator
+- [x] **TEST-07**: All tests passing
 
 ## Future Requirements (v1.0+)
 
@@ -100,11 +100,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONF-02 | Phase 3 | Complete |
 | TEST-01 | Phase 4 | Complete |
 | TEST-02 | Phase 4 | Complete |
-| TEST-03 | Phase 4 | Pending |
-| TEST-04 | Phase 4 | Pending |
-| TEST-05 | Phase 4 | Pending |
-| TEST-06 | Phase 4 | Pending |
-| TEST-07 | Phase 4 | Pending |
+| TEST-03 | Phase 4 | Complete |
+| TEST-04 | Phase 4 | Complete |
+| TEST-05 | Phase 4 | Complete |
+| TEST-06 | Phase 4 | Complete |
+| TEST-07 | Phase 4 | Complete |
 
 **Coverage:**
 - v0.1 requirements: 20 total
