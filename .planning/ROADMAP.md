@@ -12,7 +12,7 @@ Milestone v0.1 (Project Scaffold) establishes the foundational agent architectur
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Agent Structure** - Create nested ta_ensemble/ folder and root-level agent files
+- [x] **Phase 1: Agent Structure** - Create nested ta_ensemble/ folder and root-level agent files
 - [ ] **Phase 2: Pydantic Models** - Define output models for all agent types
 - [ ] **Phase 3: Configuration** - Set up environment config with python-dotenv
 - [ ] **Phase 4: Smoke Tests** - Verify all agent stubs return valid Pydantic models
@@ -30,7 +30,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans:** 1 plan
 
 Plans:
-- [ ] 01-01-PLAN.md — Create ta_ensemble/ folder structure and refactor root-level agents
+- [x] 01-01-PLAN.md — Create ta_ensemble/ folder structure and refactor root-level agents
 
 ### Phase 2: Pydantic Models
 **Goal**: All agents have type-safe output models defined
@@ -73,7 +73,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Agent Structure | 0/1 | Ready | - |
+| 1. Agent Structure | 1/1 | ✓ Complete | 2026-02-26 |
 | 2. Pydantic Models | 0/TBD | Not started | - |
 | 3. Configuration | 0/TBD | Not started | - |
 | 4. Smoke Tests | 0/TBD | Not started | - |

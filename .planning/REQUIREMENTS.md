@@ -9,11 +9,11 @@ Requirements for Project Scaffold milestone. Each maps to roadmap phases.
 
 ### Agent Structure
 
-- [ ] **AGNT-01**: Create nested ta_ensemble/ folder with weekly_subagent.py, daily_subagent.py, fourhour_subagent.py, ta_mentor.py
-- [ ] **AGNT-02**: Create nansen_agent.py at src/backend/agents/ root
-- [ ] **AGNT-03**: Create telegram_agent.py at src/backend/agents/ root
-- [ ] **AGNT-04**: Create risk_agent.py at src/backend/agents/ root
-- [ ] **AGNT-05**: Create orchestrator.py at src/backend/agents/ root
+- [x] **AGNT-01**: Create nested ta_ensemble/ folder with weekly_subagent.py, daily_subagent.py, fourhour_subagent.py, ta_mentor.py
+- [x] **AGNT-02**: Create nansen_agent.py at src/backend/agents/ root
+- [x] **AGNT-03**: Create telegram_agent.py at src/backend/agents/ root
+- [x] **AGNT-04**: Create risk_agent.py at src/backend/agents/ root
+- [x] **AGNT-05**: Create orchestrator.py at src/backend/agents/ root
 
 ### Pydantic Models
 
@@ -85,11 +85,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AGNT-01 | Phase 1 | Pending |
-| AGNT-02 | Phase 1 | Pending |
-| AGNT-03 | Phase 1 | Pending |
-| AGNT-04 | Phase 1 | Pending |
-| AGNT-05 | Phase 1 | Pending |
+| AGNT-01 | Phase 1 | ✓ Complete |
+| AGNT-02 | Phase 1 | ✓ Complete |
+| AGNT-03 | Phase 1 | ✓ Complete |
+| AGNT-04 | Phase 1 | ✓ Complete |
+| AGNT-05 | Phase 1 | ✓ Complete |
 | MODL-01 | Phase 2 | Pending |
 | MODL-02 | Phase 2 | Pending |
 | MODL-03 | Phase 2 | Pending |
