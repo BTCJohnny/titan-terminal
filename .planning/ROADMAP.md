@@ -13,8 +13,8 @@ Milestone v0.1 (Project Scaffold) establishes the foundational agent architectur
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Agent Structure** - Create nested ta_ensemble/ folder and root-level agent files
-- [ ] **Phase 2: Pydantic Models** - Define output models for all agent types
-- [ ] **Phase 3: Configuration** - Set up environment config with python-dotenv
+- [x] **Phase 2: Pydantic Models** - Define output models for all agent types
+- [x] **Phase 3: Configuration** - Set up environment config with python-dotenv
 - [ ] **Phase 4: Smoke Tests** - Verify all agent stubs return valid Pydantic models
 
 ## Phase Details
@@ -45,8 +45,8 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Core signal models (TASignal, TAMentorSignal, NansenSignal)
-- [ ] 02-02-PLAN.md — Integration models (TelegramSignal, RiskOutput, OrchestratorOutput)
+- [x] 02-01-PLAN.md — Core signal models (TASignal, TAMentorSignal, NansenSignal)
+- [x] 02-02-PLAN.md — Integration models (TelegramSignal, RiskOutput, OrchestratorOutput)
 
 ### Phase 3: Configuration
 **Goal**: Environment variables loaded from .env with all required keys documented
@@ -59,7 +59,7 @@ Plans:
 **Plans:** 1 plan
 
 Plans:
-- [ ] 03-01-PLAN.md — Create settings.py module and update .env.example with all required keys
+- [x] 03-01-PLAN.md — Create settings.py module and update .env.example with all required keys
 
 ### Phase 4: Smoke Tests
 **Goal**: Every agent stub verified to return valid Pydantic output
@@ -74,7 +74,7 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Test infrastructure + TA subagent and TAMentor smoke tests
+- [x] 04-01-PLAN.md — Test infrastructure + TA subagent and TAMentor smoke tests
 - [ ] 04-02-PLAN.md — Nansen, Telegram, Risk, Orchestrator smoke tests + full test verification
 
 ## Progress
@@ -85,6 +85,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Agent Structure | 1/1 | ✓ Complete | 2026-02-26 |
-| 2. Pydantic Models | 0/2 | Planned | - |
-| 3. Configuration | 0/1 | Planned | - |
-| 4. Smoke Tests | 0/2 | Planned | - |
+| 2. Pydantic Models | 2/2 | ✓ Complete | 2026-02-26 |
+| 3. Configuration | 1/1 | ✓ Complete | 2026-02-26 |
+| 4. Smoke Tests | 1/2 | In Progress | - |
