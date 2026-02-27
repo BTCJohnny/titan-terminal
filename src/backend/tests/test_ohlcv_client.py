@@ -140,3 +140,68 @@ class TestOHLCVClient:
         """Verify fetch_all_timeframes raises ValueError for invalid symbol."""
         with pytest.raises(ValueError, match="Symbol 'DOGE/USDT' not supported"):
             client.fetch_all_timeframes("DOGE/USDT")
+
+    # Retry behavior tests (TEST-02)
+
+    def test_retry_on_rate_limit_exceeded(self, client, mock_ohlcv_response):
+        """Verify retry happens on ccxt.RateLimitExceeded."""
+        with patch.object(client.exchange, 'fetch_ohlcv') as mock_fetch:
+            # First call raises RateLimitExceeded, second succeeds
+            mock_fetch.side_effect = [
+                ccxt.RateLimitExceeded('rate limit'),
+                mock_ohlcv_response
+            ]
+
+            with patch('time.sleep', return_value=None):
+                result = client.fetch_ohlcv("BTC/USDT", "1d")
+
+        # Verify retry occurred (called twice)
+        assert mock_fetch.call_count == 2
+        assert len(result) == 5
+
+    def test_retry_on_request_timeout(self, client, mock_ohlcv_response):
+        """Verify retry happens on ccxt.RequestTimeout."""
+        with patch.object(client.exchange, 'fetch_ohlcv') as mock_fetch:
+            # First call times out, second succeeds
+            mock_fetch.side_effect = [
+                ccxt.RequestTimeout('timeout'),
+                mock_ohlcv_response
+            ]
+
+            with patch('time.sleep', return_value=None):
+                result = client.fetch_ohlcv("BTC/USDT", "1d")
+
+        # Verify retry occurred (called twice)
+        assert mock_fetch.call_count == 2
+        assert len(result) == 5
+
+    def test_retry_max_attempts_then_raises(self, client):
+        """Verify exception raised after max retries."""
+        with patch.object(client.exchange, 'fetch_ohlcv') as mock_fetch:
+            # All attempts fail with rate limit
+            mock_fetch.side_effect = ccxt.RateLimitExceeded('rate limit')
+
+            with patch('time.sleep', return_value=None):
+                with pytest.raises(ccxt.RateLimitExceeded):
+                    client.fetch_ohlcv("BTC/USDT", "1d")
+
+        # Verify it tried max_retries + 1 times (3 retries + 1 initial = 4 total)
+        assert mock_fetch.call_count == 4
+
+    def test_retry_succeeds_on_second_attempt(self, client, mock_ohlcv_response):
+        """Verify success after one failure."""
+        with patch.object(client.exchange, 'fetch_ohlcv') as mock_fetch:
+            # First call fails, second succeeds
+            mock_fetch.side_effect = [
+                ccxt.RequestTimeout('timeout'),
+                mock_ohlcv_response
+            ]
+
+            with patch('time.sleep', return_value=None):
+                result = client.fetch_ohlcv("BTC/USDT", "1d")
+
+        # Verify exactly 2 attempts
+        assert mock_fetch.call_count == 2
+        # Verify data returned correctly
+        assert len(result) == 5
+        assert result[0]['close'] == 42300.0
