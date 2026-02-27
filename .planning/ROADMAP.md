@@ -73,10 +73,11 @@ Plans:
   4. Volatility score normalizes ATR for cross-asset comparison
   5. AlphaFactors Pydantic model validates all computed values
   6. Unit tests verify alpha factor calculations
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 09-01: TBD
+- [ ] 09-01-PLAN.md — Implement 4 alpha factor functions + AlphaFactors Pydantic model
+- [ ] 09-02-PLAN.md — Create comprehensive unit tests, wire module exports
 
 ### Phase 10: Wyckoff Detection Module
 **Goal**: Detect Wyckoff accumulation/distribution patterns for market structure analysis
@@ -168,7 +169,7 @@ Phases TBD - run `/gsd:new-milestone` to define
 | 6. OHLCV Data Client | v0.2 | 1/1 | Complete | 2026-02-27 |
 | 7. Data Layer Testing | v0.2 | 1/1 | Complete | 2026-02-27 |
 | 8. Dependencies + Shared Indicators | v0.3 | 2/2 | Complete | 2026-02-27 |
-| 9. Alpha Factors Module | v0.3 | 0/TBD | Not started | - |
+| 9. Alpha Factors Module | v0.3 | 0/2 | Not started | - |
 | 10. Wyckoff Detection Module | v0.3 | 0/TBD | Not started | - |
 | 11. WeeklySubagent + TASignal Extension | v0.3 | 0/TBD | Not started | - |
 | 12. Daily + FourHour Subagents | v0.3 | 0/TBD | Not started | - |
