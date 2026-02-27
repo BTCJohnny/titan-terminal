@@ -9,6 +9,12 @@ from src.backend.analysis.indicators import (
     calculate_atr,
     detect_support_resistance,
 )
+from src.backend.analysis.alpha_factors import (
+    calculate_momentum_score,
+    detect_volume_anomaly,
+    calculate_ma_deviation,
+    calculate_volatility_score,
+)
 
 __all__ = [
     "calculate_rsi",
@@ -19,4 +25,8 @@ __all__ = [
     "calculate_vwap",
     "calculate_atr",
     "detect_support_resistance",
+    "calculate_momentum_score",
+    "detect_volume_anomaly",
+    "calculate_ma_deviation",
+    "calculate_volatility_score",
 ]
