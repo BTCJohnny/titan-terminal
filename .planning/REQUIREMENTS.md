@@ -25,9 +25,9 @@ Requirements for Data Foundation milestone. Each maps to roadmap phases.
 
 ### Testing
 
-- [ ] **TEST-01**: Unit tests for OHLCV client (mocked exchange calls)
-- [ ] **TEST-02**: Unit tests for rate limit retry behavior
-- [ ] **TEST-03**: Existing 11 smoke tests still pass after config changes
+- [x] **TEST-01**: Unit tests for OHLCV client (mocked exchange calls)
+- [x] **TEST-02**: Unit tests for rate limit retry behavior
+- [x] **TEST-03**: Existing 11 smoke tests still pass after config changes
 
 ## Future Requirements
 
@@ -71,9 +71,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DATA-04 | Phase 6 | Complete |
 | DATA-05 | Phase 6 | Complete |
 | DATA-06 | Phase 6 | Complete |
-| TEST-01 | Phase 7 | Pending |
-| TEST-02 | Phase 7 | Pending |
-| TEST-03 | Phase 7 | Pending |
+| TEST-01 | Phase 7 | Complete |
+| TEST-02 | Phase 7 | Complete |
+| TEST-03 | Phase 7 | Complete |
 
 **Coverage:**
 - v0.2 requirements: 13 total

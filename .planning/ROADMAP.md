@@ -49,8 +49,8 @@ Plans:
 **Milestone Goal:** Establish clean data infrastructure with CCXT/Binance OHLCV client and consolidated configuration.
 
 - [x] **Phase 5: Configuration Consolidation** - Unify config systems into Settings as single source of truth
-- [ ] **Phase 6: OHLCV Data Client** - Clean market data fetching with CCXT + Binance
-- [ ] **Phase 7: Data Layer Testing** - Full unit test coverage for data infrastructure
+- [x] **Phase 6: OHLCV Data Client** - Clean market data fetching with CCXT + Binance
+- [x] **Phase 7: Data Layer Testing** - Full unit test coverage for data infrastructure
 
 ## Phase Details
 
@@ -81,7 +81,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 06-01-PLAN.md — Create OHLCV client with CCXT Binance, add deprecation to market_data.py
+- [x] 06-01-PLAN.md — Create OHLCV client with CCXT Binance, add deprecation to market_data.py
 
 ### Phase 7: Data Layer Testing
 **Goal**: Comprehensive unit test coverage for OHLCV client with mocked exchanges
@@ -94,7 +94,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 07-01-PLAN.md — Unit tests for OHLCV client with mocked exchange calls
+- [x] 07-01-PLAN.md — Unit tests for OHLCV client with mocked exchange calls
 
 ## Progress
 
@@ -108,5 +108,5 @@ Phases execute in numeric order: 5 -> 6 -> 7
 | 3. Configuration | v0.1 | 1/1 | Complete | 2026-02-26 |
 | 4. Smoke Tests | v0.1 | 2/2 | Complete | 2026-02-26 |
 | 5. Configuration Consolidation | v0.2 | 1/1 | Complete | 2026-02-27 |
-| 6. OHLCV Data Client | v0.2 | 0/1 | Planning complete | - |
-| 7. Data Layer Testing | v0.2 | 0/1 | Planning complete | - |
+| 6. OHLCV Data Client | v0.2 | 1/1 | Complete | 2026-02-27 |
+| 7. Data Layer Testing | v0.2 | 1/1 | Complete | 2026-02-27 |
