@@ -5,7 +5,7 @@ The TA Mentor functionality has been moved to ta_ensemble/ta_mentor.py
 This file will be removed in v1.0.
 """
 from .base import BaseAgent
-from ..config import config
+from ..config.settings import settings
 
 MENTOR_SYSTEM_PROMPT = """You are a seasoned trading mentor with 20+ years of experience.
 
@@ -36,7 +36,7 @@ class MentorCriticAgent(BaseAgent):
             system_prompt=MENTOR_SYSTEM_PROMPT
         )
         # Use the mentor model (can be different/cheaper)
-        self.model = config.MENTOR_MODEL
+        self.model = settings.MENTOR_MODEL
 
     def critique(self, signal_data: dict) -> dict:
         """Provide second opinion on a trading signal."""

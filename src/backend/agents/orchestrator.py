@@ -12,7 +12,7 @@ from .ta_ensemble import WeeklySubagent, DailySubagent, FourHourSubagent, TAMent
 from .risk_agent import RiskAgent
 from .mentor import MentorCriticAgent
 from ..db import record_signal, get_similar_patterns, get_pattern_stats
-from ..config import config
+from ..config.constants import HYPERLIQUID_PERPS
 
 ORCHESTRATOR_SYSTEM_PROMPT = """You are Titan Terminal Orchestrator - the main brain that synthesizes all specialist agent outputs.
 
@@ -379,7 +379,7 @@ Keep responses concise and actionable."""
         pnl = None
 
         for word in words:
-            if word in config.HYPERLIQUID_PERPS:
+            if word in HYPERLIQUID_PERPS:
                 symbol = word
             if 'WIN' in word:
                 outcome = 'win'

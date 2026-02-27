@@ -3,7 +3,7 @@ import json
 from abc import ABC, abstractmethod
 from typing import Any
 import anthropic
-from ..config import config
+from ..config.settings import settings
 
 
 class BaseAgent(ABC):
@@ -12,8 +12,8 @@ class BaseAgent(ABC):
     def __init__(self, name: str, system_prompt: str):
         self.name = name
         self.system_prompt = system_prompt
-        self.client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
-        self.model = config.MODEL_NAME
+        self.client = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
+        self.model = settings.MODEL_NAME
 
     @abstractmethod
     def analyze(self, symbol: str, context: dict) -> dict:

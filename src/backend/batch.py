@@ -17,7 +17,7 @@ from pathlib import Path
 from .agents import Orchestrator
 from .tools.market_data import get_market_data_fetcher
 from .db import init_db
-from .config import config
+from .config.constants import HYPERLIQUID_PERPS
 
 
 def run_batch(symbols: list = None) -> dict:
@@ -33,7 +33,7 @@ def run_batch(symbols: list = None) -> dict:
 
     # Use default symbols if none provided
     if not symbols:
-        symbols = config.HYPERLIQUID_PERPS[:10]  # Top 10 for MVP
+        symbols = HYPERLIQUID_PERPS[:10]  # Top 10 for MVP
 
     print(f"Analyzing {len(symbols)} symbols: {', '.join(symbols)}\n")
 

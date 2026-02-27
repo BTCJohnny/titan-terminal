@@ -9,7 +9,7 @@ import json
 from ..agents import Orchestrator
 from ..tools.market_data import get_market_data_fetcher
 from ..db import init_db, get_recent_signals, update_outcome, get_connection
-from ..config import config
+from ..config.constants import HYPERLIQUID_PERPS
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -152,7 +152,7 @@ async def get_morning_report(refresh: bool = False):
     # Run full morning batch
     try:
         signals = orchestrator.run_morning_batch(
-            symbols=config.HYPERLIQUID_PERPS[:10],  # Start with top 10 for MVP
+            symbols=HYPERLIQUID_PERPS[:10],  # Start with top 10 for MVP
             market_data_fetcher=fetcher.fetch
         )
 
