@@ -15,6 +15,7 @@ from src.backend.analysis.alpha_factors import (
     calculate_ma_deviation,
     calculate_volatility_score,
 )
+from src.backend.analysis.wyckoff import detect_wyckoff
 
 __all__ = [
     "calculate_rsi",
@@ -29,4 +30,5 @@ __all__ = [
     "detect_volume_anomaly",
     "calculate_ma_deviation",
     "calculate_volatility_score",
+    "detect_wyckoff",
 ]
