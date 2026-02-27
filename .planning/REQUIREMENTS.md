@@ -9,10 +9,10 @@ Requirements for Data Foundation milestone. Each maps to roadmap phases.
 
 ### Configuration
 
-- [ ] **CFG-01**: Settings class is the single source of truth for environment variables
-- [ ] **CFG-02**: Trading constants (risk limits, symbol lists) live in config/constants.py
-- [ ] **CFG-03**: Old Config class is deleted entirely
-- [ ] **CFG-04**: All 5 files importing old Config updated to use Settings/constants
+- [x] **CFG-01**: Settings class is the single source of truth for environment variables
+- [x] **CFG-02**: Trading constants (risk limits, symbol lists) live in config/constants.py
+- [x] **CFG-03**: Old Config class is deleted entirely
+- [x] **CFG-04**: All 5 files importing old Config updated to use Settings/constants
 
 ### Data Layer
 
@@ -61,10 +61,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CFG-01 | Phase 5 | Pending |
-| CFG-02 | Phase 5 | Pending |
-| CFG-03 | Phase 5 | Pending |
-| CFG-04 | Phase 5 | Pending |
+| CFG-01 | Phase 5 | Complete |
+| CFG-02 | Phase 5 | Complete |
+| CFG-03 | Phase 5 | Complete |
+| CFG-04 | Phase 5 | Complete |
 | DATA-01 | Phase 6 | Pending |
 | DATA-02 | Phase 6 | Pending |
 | DATA-03 | Phase 6 | Pending |
