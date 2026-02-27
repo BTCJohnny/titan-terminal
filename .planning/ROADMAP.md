@@ -37,7 +37,7 @@ See: `.planning/milestones/v0.2-ROADMAP.md`
 
 **Milestone Goal:** Implement fully functional TA subagents (Weekly, Daily, 4H) with Wyckoff detection, technical indicators, and alpha factors. TAMentor synthesizes all three with conflict resolution.
 
-- [ ] **Phase 8: Dependencies + Shared Indicators** - Install pandas-ta stack, implement shared indicators module
+- [x] **Phase 8: Dependencies + Shared Indicators** - Install pandas-ta stack, implement shared indicators module (completed 2026-02-27)
 - [ ] **Phase 9: Alpha Factors Module** - Momentum, volume anomaly, MA deviation, volatility calculations
 - [ ] **Phase 10: Wyckoff Detection Module** - Phases A-E, springs, upthrusts, SOS/SOW detection
 - [ ] **Phase 11: WeeklySubagent + TASignal Extension** - First full subagent with extended model
@@ -59,8 +59,8 @@ See: `.planning/milestones/v0.2-ROADMAP.md`
 **Plans**: 2 plans
 
 Plans:
-- [ ] 08-01-PLAN.md — Install pandas-ta/scipy dependencies, create analysis package, implement 7 core indicator functions
-- [ ] 08-02-PLAN.md — Implement support/resistance detection, create comprehensive unit tests for all indicators
+- [x] 08-01-PLAN.md — Install pandas-ta/scipy dependencies, create analysis package, implement 7 core indicator functions (completed 2026-02-27)
+- [x] 08-02-PLAN.md — Implement support/resistance detection, create comprehensive unit tests for all indicators (completed 2026-02-27)
 
 ### Phase 9: Alpha Factors Module
 **Goal**: Compute alpha factors that quantify market conditions for trading signals
@@ -167,7 +167,7 @@ Phases TBD - run `/gsd:new-milestone` to define
 | 5. Configuration Consolidation | v0.2 | 1/1 | Complete | 2026-02-27 |
 | 6. OHLCV Data Client | v0.2 | 1/1 | Complete | 2026-02-27 |
 | 7. Data Layer Testing | v0.2 | 1/1 | Complete | 2026-02-27 |
-| 8. Dependencies + Shared Indicators | v0.3 | 0/2 | Planned | - |
+| 8. Dependencies + Shared Indicators | v0.3 | 2/2 | Complete | 2026-02-27 |
 | 9. Alpha Factors Module | v0.3 | 0/TBD | Not started | - |
 | 10. Wyckoff Detection Module | v0.3 | 0/TBD | Not started | - |
 | 11. WeeklySubagent + TASignal Extension | v0.3 | 0/TBD | Not started | - |
