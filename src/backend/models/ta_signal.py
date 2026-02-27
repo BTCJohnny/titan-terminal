@@ -62,6 +62,16 @@ class TASignal(BaseModel):
     patterns: PatternData
     overall: OverallAssessment
 
+    # NEW: Optional fields for extended analysis (backward compatible)
+    wyckoff: Optional[WyckoffAnalysis] = Field(
+        None,
+        description="Wyckoff accumulation/distribution phase analysis"
+    )
+    alpha_factors: Optional[AlphaFactors] = Field(
+        None,
+        description="Alpha factor calculations (momentum, volume, volatility)"
+    )
+
     model_config = {
         "json_schema_extra": {
             "examples": [
@@ -90,6 +100,25 @@ class TASignal(BaseModel):
                         "bias": "bullish",
                         "confidence": 75,
                         "notes": "Strong weekly uptrend with bullish EMA alignment"
+                    },
+                    "wyckoff": {
+                        "phase": "accumulation_e",
+                        "phase_confidence": 80,
+                        "events": [],
+                        "volume_confirms": True,
+                        "analysis_notes": "Markup phase with volume confirmation"
+                    },
+                    "alpha_factors": {
+                        "momentum": {
+                            "short_roc": 5.2,
+                            "long_roc": 3.8,
+                            "momentum_score": 45.6
+                        },
+                        "volatility": {
+                            "atr": 150.5,
+                            "atr_percent": 2.3,
+                            "volatility_score": 46.0
+                        }
                     }
                 }
             ]
