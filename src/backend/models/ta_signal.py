@@ -7,6 +7,9 @@ Represents the structured output from weekly, daily, and 4-hour TA subagents.
 from typing import Literal, Optional
 from pydantic import BaseModel, Field, field_validator
 
+from src.backend.models.wyckoff import WyckoffAnalysis
+from src.backend.models.alpha_factors import AlphaFactors
+
 
 class TrendData(BaseModel):
     """Trend analysis data."""
