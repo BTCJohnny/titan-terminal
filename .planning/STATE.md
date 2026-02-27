@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v0.2
 milestone_name: Data Foundation
-status: planning
+status: ready_to_plan
 last_updated: "2026-02-27T00:00:00Z"
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-27)
 
 **Core value:** Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
-**Current focus:** v0.2 Data Foundation
+**Current focus:** Phase 5 - Configuration Consolidation
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-02-27 — Milestone v0.2 started
+Phase: 5 of 7 (Configuration Consolidation)
+Plan: Ready to plan
+Status: Not started
+Last activity: 2026-02-27 — v0.2 roadmap created with 3 phases
 
-Progress: Defining requirements
+Progress: [████░░░░░░] 57% (4/7 phases complete)
 
 ## Performance Metrics
 
@@ -50,9 +50,6 @@ Progress: Defining requirements
 - Trend: Stable
 
 *Updated after each plan completion*
-| Phase 03-configuration P01 | 73 | 2 tasks | 2 files |
-| Phase 04-smoke-tests P01 | 1.7 | 3 tasks | 4 files |
-| Phase 04-smoke-tests P02 | 163 | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -61,25 +58,8 @@ Progress: Defining requirements
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- **01-01**: Keep old agent files with deprecation notices for safe rollback during v0.1
-- **01-01**: TAMentor synthesizes 3 timeframes with weekly > daily > 4h precedence
-- **01-01**: Dict stubs for agent returns (Pydantic integration in Phase 2)
-- **02-01**: Use nested Pydantic models for complex signal structures
-- **02-01**: Standardize confidence scoring as 0-100 integers across all models
-- **02-01**: Use Literal types for enums (bias, direction, strength, etc.)
-- **02-02**: TelegramChannelSignal as nested model captures per-channel signal details
-- **02-02**: TelegramSignal aggregates multiple channel signals with overall sentiment
-- **02-02**: RiskOutput uses nested models for clarity (EntryZone, StopLoss, ThreeLawsCheck)
-- **02-02**: OrchestratorOutput includes helper properties for easy signal classification
-- [Phase 03-configuration]: Use Settings class (not Config) to avoid confusion with existing Config class
-- [Phase 03-configuration]: Provide sensible defaults for optional keys (empty strings) vs critical keys (ANTHROPIC_API_KEY)
-- [Phase 03-configuration]: Add validate() method to warn on missing critical keys rather than crash
-- [Phase 03-configuration]: Use data/signals.db as default database path
-- **04-01**: Use patch.object for mocking _call_claude instead of string-based patching for reliability
-- **04-01**: Create reusable fixtures in conftest.py for valid TASignal and TAMentorSignal responses
-- **04-01**: Focus on smoke tests verifying Pydantic validation rather than business logic
-- [Phase 04-smoke-tests]: Mock all specialist agents and DB calls for orchestrator smoke test
-- [Phase 04-smoke-tests]: Auto-fixed missing confluence_count field in TelegramAgent empty signal case
+- v0.1: Parallel config systems (old Config + new Settings) — resolving in Phase 5
+- v0.1: Keep deprecated files for rollback — may revisit during config consolidation
 
 ### Pending Todos
 
@@ -87,10 +67,17 @@ None yet.
 
 ### Blockers/Concerns
 
-None yet.
+**Phase 5 Dependencies:**
+- 5 files currently import old Config class (orchestrator, risk_agent, telegram_agent, 2 TA subagents)
+- Need to identify Settings mapping for each Config usage before deletion
+
+**Phase 6 Dependencies:**
+- OHLCV client needs API keys from consolidated Settings (Phase 5 must complete first)
+- Binance API rate limits need research (60 requests/min per IP documented, confirm current limits)
 
 ## Session Continuity
 
-Last session: 2026-02-26T18:45:00Z
-Stopped at: Completed milestone v0.1 Project Scaffold
-Resume: Start new milestone with /gsd:new-milestone
+Last session: 2026-02-27
+Stopped at: Roadmap creation complete for v0.2 Data Foundation milestone
+Resume file: None
+Next action: `/gsd:plan-phase 5` to begin Configuration Consolidation
