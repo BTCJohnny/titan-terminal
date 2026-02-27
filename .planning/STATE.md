@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: TA Ensemble
 status: unknown
-last_updated: "2026-02-27T21:05:25.377Z"
+last_updated: "2026-02-27T21:09:29.720Z"
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 10
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-02-27)
 ## Current Position
 
 Phase: 11 of 13 (Weekly Subagent + TASignal Extension)
-Plan: 1 of 3 (COMPLETE)
+Plan: 2 of 3 (COMPLETE)
 Status: Phase 11 in progress
-Last activity: 2026-02-27 — Completed 11-01-PLAN.md
+Last activity: 2026-02-27 — Completed 11-02-PLAN.md
 
-Progress: [----------|----------] 70% (9.3/13 phases overall, v0.3 in progress)
+Progress: [----------|----------] 72% (9.7/13 phases overall, v0.3 in progress)
 
 ## Performance Metrics
 
@@ -57,6 +57,7 @@ Progress: [----------|----------] 70% (9.3/13 phases overall, v0.3 in progress)
 | Phase 10 P02 | 277 | 3 tasks | 1 files |
 | Phase 10 P03 | 652 | 3 tasks | 2 files |
 | Phase 11 P01 | 90 | 2 tasks | 1 files |
+| Phase 11 P02 | 107 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -99,10 +100,13 @@ v0.3 specific:
 - [Phase 11]: TASignal wyckoff and alpha_factors fields are Optional with None default for backward compatibility
 - [Phase 11]: New fields placed after existing overall field for logical ordering
 - [Phase 11]: json_schema_extra examples updated to demonstrate new field usage patterns
+- [Phase 11]: WeeklySubagent uses weighted confluence scoring: RSI (20), MACD (25), Wyckoff (15-30), ADX (multiplier)
+- [Phase 11]: Wyckoff detection threshold lowered to 50 candles (from planned 100) for better symbol coverage
+- [Phase 11]: Import aliases used for MomentumData (TAMomentumData vs AlphaMomentumData) to avoid collisions
 
 ### Pending Todos
 
-None — Phase 11 Plan 01 complete. Ready for 11-02-PLAN.md.
+None — Phase 11 Plan 02 complete. Ready for 11-03-PLAN.md.
 
 ### Research Flags
 
@@ -122,9 +126,9 @@ From v0.1 (carried forward):
 ## Session Continuity
 
 Last session: 2026-02-27
-Stopped at: Completed 11-01-PLAN.md
+Stopped at: Completed 11-02-PLAN.md
 Resume file: N/A
-Next action: Phase 11 Plan 01 complete. Ready for 11-02-PLAN.md execution.
+Next action: Phase 11 Plan 02 complete. Ready for 11-03-PLAN.md execution.
 
 ---
 
