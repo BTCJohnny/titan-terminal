@@ -13,7 +13,7 @@ HYPERLIQUID_PERPS = [
 
 # Risk management (The 3 Laws)
 MAX_RISK_PER_TRADE = 0.02  # 2% max risk per trade
-MIN_RISK_REWARD = 2.0      # Minimum 2:1 risk-reward ratio
+MIN_RISK_REWARD = 3.0      # Minimum 3:1 risk-reward ratio
 MAX_POSITIONS = 5          # Maximum concurrent positions
 
 # Batch settings (could also come from env if needed later)
