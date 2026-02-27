@@ -99,10 +99,11 @@ def calculate_bollinger_bands(
             return None
 
         last_row = bb_df.dropna().iloc[-1]
+        # pandas-ta names columns as BBL_<length>_<std>_<std> (std appears twice)
         return {
-            'upper': float(last_row[f'BBU_{period}_{std}']),
-            'middle': float(last_row[f'BBM_{period}_{std}']),
-            'lower': float(last_row[f'BBL_{period}_{std}'])
+            'upper': float(last_row[f'BBU_{period}_{std}_{std}']),
+            'middle': float(last_row[f'BBM_{period}_{std}_{std}']),
+            'lower': float(last_row[f'BBL_{period}_{std}_{std}'])
         }
     except (KeyError, IndexError, ValueError, AttributeError):
         return None
