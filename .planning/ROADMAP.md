@@ -56,10 +56,11 @@ See: `.planning/milestones/v0.2-ROADMAP.md`
   3. Support/resistance levels detected using scipy peak detection
   4. Unit tests verify indicator calculations against known values
   5. All 28 existing tests still pass
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 08-01: TBD
+- [ ] 08-01-PLAN.md — Install pandas-ta/scipy dependencies, create analysis package, implement 7 core indicator functions
+- [ ] 08-02-PLAN.md — Implement support/resistance detection, create comprehensive unit tests for all indicators
 
 ### Phase 9: Alpha Factors Module
 **Goal**: Compute alpha factors that quantify market conditions for trading signals
@@ -166,7 +167,7 @@ Phases TBD - run `/gsd:new-milestone` to define
 | 5. Configuration Consolidation | v0.2 | 1/1 | Complete | 2026-02-27 |
 | 6. OHLCV Data Client | v0.2 | 1/1 | Complete | 2026-02-27 |
 | 7. Data Layer Testing | v0.2 | 1/1 | Complete | 2026-02-27 |
-| 8. Dependencies + Shared Indicators | v0.3 | 0/TBD | Not started | - |
+| 8. Dependencies + Shared Indicators | v0.3 | 0/2 | Planned | - |
 | 9. Alpha Factors Module | v0.3 | 0/TBD | Not started | - |
 | 10. Wyckoff Detection Module | v0.3 | 0/TBD | Not started | - |
 | 11. WeeklySubagent + TASignal Extension | v0.3 | 0/TBD | Not started | - |
