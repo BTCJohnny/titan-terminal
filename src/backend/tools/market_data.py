@@ -1,4 +1,15 @@
-"""Market data fetcher for price and OHLCV data."""
+"""Market data fetcher for price and OHLCV data.
+
+.. deprecated::
+    This module is deprecated. Use `src.backend.data.ohlcv_client` instead.
+    This file is kept as a backup reference and will be removed in a future version.
+"""
+import warnings
+warnings.warn(
+    "market_data.py is deprecated. Use src.backend.data.ohlcv_client instead.",
+    DeprecationWarning,
+    stacklevel=2
+)
 import httpx
 from typing import Optional
 from datetime import datetime, timedelta
