@@ -11,6 +11,9 @@ anthropic>=0.18.0
 # HTTP Client
 httpx>=0.26.0
 
+# Market Data
+ccxt>=4.0.0
+
 # Environment
 python-dotenv>=1.0.0
 
