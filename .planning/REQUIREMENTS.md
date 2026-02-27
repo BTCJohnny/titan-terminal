@@ -16,12 +16,12 @@ Requirements for Data Foundation milestone. Each maps to roadmap phases.
 
 ### Data Layer
 
-- [ ] **DATA-01**: OHLCV client exists at src/backend/data/ohlcv_client.py
-- [ ] **DATA-02**: Client uses CCXT library with Binance exchange
-- [ ] **DATA-03**: Client fetches 1w, 1d, 4h candle timeframes
-- [ ] **DATA-04**: Client supports BTC/USDT, ETH/USDT, SOL/USDT symbols
-- [ ] **DATA-05**: Client handles Binance rate limits with exponential backoff retry
-- [ ] **DATA-06**: market_data.py deprecated with backup notice
+- [x] **DATA-01**: OHLCV client exists at src/backend/data/ohlcv_client.py
+- [x] **DATA-02**: Client uses CCXT library with Binance exchange
+- [x] **DATA-03**: Client fetches 1w, 1d, 4h candle timeframes
+- [x] **DATA-04**: Client supports BTC/USDT, ETH/USDT, SOL/USDT symbols
+- [x] **DATA-05**: Client handles Binance rate limits with exponential backoff retry
+- [x] **DATA-06**: market_data.py deprecated with backup notice
 
 ### Testing
 
@@ -65,12 +65,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CFG-02 | Phase 5 | Complete |
 | CFG-03 | Phase 5 | Complete |
 | CFG-04 | Phase 5 | Complete |
-| DATA-01 | Phase 6 | Pending |
-| DATA-02 | Phase 6 | Pending |
-| DATA-03 | Phase 6 | Pending |
-| DATA-04 | Phase 6 | Pending |
-| DATA-05 | Phase 6 | Pending |
-| DATA-06 | Phase 6 | Pending |
+| DATA-01 | Phase 6 | Complete |
+| DATA-02 | Phase 6 | Complete |
+| DATA-03 | Phase 6 | Complete |
+| DATA-04 | Phase 6 | Complete |
+| DATA-05 | Phase 6 | Complete |
+| DATA-06 | Phase 6 | Complete |
 | TEST-01 | Phase 7 | Pending |
 | TEST-02 | Phase 7 | Pending |
 | TEST-03 | Phase 7 | Pending |
