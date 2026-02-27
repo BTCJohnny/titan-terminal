@@ -39,7 +39,7 @@ See: `.planning/milestones/v0.2-ROADMAP.md`
 
 - [x] **Phase 8: Dependencies + Shared Indicators** - Install pandas-ta stack, implement shared indicators module (completed 2026-02-27)
 - [x] **Phase 9: Alpha Factors Module** - Momentum, volume anomaly, MA deviation, volatility calculations (completed 2026-02-27)
-- [ ] **Phase 10: Wyckoff Detection Module** - Phases A-E, springs, upthrusts, SOS/SOW detection
+- [x] **Phase 10: Wyckoff Detection Module** - Phases A-E, springs, upthrusts, SOS/SOW detection (completed 2026-02-27)
 - [ ] **Phase 11: WeeklySubagent + TASignal Extension** - First full subagent with extended model
 - [ ] **Phase 12: Daily + FourHour Subagents** - Parallel implementation following weekly pattern
 - [ ] **Phase 13: TAMentor Implementation** - Synthesis with conflict resolution rules
@@ -172,7 +172,7 @@ Phases TBD - run `/gsd:new-milestone` to define
 | 7. Data Layer Testing | v0.2 | 1/1 | Complete | 2026-02-27 |
 | 8. Dependencies + Shared Indicators | v0.3 | 2/2 | Complete | 2026-02-27 |
 | 9. Alpha Factors Module | v0.3 | 2/2 | Complete | 2026-02-27 |
-| 10. Wyckoff Detection Module | 2/3 | In Progress|  | - |
+| 10. Wyckoff Detection Module | 3/3 | Complete   | 2026-02-27 | - |
 | 11. WeeklySubagent + TASignal Extension | v0.3 | 0/TBD | Not started | - |
 | 12. Daily + FourHour Subagents | v0.3 | 0/TBD | Not started | - |
 | 13. TAMentor Implementation | v0.3 | 0/TBD | Not started | - |
