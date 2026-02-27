@@ -17,6 +17,10 @@ from .alpha_factors import (
     MADeviationData,
     VolatilityData,
 )
+from .wyckoff import (
+    WyckoffEvent,
+    WyckoffAnalysis,
+)
 
 __all__ = [
     "TASignal",
@@ -31,4 +35,6 @@ __all__ = [
     "VolumeAnomalyData",
     "MADeviationData",
     "VolatilityData",
+    "WyckoffEvent",
+    "WyckoffAnalysis",
 ]
