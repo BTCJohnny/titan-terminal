@@ -8,6 +8,16 @@ A multi-agent crypto trading dashboard that aggregates technical analysis, on-ch
 
 Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
 
+## Current Milestone: v0.2 Data Foundation
+
+**Goal:** Establish clean data infrastructure with CCXT/Binance OHLCV client and consolidated configuration.
+
+**Target features:**
+- Clean OHLCV client using CCXT + Binance for 1w/1d/4h candles
+- Config consolidation (delete old Config, Settings as single source)
+- Trading constants in dedicated module
+- Full unit test coverage for data layer
+
 ## Current State
 
 **Shipped:** v0.1 Project Scaffold (2026-02-26)
@@ -22,7 +32,7 @@ Surface high-conviction trading setups by combining multi-timeframe technical an
 
 **Tech Debt:**
 - Agents return dict (Pydantic integration via model_validate in tests)
-- Two parallel config systems (old Config + new Settings)
+- Two parallel config systems (old Config + new Settings) ← **Resolving in v0.2**
 - Deprecated agent files kept for rollback
 
 ## Requirements
@@ -44,7 +54,11 @@ Surface high-conviction trading setups by combining multi-timeframe technical an
 
 ### Active
 
-(Next milestone requirements TBD)
+- [ ] OHLCV client using CCXT + Binance (1w, 1d, 4h candles)
+- [ ] Config consolidation (Settings as single source of truth)
+- [ ] Trading constants in config/constants.py
+- [ ] Unit tests for OHLCV client
+- [ ] Update imports in 5 files using old Config
 
 ### Future (v1.0+)
 
@@ -128,4 +142,4 @@ Scoring: 4-5 bullish → ACCUMULATION, 2-3 → MIXED, 0-1 → DISTRIBUTION
 | Parallel config systems (v0.1) | New Settings module created, old Config still used | ⚠️ Revisit in v1.0 |
 
 ---
-*Last updated: 2026-02-26 after v0.1 milestone completed*
+*Last updated: 2026-02-27 after v0.2 milestone started*
