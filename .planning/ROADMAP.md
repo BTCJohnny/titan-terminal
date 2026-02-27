@@ -91,10 +91,10 @@ Plans:
   1. Unit tests verify OHLCV client returns correct candle data structure
   2. Unit tests verify rate limit retry behavior with exponential backoff
   3. All 11 existing smoke tests still pass after data layer additions
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] TBD
+- [ ] 07-01-PLAN.md — Unit tests for OHLCV client with mocked exchange calls
 
 ## Progress
 
@@ -109,4 +109,4 @@ Phases execute in numeric order: 5 -> 6 -> 7
 | 4. Smoke Tests | v0.1 | 2/2 | Complete | 2026-02-26 |
 | 5. Configuration Consolidation | v0.2 | 1/1 | Complete | 2026-02-27 |
 | 6. OHLCV Data Client | v0.2 | 0/1 | Planning complete | - |
-| 7. Data Layer Testing | v0.2 | 0/? | Not started | - |
+| 7. Data Layer Testing | v0.2 | 0/1 | Planning complete | - |
