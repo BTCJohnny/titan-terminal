@@ -6,6 +6,8 @@ and return scalar values or dicts. Functions return None if insufficient data is
 """
 import pandas as pd
 import pandas_ta as ta
+import numpy as np
+from scipy.signal import find_peaks
 from typing import Optional
 
 
@@ -223,3 +225,55 @@ def calculate_atr(df: pd.DataFrame, period: int = 14) -> Optional[float]:
         return float(atr_series.dropna().iloc[-1])
     except (KeyError, IndexError, ValueError, AttributeError):
         return None
+
+
+def detect_support_resistance(
+    df: pd.DataFrame,
+    num_levels: int = 3,
+    distance: int = 5,
+    prominence_pct: float = 0.02
+) -> dict:
+    """Detect support and resistance levels using scipy peak detection.
+
+    Args:
+        df: DataFrame with columns [timestamp, open, high, low, close, volume]
+        num_levels: Number of support/resistance levels to return (default: 3)
+        distance: Minimum candles between peaks (default: 5)
+        prominence_pct: Prominence as % of mean price (default: 0.02 = 2%)
+
+    Returns:
+        Dict with keys 'support' (list) and 'resistance' (list),
+        each containing up to num_levels price values sorted by proximity to current price.
+        Returns {'support': [], 'resistance': []} if insufficient data.
+    """
+    if len(df) < distance * 2:
+        return {'support': [], 'resistance': []}
+
+    highs = df['high'].values
+    lows = df['low'].values
+    current_price = df['close'].iloc[-1]
+
+    # Resistance: peaks in high prices
+    resistance_indices, _ = find_peaks(
+        highs,
+        distance=distance,
+        prominence=prominence_pct * np.mean(highs)
+    )
+    resistance_levels = highs[resistance_indices]
+
+    # Support: peaks in inverted low prices (valleys)
+    support_indices, _ = find_peaks(
+        -lows,
+        distance=distance,
+        prominence=prominence_pct * np.mean(lows)
+    )
+    support_levels = lows[support_indices]
+
+    # Filter: resistance above current price, support below
+    resistance_above = sorted([float(r) for r in resistance_levels if r > current_price])
+    support_below = sorted([float(s) for s in support_levels if s < current_price], reverse=True)
+
+    return {
+        'resistance': resistance_above[:num_levels],
+        'support': support_below[:num_levels]
+    }

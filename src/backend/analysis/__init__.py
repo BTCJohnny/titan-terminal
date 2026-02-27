@@ -7,6 +7,7 @@ from src.backend.analysis.indicators import (
     calculate_obv,
     calculate_vwap,
     calculate_atr,
+    detect_support_resistance,
 )
 
 __all__ = [
@@ -17,4 +18,5 @@ __all__ = [
     "calculate_obv",
     "calculate_vwap",
     "calculate_atr",
+    "detect_support_resistance",
 ]
