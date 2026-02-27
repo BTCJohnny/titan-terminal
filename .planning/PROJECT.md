@@ -8,6 +8,19 @@ A multi-agent crypto trading dashboard that aggregates technical analysis, on-ch
 
 Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
 
+## Current Milestone: v0.3 TA Ensemble
+
+**Goal:** Implement fully functional TA subagents (Weekly, Daily, 4H) with Wyckoff detection, technical indicators, and alpha factors — plus TAMentor synthesis with conflict resolution.
+
+**Target features:**
+- WeeklySubagent, DailySubagent, FourHourSubagent producing extended TASignal
+- Shared indicators module (RSI, MACD, Bollinger Bands, ADX, OBV, VWAP, ATR, S/R)
+- Wyckoff phase detection (A-E, springs, upthrusts, SOS/SOW, volume-price)
+- Alpha factors (momentum score, volume anomaly, MA deviation, volatility)
+- TAMentor using claude-opus with conflict resolution rules
+- Extended TASignal model with wyckoff and alpha_factors
+- Full unit tests with mocked OHLCV data
+
 ## Current State
 
 **Shipped:** v0.2 Data Foundation (2026-02-27)
@@ -61,7 +74,19 @@ Surface high-conviction trading setups by combining multi-timeframe technical an
 
 ### Active
 
-(None — planning next milestone)
+- [ ] Shared indicators module (RSI, MACD, BB, ADX, OBV, VWAP, ATR, S/R)
+- [ ] Wyckoff detection module (phases A-E, springs, upthrusts, SOS/SOW)
+- [ ] Alpha factors computation (momentum, volume anomaly, MA deviation, volatility)
+- [ ] Extended TASignal model with wyckoff and alpha_factors
+- [ ] WeeklySubagent implementation with full analysis
+- [ ] DailySubagent implementation with full analysis
+- [ ] FourHourSubagent implementation with full analysis
+- [ ] TAMentor using Anthropic SDK with MENTOR_MODEL
+- [ ] TAMentor conflict resolution (Weekly/Daily > 4H, -20 penalty, NO SIGNAL on W/D conflict)
+- [ ] Unit tests for indicators module
+- [ ] Unit tests for Wyckoff detection
+- [ ] Unit tests for subagents with mocked OHLCV
+- [ ] Unit tests for TAMentor with mocked responses
 
 ### Future (v1.0+)
 
@@ -151,4 +176,4 @@ Scoring: 4-5 bullish → ACCUMULATION, 2-3 → MIXED, 0-1 → DISTRIBUTION
 | Deprecate market_data.py (v0.2) | New OHLCV client superior, gradual migration path | ✓ Good |
 
 ---
-*Last updated: 2026-02-27 after v0.2 milestone completed*
+*Last updated: 2026-02-27 after v0.3 milestone started*
