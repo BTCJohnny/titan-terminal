@@ -64,10 +64,10 @@ Plans:
   3. Old Config class deleted with no references remaining
   4. All agent imports use Settings/constants with no import errors
   5. All 11 smoke tests pass after config migration
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] TBD
+- [ ] 05-01-PLAN.md — Extend Settings, create constants.py, migrate imports, delete Config class
 
 ### Phase 6: OHLCV Data Client
 **Goal**: Production-ready OHLCV client with CCXT + Binance for multi-timeframe candles
