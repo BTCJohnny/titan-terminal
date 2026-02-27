@@ -24,6 +24,10 @@ class Settings:
     HYPERLIQUID_API_KEY: str = os.getenv("HYPERLIQUID_API_KEY", "")
     TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
 
+    # Model Configuration
+    MODEL_NAME: str = os.getenv("MODEL_NAME", "claude-sonnet-4-20250514")
+    MENTOR_MODEL: str = os.getenv("MENTOR_MODEL", "claude-sonnet-4-20250514")
+
     # Database
     SIGNALS_DB_PATH: str = os.getenv("SIGNALS_DB_PATH", "data/signals.db")
 
