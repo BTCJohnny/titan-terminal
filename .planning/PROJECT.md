@@ -2,38 +2,35 @@
 
 ## What This Is
 
-A multi-agent crypto trading dashboard that aggregates technical analysis, on-chain intelligence, and alpha signals into actionable trading opportunities. Backend in Python/FastAPI with 9 specialized agents, frontend in Next.js, type-safe Pydantic output models, and comprehensive test coverage.
+A multi-agent crypto trading dashboard that aggregates technical analysis, on-chain intelligence, and alpha signals into actionable trading opportunities. Backend in Python/FastAPI with 9 specialized agents, frontend in Next.js, type-safe Pydantic output models, comprehensive test coverage, and production-ready data infrastructure.
 
 ## Core Value
 
 Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
 
-## Current Milestone: v0.2 Data Foundation
-
-**Goal:** Establish clean data infrastructure with CCXT/Binance OHLCV client and consolidated configuration.
-
-**Target features:**
-- Clean OHLCV client using CCXT + Binance for 1w/1d/4h candles
-- Config consolidation (delete old Config, Settings as single source)
-- Trading constants in dedicated module
-- Full unit test coverage for data layer
-
 ## Current State
 
-**Shipped:** v0.1 Project Scaffold (2026-02-26)
+**Shipped:** v0.2 Data Foundation (2026-02-27)
 
-**Codebase:** 4,458 Python LOC across 9 agents, 6 Pydantic models, and 11 smoke tests.
+**Codebase:** 4,901 Python LOC across 9 agents, 6 Pydantic models, 28 tests (11 smoke + 17 unit).
 
 **Agent Architecture:**
 - `ta_ensemble/` — WeeklySubagent, DailySubagent, FourHourSubagent, TAMentor
 - Root agents — NansenAgent, TelegramAgent, RiskAgent, Orchestrator
 
-**Test Status:** 11/11 smoke tests passing (0.67s)
+**Data Infrastructure:**
+- `data/ohlcv_client.py` — CCXT/Binance OHLCV client with exponential backoff retry
+- Supports BTC/USDT, ETH/USDT, SOL/USDT on 1w, 1d, 4h timeframes
+- `config/constants.py` — Trading constants (risk limits, symbols, scheduling)
+- `config/settings.py` — Single source of truth for environment variables
+
+**Test Status:** 28/28 tests passing (0.85s)
 
 **Tech Debt:**
 - Agents return dict (Pydantic integration via model_validate in tests)
-- Two parallel config systems (old Config + new Settings) ← **Resolving in v0.2**
 - Deprecated agent files kept for rollback
+- OHLCVClient not yet integrated into production code (planned for v1.0)
+- market_data.py deprecated but still in use (migration pending)
 
 ## Requirements
 
@@ -51,14 +48,20 @@ Surface high-conviction trading setups by combining multi-timeframe technical an
 - ✓ .env.example with all required keys — v0.1
 - ✓ Smoke tests for all agents returning valid Pydantic output — v0.1
 - ✓ All 11 smoke tests passing — v0.1
+- ✓ Settings class single source of truth for environment variables — v0.2
+- ✓ Trading constants (risk limits, symbol lists) in config/constants.py — v0.2
+- ✓ Old Config class deleted entirely — v0.2
+- ✓ All 5 files importing old Config migrated to Settings/constants — v0.2
+- ✓ OHLCV client using CCXT + Binance (1w, 1d, 4h candles) — v0.2
+- ✓ OHLCV client with exponential backoff retry for rate limits — v0.2
+- ✓ market_data.py deprecated with backup notice — v0.2
+- ✓ Unit tests for OHLCV client with mocked exchange — v0.2
+- ✓ Unit tests for rate limit retry behavior — v0.2
+- ✓ All 11 original smoke tests still pass — v0.2
 
 ### Active
 
-- [ ] OHLCV client using CCXT + Binance (1w, 1d, 4h candles)
-- [ ] Config consolidation (Settings as single source of truth)
-- [ ] Trading constants in config/constants.py
-- [ ] Unit tests for OHLCV client
-- [ ] Update imports in 5 files using old Config
+(None — planning next milestone)
 
 ### Future (v1.0+)
 
@@ -75,6 +78,8 @@ Surface high-conviction trading setups by combining multi-timeframe technical an
 - [ ] FastAPI /morning-report endpoint (top opportunities)
 - [ ] FastAPI /chat endpoint
 - [ ] Next.js dashboard with signal cards + chat
+- [ ] OHLCVClient integration into production agents
+- [ ] Complete market_data.py migration
 
 ### Out of Scope
 
@@ -93,8 +98,9 @@ Surface high-conviction trading setups by combining multi-timeframe technical an
 - Backend: `src/backend/` — Python/FastAPI
 - Frontend: `src/frontend/` — Next.js
 - Agents: `src/backend/agents/` — 8 agent files exist as shells
+- Data: `src/backend/data/` — OHLCV client for market data
 
-**Current State:** Agent files exist but are empty shells. All need full implementation.
+**Current State:** Agent files exist but are empty shells. All need full implementation. Data layer is production-ready with OHLCV client.
 
 **TAMentor Conflict Resolution:**
 - Higher timeframe wins direction (Weekly/Daily override 4H)
@@ -139,7 +145,10 @@ Scoring: 4-5 bullish → ACCUMULATION, 2-3 → MIXED, 0-1 → DISTRIBUTION
 | Nested Pydantic models (v0.1) | Better type safety and validation for hierarchical data | ✓ Good |
 | Confidence 0-100 integers (v0.1) | Consistent confidence representation makes signal comparison easier | ✓ Good |
 | Keep deprecated files for rollback (v0.1) | Safe migration path during scaffold phase | ⚠️ Revisit in v1.0 |
-| Parallel config systems (v0.1) | New Settings module created, old Config still used | ⚠️ Revisit in v1.0 |
+| Settings class for env vars, constants.py for static (v0.2) | Clear separation of environment vs static configuration | ✓ Good |
+| CCXT/Binance public API for OHLCV (v0.2) | No authentication needed, robust retry logic for rate limits | ✓ Good |
+| Exponential backoff retry (1s, 2s, 4s + jitter) (v0.2) | Handles Binance rate limits gracefully without manual intervention | ✓ Good |
+| Deprecate market_data.py (v0.2) | New OHLCV client superior, gradual migration path | ✓ Good |
 
 ---
-*Last updated: 2026-02-27 after v0.2 milestone started*
+*Last updated: 2026-02-27 after v0.2 milestone completed*

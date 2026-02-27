@@ -2,6 +2,46 @@
 
 *A living document updated after each milestone. Lessons feed forward into future planning.*
 
+## Milestone: v0.2 — Data Foundation
+
+**Shipped:** 2026-02-27
+**Phases:** 3 | **Plans:** 3 | **Sessions:** ~3
+
+### What Was Built
+- Consolidated configuration (Settings class sole source of truth, constants.py for static values)
+- Production-ready OHLCV client with CCXT/Binance integration
+- Exponential backoff retry logic (1s, 2s, 4s + jitter) for rate limiting
+- Comprehensive unit test suite (17 new tests covering data layer)
+
+### What Worked
+- Config consolidation was clean — complete deletion of old Config class, no compatibility shims
+- Milestone audit (gsd-audit-milestone) provided confidence before completion
+- Single-plan phases kept execution focused and fast
+- Mocked exchange tests provide reliable CI without API dependencies
+
+### What Was Inefficient
+- OHLCVClient created but not integrated into production code (deferred to v1.0)
+- market_data.py deprecated but still in use — migration incomplete
+- Human verification for live API testing still pending
+
+### Patterns Established
+- Singleton pattern for data clients (get_ohlcv_client)
+- Retry decorator pattern for external API calls
+- Clear separation: Settings for env vars, constants.py for static values
+- Exchange-level mocking strategy for CCXT tests
+
+### Key Lessons
+1. Config consolidation should happen early — parallel systems create cognitive overhead
+2. Deprecation with DeprecationWarning is safer than immediate deletion for data layer code
+3. Comprehensive unit tests with mocks enable confident refactoring
+
+### Cost Observations
+- Model mix: 95% sonnet, 5% haiku (quick tasks)
+- Sessions: ~3 (1 day elapsed)
+- Notable: Single-plan phases execute in under 3 minutes each
+
+---
+
 ## Milestone: v0.1 — Project Scaffold
 
 **Shipped:** 2026-02-26
@@ -49,17 +89,21 @@
 | Milestone | Sessions | Phases | Key Change |
 |-----------|----------|--------|------------|
 | v0.1 | 5 | 4 | First milestone — established GSD workflow |
+| v0.2 | 3 | 3 | Config consolidation, data layer foundation |
 
 ### Cumulative Quality
 
 | Milestone | Tests | Coverage | Zero-Dep Additions |
 |-----------|-------|----------|-------------------|
 | v0.1 | 11 | Smoke only | 6 Pydantic models |
+| v0.2 | 28 | Smoke + Unit | OHLCVClient, retry decorator |
 
 ### Top Lessons (Verified Across Milestones)
 
-1. (Pending — need multiple milestones to identify cross-validated lessons)
+1. Small, focused plans (1-3 tasks) enable fast, single-session execution
+2. Phase verification (gsd-verifier, gsd-audit) catches integration issues early
+3. Tech debt is acceptable when documented — consolidate in dedicated milestones
 
 ---
 
-*Last updated: 2026-02-26 after v0.1 completion*
+*Last updated: 2026-02-27 after v0.2 completion*
