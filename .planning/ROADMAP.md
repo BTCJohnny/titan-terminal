@@ -38,7 +38,7 @@ See: `.planning/milestones/v0.2-ROADMAP.md`
 **Milestone Goal:** Implement fully functional TA subagents (Weekly, Daily, 4H) with Wyckoff detection, technical indicators, and alpha factors. TAMentor synthesizes all three with conflict resolution.
 
 - [x] **Phase 8: Dependencies + Shared Indicators** - Install pandas-ta stack, implement shared indicators module (completed 2026-02-27)
-- [ ] **Phase 9: Alpha Factors Module** - Momentum, volume anomaly, MA deviation, volatility calculations
+- [x] **Phase 9: Alpha Factors Module** - Momentum, volume anomaly, MA deviation, volatility calculations (completed 2026-02-27)
 - [ ] **Phase 10: Wyckoff Detection Module** - Phases A-E, springs, upthrusts, SOS/SOW detection
 - [ ] **Phase 11: WeeklySubagent + TASignal Extension** - First full subagent with extended model
 - [ ] **Phase 12: Daily + FourHour Subagents** - Parallel implementation following weekly pattern
