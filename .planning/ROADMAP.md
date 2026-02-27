@@ -77,7 +77,7 @@ Plans:
 
 Plans:
 - [x] 09-01-PLAN.md — Implement 4 alpha factor functions + AlphaFactors Pydantic model (completed 2026-02-27)
-- [ ] 09-02-PLAN.md — Create comprehensive unit tests, wire module exports
+- [x] 09-02-PLAN.md — Create comprehensive unit tests, wire module exports (completed 2026-02-27)
 
 ### Phase 10: Wyckoff Detection Module
 **Goal**: Detect Wyckoff accumulation/distribution patterns for market structure analysis
@@ -89,12 +89,14 @@ Plans:
   3. Upthrust events detected when price fails above resistance with low volume
   4. SOS (Sign of Strength) detected on breakout with high volume
   5. SOW (Sign of Weakness) detected on breakdown with high volume
-  6. WyckoffData Pydantic model captures phase, events, and confidence
+  6. WyckoffAnalysis Pydantic model captures phase, events, and confidence
   7. Unit tests verify detection with synthetic accumulation/distribution patterns
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 10-01: TBD
+- [ ] 10-01-PLAN.md — Create WyckoffEvent and WyckoffAnalysis Pydantic models
+- [ ] 10-02-PLAN.md — Implement detection functions (spring, upthrust, SOS, SOW) and phase classification
+- [ ] 10-03-PLAN.md — Create comprehensive unit tests, wire module exports
 
 ### Phase 11: WeeklySubagent + TASignal Extension
 **Goal**: First fully functional subagent proving the complete analysis pipeline
@@ -169,11 +171,11 @@ Phases TBD - run `/gsd:new-milestone` to define
 | 6. OHLCV Data Client | v0.2 | 1/1 | Complete | 2026-02-27 |
 | 7. Data Layer Testing | v0.2 | 1/1 | Complete | 2026-02-27 |
 | 8. Dependencies + Shared Indicators | v0.3 | 2/2 | Complete | 2026-02-27 |
-| 9. Alpha Factors Module | v0.3 | 0/2 | Not started | - |
-| 10. Wyckoff Detection Module | v0.3 | 0/TBD | Not started | - |
+| 9. Alpha Factors Module | v0.3 | 2/2 | Complete | 2026-02-27 |
+| 10. Wyckoff Detection Module | v0.3 | 0/3 | Not started | - |
 | 11. WeeklySubagent + TASignal Extension | v0.3 | 0/TBD | Not started | - |
 | 12. Daily + FourHour Subagents | v0.3 | 0/TBD | Not started | - |
 | 13. TAMentor Implementation | v0.3 | 0/TBD | Not started | - |
 
 ---
-*Roadmap updated: 2026-02-27 for v0.3 TA Ensemble milestone*
+*Roadmap updated: 2026-02-27 for Phase 10 planning*
