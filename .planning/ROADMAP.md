@@ -2,15 +2,15 @@
 
 ## Milestones
 
-- ✅ **v0.1 Project Scaffold** - Phases 1-4 (shipped 2026-02-26)
-- 🚧 **v0.2 Data Foundation** - Phases 5-7 (in progress)
-- 📋 **v1.0 Core Agents** - TBD
-- 📋 **v1.1 API & Dashboard** - TBD
+- **v0.1 Project Scaffold** - Phases 1-4 (shipped 2026-02-26)
+- **v0.2 Data Foundation** - Phases 5-7 (in progress)
+- **v1.0 Core Agents** - TBD
+- **v1.1 API & Dashboard** - TBD
 
 ## Phases
 
 <details>
-<summary>✅ v0.1 Project Scaffold (Phases 1-4) - SHIPPED 2026-02-26</summary>
+<summary>v0.1 Project Scaffold (Phases 1-4) - SHIPPED 2026-02-26</summary>
 
 ### Phase 1: Agent Structure
 **Goal**: Multi-agent architecture with proper nesting and separation of concerns
@@ -44,11 +44,11 @@ Plans:
 
 </details>
 
-### 🚧 v0.2 Data Foundation (In Progress)
+### v0.2 Data Foundation (In Progress)
 
 **Milestone Goal:** Establish clean data infrastructure with CCXT/Binance OHLCV client and consolidated configuration.
 
-- [ ] **Phase 5: Configuration Consolidation** - Unify config systems into Settings as single source of truth
+- [x] **Phase 5: Configuration Consolidation** - Unify config systems into Settings as single source of truth
 - [ ] **Phase 6: OHLCV Data Client** - Clean market data fetching with CCXT + Binance
 - [ ] **Phase 7: Data Layer Testing** - Full unit test coverage for data infrastructure
 
@@ -67,7 +67,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 05-01-PLAN.md — Extend Settings, create constants.py, migrate imports, delete Config class
+- [x] 05-01-PLAN.md — Extend Settings, create constants.py, migrate imports, delete Config class
 
 ### Phase 6: OHLCV Data Client
 **Goal**: Production-ready OHLCV client with CCXT + Binance for multi-timeframe candles
@@ -78,10 +78,10 @@ Plans:
   2. Client fetches 1w, 1d, 4h candles for BTC/USDT, ETH/USDT, SOL/USDT
   3. Rate limit errors trigger exponential backoff retry automatically
   4. market_data.py deprecated with clear backup/migration notice
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] TBD
+- [ ] 06-01-PLAN.md — Create OHLCV client with CCXT Binance, add deprecation to market_data.py
 
 ### Phase 7: Data Layer Testing
 **Goal**: Comprehensive unit test coverage for OHLCV client with mocked exchanges
@@ -99,7 +99,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 5 → 6 → 7
+Phases execute in numeric order: 5 -> 6 -> 7
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -107,6 +107,6 @@ Phases execute in numeric order: 5 → 6 → 7
 | 2. Pydantic Models | v0.1 | 2/2 | Complete | 2026-02-26 |
 | 3. Configuration | v0.1 | 1/1 | Complete | 2026-02-26 |
 | 4. Smoke Tests | v0.1 | 2/2 | Complete | 2026-02-26 |
-| 5. Configuration Consolidation | v0.2 | 0/? | Not started | - |
-| 6. OHLCV Data Client | v0.2 | 0/? | Not started | - |
+| 5. Configuration Consolidation | v0.2 | 1/1 | Complete | 2026-02-27 |
+| 6. OHLCV Data Client | v0.2 | 0/1 | Planning complete | - |
 | 7. Data Layer Testing | v0.2 | 0/? | Not started | - |
