@@ -1,83 +1,59 @@
 # Requirements: Titan Terminal
 
-**Defined:** 2026-02-26
+**Defined:** 2026-02-27
 **Core Value:** Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
 
-## v0.1 Requirements
+## v0.2 Requirements
 
-Requirements for Project Scaffold milestone. Each maps to roadmap phases.
-
-### Agent Structure
-
-- [x] **AGNT-01**: Create nested ta_ensemble/ folder with weekly_subagent.py, daily_subagent.py, fourhour_subagent.py, ta_mentor.py
-- [x] **AGNT-02**: Create nansen_agent.py at src/backend/agents/ root
-- [x] **AGNT-03**: Create telegram_agent.py at src/backend/agents/ root
-- [x] **AGNT-04**: Create risk_agent.py at src/backend/agents/ root
-- [x] **AGNT-05**: Create orchestrator.py at src/backend/agents/ root
-
-### Pydantic Models
-
-- [x] **MODL-01**: TASignal model (symbol, timeframe, direction, confidence, indicators)
-- [x] **MODL-02**: TAMentorSignal model (overall_direction, confidence, conflicts, warnings)
-- [x] **MODL-03**: NansenSignal model (5-signal framework: exchange_flows, fresh_wallets, smart_money, top_pnl, whale_activity)
-- [x] **MODL-04**: TelegramSignal model (symbol, source, timestamp, raw_text)
-- [x] **MODL-05**: RiskOutput model (position_size, stop_loss, take_profit, risk_reward_ratio)
-- [x] **MODL-06**: OrchestratorOutput model (combined signals, final recommendation)
+Requirements for Data Foundation milestone. Each maps to roadmap phases.
 
 ### Configuration
 
-- [x] **CONF-01**: settings.py loads env vars with python-dotenv
-- [x] **CONF-02**: .env.example with ANTHROPIC_API_KEY, NANSEN_API_KEY, HYPERLIQUID_API_KEY, TELEGRAM_BOT_TOKEN, SIGNALS_DB_PATH
+- [ ] **CFG-01**: Settings class is the single source of truth for environment variables
+- [ ] **CFG-02**: Trading constants (risk limits, symbol lists) live in config/constants.py
+- [ ] **CFG-03**: Old Config class is deleted entirely
+- [ ] **CFG-04**: All 5 files importing old Config updated to use Settings/constants
+
+### Data Layer
+
+- [ ] **DATA-01**: OHLCV client exists at src/backend/data/ohlcv_client.py
+- [ ] **DATA-02**: Client uses CCXT library with Binance exchange
+- [ ] **DATA-03**: Client fetches 1w, 1d, 4h candle timeframes
+- [ ] **DATA-04**: Client supports BTC/USDT, ETH/USDT, SOL/USDT symbols
+- [ ] **DATA-05**: Client handles Binance rate limits with exponential backoff retry
+- [ ] **DATA-06**: market_data.py deprecated with backup notice
 
 ### Testing
 
-- [x] **TEST-01**: Smoke test for each TA subagent (weekly, daily, fourhour)
-- [x] **TEST-02**: Smoke test for TAMentor
-- [x] **TEST-03**: Smoke test for Nansen agent
-- [x] **TEST-04**: Smoke test for Telegram agent
-- [x] **TEST-05**: Smoke test for Risk agent
-- [x] **TEST-06**: Smoke test for Orchestrator
-- [x] **TEST-07**: All tests passing
+- [ ] **TEST-01**: Unit tests for OHLCV client (mocked exchange calls)
+- [ ] **TEST-02**: Unit tests for rate limit retry behavior
+- [ ] **TEST-03**: Existing 11 smoke tests still pass after config changes
 
-## Future Requirements (v1.0+)
+## Future Requirements
 
-Deferred to future milestone. Tracked but not in current roadmap.
+### v1.0 Core Agents
 
-### TA Implementation
-
-- **TA-01**: TA Ensemble with 3 timeframe subagents (Weekly, Daily, 4H)
+- **TA-01**: Full TA Ensemble implementation (Weekly, Daily, 4H subagents)
 - **TA-02**: Wyckoff phase detection (A-E, springs, upthrusts, SOS/SOW)
 - **TA-03**: Technical indicators (RSI, MACD, BB, ADX, OBV, VWAP, ATR, S/R)
-- **TA-04**: OHLCV alpha factors (momentum, volume anomaly, MA deviation, volatility)
-- **TA-05**: TAMentor using claude-opus-4-6 with conflict resolution logic
+- **NAN-01**: Nansen 5-signal accumulation/distribution framework
+- **RISK-01**: Risk/Levels agent (2% max risk, 3:1 min R:R, S/R-based stops)
+- **INT-01**: Integration tests on BTC, ETH, SOL
 
-### On-Chain
+### v1.1 API & Dashboard
 
-- **ONCH-01**: Nansen agent with 5-signal accumulation/distribution framework
-- **ONCH-02**: Funding rate overlay from Hyperliquid perps
-
-### Integration
-
-- **INTG-01**: Telegram agent connected to signals.db
-- **INTG-02**: Risk/Levels agent (2% max risk, 3:1 min R:R, S/R-based stops)
-- **INTG-03**: Integration tests on BTC, ETH, SOL
-
-### API & Dashboard
-
-- **API-01**: FastAPI /morning-report endpoint (top opportunities)
+- **API-01**: FastAPI /morning-report endpoint
 - **API-02**: FastAPI /chat endpoint
 - **DASH-01**: Next.js dashboard with signal cards + chat
 
 ## Out of Scope
 
-Explicitly excluded. Documented to prevent scope creep.
-
 | Feature | Reason |
 |---------|--------|
-| Copying code from titan-trading | Rewrite cleanly using as logic reference only |
-| Automated trade execution | This is analysis/signals only |
-| Mobile app | Web dashboard first |
 | Real-time websocket streaming | Polling sufficient for v1 |
+| Automated trade execution | Analysis/signals only |
+| Mobile app | Web dashboard first |
+| OAuth/social login | API key auth sufficient |
 
 ## Traceability
 
@@ -85,32 +61,25 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AGNT-01 | Phase 1 | ✓ Complete |
-| AGNT-02 | Phase 1 | ✓ Complete |
-| AGNT-03 | Phase 1 | ✓ Complete |
-| AGNT-04 | Phase 1 | ✓ Complete |
-| AGNT-05 | Phase 1 | ✓ Complete |
-| MODL-01 | Phase 2 | Complete |
-| MODL-02 | Phase 2 | Complete |
-| MODL-03 | Phase 2 | Complete |
-| MODL-04 | Phase 2 | Complete |
-| MODL-05 | Phase 2 | Complete |
-| MODL-06 | Phase 2 | Complete |
-| CONF-01 | Phase 3 | Complete |
-| CONF-02 | Phase 3 | Complete |
-| TEST-01 | Phase 4 | Complete |
-| TEST-02 | Phase 4 | Complete |
-| TEST-03 | Phase 4 | Complete |
-| TEST-04 | Phase 4 | Complete |
-| TEST-05 | Phase 4 | Complete |
-| TEST-06 | Phase 4 | Complete |
-| TEST-07 | Phase 4 | Complete |
+| CFG-01 | — | Pending |
+| CFG-02 | — | Pending |
+| CFG-03 | — | Pending |
+| CFG-04 | — | Pending |
+| DATA-01 | — | Pending |
+| DATA-02 | — | Pending |
+| DATA-03 | — | Pending |
+| DATA-04 | — | Pending |
+| DATA-05 | — | Pending |
+| DATA-06 | — | Pending |
+| TEST-01 | — | Pending |
+| TEST-02 | — | Pending |
+| TEST-03 | — | Pending |
 
 **Coverage:**
-- v0.1 requirements: 20 total
-- Mapped to phases: 20
-- Unmapped: 0
+- v0.2 requirements: 13 total
+- Mapped to phases: 0
+- Unmapped: 13
 
 ---
-*Requirements defined: 2026-02-26*
-*Last updated: 2026-02-26 after roadmap creation*
+*Requirements defined: 2026-02-27*
+*Last updated: 2026-02-27 after initial definition*
