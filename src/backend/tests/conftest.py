@@ -2,6 +2,10 @@
 import pytest
 from unittest.mock import MagicMock, patch
 
+from src.backend.models.ta_signal import (
+    TASignal, TrendData, MomentumData, KeyLevels, PatternData, OverallAssessment
+)
+
 
 @pytest.fixture
 def ta_signal_weekly_response():
@@ -145,3 +149,104 @@ def mock_db_connection():
         mock_conn.cursor.return_value = mock_cursor
         mock.return_value = mock_conn
         yield mock
+
+
+# TASignal fixtures for conflict scenarios
+
+
+@pytest.fixture
+def weekly_bearish_signal():
+    """Weekly TASignal with bearish bias."""
+    return TASignal(
+        symbol="BTC",
+        timeframe="weekly",
+        trend=TrendData(direction="bearish", strength="strong", ema_alignment="bearish"),
+        momentum=MomentumData(rsi=35.0, macd_bias="bearish", momentum_divergence=False),
+        key_levels=KeyLevels(major_support=60000.0, major_resistance=70000.0),
+        patterns=PatternData(detected=[], pattern_bias="bearish"),
+        overall=OverallAssessment(bias="bearish", confidence=75, notes="Weekly downtrend")
+    )
+
+
+@pytest.fixture
+def daily_bearish_signal():
+    """Daily TASignal with bearish bias."""
+    return TASignal(
+        symbol="BTC",
+        timeframe="daily",
+        trend=TrendData(direction="bearish", strength="moderate", ema_alignment="bearish"),
+        momentum=MomentumData(rsi=40.0, macd_bias="bearish", momentum_divergence=False),
+        key_levels=KeyLevels(major_support=62000.0, major_resistance=68000.0),
+        patterns=PatternData(detected=[], pattern_bias="bearish"),
+        overall=OverallAssessment(bias="bearish", confidence=70, notes="Daily downtrend")
+    )
+
+
+@pytest.fixture
+def four_hour_bullish_signal():
+    """4H TASignal with bullish bias (counter-trend)."""
+    return TASignal(
+        symbol="BTC",
+        timeframe="4h",
+        trend=TrendData(direction="bullish", strength="weak", ema_alignment="bullish"),
+        momentum=MomentumData(rsi=55.0, macd_bias="bullish", momentum_divergence=False),
+        key_levels=KeyLevels(major_support=63000.0, major_resistance=66000.0),
+        patterns=PatternData(detected=[], pattern_bias="bullish"),
+        overall=OverallAssessment(bias="bullish", confidence=55, notes="4H bounce")
+    )
+
+
+@pytest.fixture
+def weekly_bullish_signal():
+    """Weekly TASignal with bullish bias."""
+    return TASignal(
+        symbol="BTC",
+        timeframe="weekly",
+        trend=TrendData(direction="bullish", strength="strong", ema_alignment="bullish"),
+        momentum=MomentumData(rsi=65.0, macd_bias="bullish", momentum_divergence=False),
+        key_levels=KeyLevels(major_support=60000.0, major_resistance=70000.0),
+        patterns=PatternData(detected=[], pattern_bias="bullish"),
+        overall=OverallAssessment(bias="bullish", confidence=75, notes="Weekly uptrend")
+    )
+
+
+@pytest.fixture
+def daily_bullish_signal():
+    """Daily TASignal with bullish bias."""
+    return TASignal(
+        symbol="BTC",
+        timeframe="daily",
+        trend=TrendData(direction="bullish", strength="moderate", ema_alignment="bullish"),
+        momentum=MomentumData(rsi=60.0, macd_bias="bullish", momentum_divergence=False),
+        key_levels=KeyLevels(major_support=62000.0, major_resistance=68000.0),
+        patterns=PatternData(detected=[], pattern_bias="bullish"),
+        overall=OverallAssessment(bias="bullish", confidence=70, notes="Daily uptrend")
+    )
+
+
+@pytest.fixture
+def four_hour_bearish_signal():
+    """4H TASignal with bearish bias (pullback)."""
+    return TASignal(
+        symbol="BTC",
+        timeframe="4h",
+        trend=TrendData(direction="bearish", strength="weak", ema_alignment="bearish"),
+        momentum=MomentumData(rsi=45.0, macd_bias="bearish", momentum_divergence=False),
+        key_levels=KeyLevels(major_support=63000.0, major_resistance=66000.0),
+        patterns=PatternData(detected=[], pattern_bias="bearish"),
+        overall=OverallAssessment(bias="bearish", confidence=55, notes="4H pullback")
+    )
+
+
+@pytest.fixture
+def four_hour_neutral_signal():
+    """4H TASignal with neutral bias."""
+    return TASignal(
+        symbol="BTC",
+        timeframe="4h",
+        trend=TrendData(direction="sideways", strength="weak", ema_alignment="neutral"),
+        momentum=MomentumData(rsi=50.0, macd_bias="neutral", momentum_divergence=False),
+        key_levels=KeyLevels(major_support=63000.0, major_resistance=66000.0),
+        patterns=PatternData(detected=[], pattern_bias="neutral"),
+        overall=OverallAssessment(bias="neutral", confidence=50, notes="4H consolidation")
+    )
