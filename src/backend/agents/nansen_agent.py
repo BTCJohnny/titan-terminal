@@ -12,6 +12,7 @@ from .nansen_mcp import (
     fetch_exchange_flows, fetch_smart_money, fetch_whale_activity,
     fetch_top_pnl, fetch_fresh_wallets, fetch_funding_rate
 )
+from .vault_logger import log_nansen_analysis
 
 logger = logging.getLogger(__name__)
 
@@ -158,7 +159,7 @@ class NansenAgent:
 
         return (bias, confidence, key_insights, bullish_count, bearish_count)
 
-    def analyze(self, symbol: str) -> NansenSignal:
+    def analyze(self, symbol: str, log_to_vault: bool = True) -> NansenSignal:
         """Analyze on-chain data for a symbol using 5-signal framework.
 
         Fetches all 6 signals (5 on-chain + funding rate) via MCP integration layer,
@@ -166,6 +167,7 @@ class NansenAgent:
 
         Args:
             symbol: Trading symbol (e.g., "BTC", "ETH")
+            log_to_vault: Whether to log analysis to Obsidian vault (default: True)
 
         Returns:
             NansenSignal Pydantic model with complete on-chain analysis
@@ -329,6 +331,13 @@ class NansenAgent:
         )
 
         logger.debug(f"Generated NansenSignal for {symbol}: {signal.overall_signal.bias} with {signal.overall_signal.confidence}% confidence")
+
+        # Log to Obsidian vault (per NANS-09)
+        if log_to_vault:
+            if not log_nansen_analysis(signal):
+                logger.warning(f"Failed to log analysis for {symbol} to Obsidian vault")
+            else:
+                logger.debug(f"Logged {symbol} analysis to Obsidian vault")
 
         return signal
 
