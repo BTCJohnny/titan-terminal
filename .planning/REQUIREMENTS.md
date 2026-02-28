@@ -81,44 +81,50 @@ Requirements for milestone v0.4: Nansen Agent + Telegram Agent.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| NANS-01 | TBD | Pending |
-| NANS-02 | TBD | Pending |
-| NANS-03 | TBD | Pending |
-| NANS-04 | TBD | Pending |
-| NANS-05 | TBD | Pending |
-| NANS-06 | TBD | Pending |
-| NANS-07 | TBD | Pending |
-| NANS-08 | TBD | Pending |
-| NANS-09 | TBD | Pending |
-| NANS-10 | TBD | Pending |
-| TELE-01 | TBD | Pending |
-| TELE-02 | TBD | Pending |
-| TELE-03 | TBD | Pending |
-| TELE-04 | TBD | Pending |
-| TELE-05 | TBD | Pending |
-| TELE-06 | TBD | Pending |
-| MODL-01 | TBD | Pending |
-| MODL-02 | TBD | Pending |
-| DB-01 | TBD | Pending |
-| DB-02 | TBD | Pending |
-| DB-03 | TBD | Pending |
-| DB-04 | TBD | Pending |
-| TEST-01 | TBD | Pending |
-| TEST-02 | TBD | Pending |
-| TEST-03 | TBD | Pending |
-| TEST-04 | TBD | Pending |
-| TEST-05 | TBD | Pending |
-| TEST-06 | TBD | Pending |
-| TEST-07 | TBD | Pending |
-| TEST-08 | TBD | Pending |
-| TEST-09 | TBD | Pending |
-| TEST-10 | TBD | Pending |
+| NANS-01 | Phase 15 | Pending |
+| NANS-02 | Phase 15 | Pending |
+| NANS-03 | Phase 15 | Pending |
+| NANS-04 | Phase 15 | Pending |
+| NANS-05 | Phase 15 | Pending |
+| NANS-06 | Phase 15 | Pending |
+| NANS-07 | Phase 15 | Pending |
+| NANS-08 | Phase 15 | Pending |
+| NANS-09 | Phase 15 | Pending |
+| NANS-10 | Phase 15 | Pending |
+| TELE-01 | Phase 16 | Pending |
+| TELE-02 | Phase 16 | Pending |
+| TELE-03 | Phase 16 | Pending |
+| TELE-04 | Phase 16 | Pending |
+| TELE-05 | Phase 16 | Pending |
+| TELE-06 | Phase 16 | Pending |
+| MODL-01 | Phase 14 | Pending |
+| MODL-02 | Phase 14 | Pending |
+| DB-01 | Phase 14 | Pending |
+| DB-02 | Phase 14 | Pending |
+| DB-03 | Phase 14 | Pending |
+| DB-04 | Phase 14 | Pending |
+| TEST-01 | Phase 17 | Pending |
+| TEST-02 | Phase 17 | Pending |
+| TEST-03 | Phase 17 | Pending |
+| TEST-04 | Phase 17 | Pending |
+| TEST-05 | Phase 17 | Pending |
+| TEST-06 | Phase 17 | Pending |
+| TEST-07 | Phase 17 | Pending |
+| TEST-08 | Phase 17 | Pending |
+| TEST-09 | Phase 17 | Pending |
+| TEST-10 | Phase 17 | Pending |
 
 **Coverage:**
-- v0.4 requirements: 28 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 28 ⚠️
+- v0.4 requirements: 32 total
+- Mapped to phases: 32 (100% coverage)
+- Unmapped: 0
+
+**Phase breakdown:**
+- Phase 14 (Foundation): 6 requirements
+- Phase 15 (Nansen Agent): 10 requirements
+- Phase 16 (Telegram Agent): 6 requirements
+- Phase 17 (Test Coverage): 10 requirements
 
 ---
 *Requirements defined: 2026-02-28*
-*Last updated: 2026-02-28 after initial definition*
+*Last updated: 2026-02-28 after v0.4 roadmap creation*
