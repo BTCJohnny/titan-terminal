@@ -5,7 +5,8 @@ Represents the structured output from the Nansen agent using the 5-signal framew
 exchange_flows, fresh_wallets, smart_money, top_pnl, whale_activity.
 """
 
-from typing import Literal
+from datetime import datetime
+from typing import Literal, Optional
 from pydantic import BaseModel, Field
 
 
@@ -62,6 +63,13 @@ class OnChainOverall(BaseModel):
     )
 
 
+class FundingRate(BaseModel):
+    """Funding rate data from Hyperliquid (via MCP)."""
+    rate: Optional[float] = Field(None, description="Funding rate value")
+    available: bool = Field(default=True, description="Whether funding rate data was available")
+    interpretation: str = Field(..., description="Interpretation of funding rate for positioning")
+
+
 class NansenSignal(BaseModel):
     """
     Nansen on-chain signal using 5-signal framework.
@@ -75,7 +83,12 @@ class NansenSignal(BaseModel):
     smart_money: SmartMoney
     top_pnl: TopPnL
     whale_activity: WhaleActivity
+    funding_rate: Optional[FundingRate] = Field(None, description="Hyperliquid funding rate data")
     overall_signal: OnChainOverall
+    signal_count_bullish: int = Field(..., ge=0, le=5, description="Count of bullish signals (0-5)")
+    signal_count_bearish: int = Field(..., ge=0, le=5, description="Count of bearish signals (0-5)")
+    reasoning: str = Field(..., description="Explanation of overall signal derivation")
+    timestamp: datetime = Field(default_factory=datetime.utcnow, description="When signal was generated")
 
     model_config = {
         "json_schema_extra": {
@@ -112,6 +125,11 @@ class NansenSignal(BaseModel):
                         "net_flow": "accumulating",
                         "confidence": 85
                     },
+                    "funding_rate": {
+                        "rate": 0.0012,
+                        "available": True,
+                        "interpretation": "Moderate positive funding suggests slight long bias in market"
+                    },
                     "overall_signal": {
                         "bias": "bullish",
                         "confidence": 78,
@@ -120,7 +138,11 @@ class NansenSignal(BaseModel):
                             "Smart money actively accumulating",
                             "Whale activity confirms bullish positioning"
                         ]
-                    }
+                    },
+                    "signal_count_bullish": 4,
+                    "signal_count_bearish": 1,
+                    "reasoning": "4 out of 5 on-chain signals show bullish bias (exchange flows, smart money, top PnL, whale activity). Fresh wallets show neutral/increasing activity. Funding rate confirms slight market long bias.",
+                    "timestamp": "2026-02-28T15:30:00Z"
                 }
             ]
         }
