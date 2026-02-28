@@ -16,6 +16,11 @@ from .nansen_mcp import (
     fetch_funding_rate,
     MCPSignalResult,
 )
+from .vault_logger import (
+    log_nansen_analysis,
+    SIGNAL_LOG_FILE,
+    VAULT_PATH,
+)
 
 __all__ = [
     'BaseAgent',
@@ -36,4 +41,7 @@ __all__ = [
     'fetch_fresh_wallets',
     'fetch_funding_rate',
     'MCPSignalResult',
+    'log_nansen_analysis',
+    'SIGNAL_LOG_FILE',
+    'VAULT_PATH',
 ]
