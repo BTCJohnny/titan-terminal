@@ -29,7 +29,7 @@ class Settings:
     MENTOR_MODEL: str = os.getenv("MENTOR_MODEL", "claude-sonnet-4-20250514")
 
     # Database
-    SIGNALS_DB_PATH: str = os.getenv("SIGNALS_DB_PATH", "data/signals.db")
+    SIGNALS_DB_PATH: str = os.getenv("SIGNALS_DB_PATH", "/Users/johnny_main/Developer/data/signals/signals.db")
 
     def validate(self) -> None:
         """Validate critical settings and log warnings for missing keys."""
