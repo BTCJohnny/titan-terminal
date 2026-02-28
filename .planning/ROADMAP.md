@@ -67,10 +67,11 @@ See: `.planning/milestones/v0.3-ROADMAP.md`
   3. onchain_snapshots table created in signals.db with Nansen signal fields
   4. ta_snapshots table created in signals.db with weekly/daily/4h direction and confidence
   5. Database path loads from settings/config, not hardcoded paths
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 14-01: TBD
+- [ ] 14-01-PLAN.md - Extend Pydantic models (NansenSignal, TelegramSignal)
+- [ ] 14-02-PLAN.md - Database infrastructure (onchain_snapshots, ta_snapshots tables)
 
 ### Phase 15: Nansen Agent
 **Goal**: Production-ready on-chain agent that fetches 5 Nansen signals via MCP, aggregates into bullish/bearish/neutral with confidence, and logs every analysis to Obsidian vault
@@ -144,7 +145,7 @@ Phases execute in numeric order: 1 → 2 → ... → 13 → 14 → 15 → 16 →
 | 11. WeeklySubagent + TASignal Extension | v0.3 | 3/3 | Complete | 2026-02-27 |
 | 12. Daily + FourHour Subagents | v0.3 | 2/2 | Complete | 2026-02-28 |
 | 13. TAMentor Implementation | v0.3 | 2/2 | Complete | 2026-02-28 |
-| 14. Foundation | v0.4 | 0/? | Not started | - |
+| 14. Foundation | v0.4 | 0/2 | Planned | - |
 | 15. Nansen Agent | v0.4 | 0/? | Not started | - |
 | 16. Telegram Agent | v0.4 | 0/? | Not started | - |
 | 17. Test Coverage | v0.4 | 0/? | Not started | - |
