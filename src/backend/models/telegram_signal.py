@@ -33,13 +33,14 @@ class TelegramChannelSignal(BaseModel):
 
 
 class TelegramSignal(BaseModel):
-    """Aggregated Telegram signal output (MODL-04).
+    """Aggregated Telegram signal output (MODL-02).
 
     Combines multiple channel signals into a unified sentiment view.
     """
 
     symbol: str = Field(..., description="Trading symbol (e.g., BTC)")
     signals_found: int = Field(..., ge=0, description="Total signals found")
+    active_signals: int = Field(..., ge=0, description="Count of signals with status pending/active")
     relevant_signals: list[TelegramChannelSignal] = Field(
         default_factory=list, description="List of relevant channel signals"
     )
@@ -52,4 +53,8 @@ class TelegramSignal(BaseModel):
     confidence: int = Field(
         ..., ge=0, le=100, description="Overall confidence in sentiment"
     )
+    avg_confidence: float = Field(..., ge=0, le=100, description="Average confidence across signals")
+    best_signal: Optional[TelegramChannelSignal] = Field(None, description="Highest confidence signal")
+    reasoning: str = Field(..., description="Explanation of sentiment derivation")
+    timestamp: datetime = Field(default_factory=datetime.utcnow, description="When aggregation was performed")
     notes: str = Field(default="", description="Summary notes")
