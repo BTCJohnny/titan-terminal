@@ -151,3 +151,126 @@ def fetch_whale_activity(symbol: str, chain: str = "ethereum") -> MCPSignalResul
     except Exception as e:
         logger.warning(f"Failed to fetch whale activity for {symbol}: {e}")
         return MCPSignalResult(success=False, error=str(e))
+
+
+def fetch_smart_money(symbol: str, chain: str = "ethereum") -> MCPSignalResult:
+    """
+    Fetch smart money activity data via MCP.
+
+    Uses mcp__nansen__token_flows with holder_segment="smart_money" for flow data
+    and mcp__nansen__smart_traders_and_funds_token_balances for balance change context.
+
+    Args:
+        symbol: Token symbol (e.g., "BTC", "ETH")
+        chain: Blockchain network (default: "ethereum")
+
+    Returns:
+        MCPSignalResult with data containing:
+        - direction: "accumulating" | "distributing" | "neutral"
+        - confidence: 0-100 confidence score
+        - notable_wallets: List of notable smart money wallet addresses
+        - interpretation: Human-readable explanation
+    """
+    try:
+        # MCP tool parameters for flows
+        flow_tool = "mcp__nansen__token_flows"
+        flow_params = {
+            "symbol": symbol,
+            "chain": chain,
+            "holder_segment": "smart_money",
+            "dateRange": {
+                "from": "24H_AGO",
+                "to": "NOW"
+            }
+        }
+
+        # MCP tool parameters for balances
+        balance_tool = "mcp__nansen__smart_traders_and_funds_token_balances"
+        balance_params = {
+            "symbol": symbol,
+            "chain": chain
+        }
+
+        logger.info(f"Preparing smart money request for {symbol} on {chain}")
+
+        # Parse response (placeholder - actual implementation will process MCP response)
+        # When integrated with MCP, this will:
+        # - Analyze flow data for net inflows/outflows
+        # - Check balance changes (positive 24h = accumulating)
+        # - Determine direction: accumulating if net inflows + positive balance change
+        # - Extract top 5 addresses from balance data for notable_wallets
+        # - Calculate confidence based on data consistency and volume
+
+        data = {
+            "direction": "neutral",
+            "confidence": 0,
+            "notable_wallets": [],
+            "interpretation": "MCP integration pending - smart money activity will be analyzed",
+            "mcp_tools": [
+                {"name": flow_tool, "params": flow_params},
+                {"name": balance_tool, "params": balance_params}
+            ]
+        }
+
+        return MCPSignalResult(success=True, data=data)
+
+    except Exception as e:
+        logger.warning(f"Failed to fetch smart money data for {symbol}: {e}")
+        return MCPSignalResult(success=False, error=str(e))
+
+
+def fetch_top_pnl(symbol: str, chain: str = "ethereum") -> MCPSignalResult:
+    """
+    Fetch top PnL traders data via MCP.
+
+    Uses mcp__nansen__token_pnl_leaderboard to analyze top trader positioning
+    and bias based on 7-day PnL performance.
+
+    Args:
+        symbol: Token symbol (e.g., "BTC", "ETH")
+        chain: Blockchain network (default: "ethereum")
+
+    Returns:
+        MCPSignalResult with data containing:
+        - traders_bias: "bullish" | "bearish" | "mixed" | "neutral"
+        - average_position: "long" | "short" | "neutral"
+        - confidence: 0-100 confidence score
+        - interpretation: Human-readable explanation
+    """
+    try:
+        # MCP tool parameters
+        tool_name = "mcp__nansen__token_pnl_leaderboard"
+        params = {
+            "symbol": symbol,
+            "chain": chain,
+            "dateRange": {
+                "from": "7D_AGO",
+                "to": "NOW"
+            },
+            "order_by": "pnlUsdTotal"
+        }
+
+        logger.info(f"Preparing top PnL request for {symbol} on {chain}")
+
+        # Parse response (placeholder - actual implementation will process MCP response)
+        # When integrated with MCP, this will:
+        # - Analyze top 10 traders from leaderboard
+        # - Count positive vs negative PnL
+        # - Determine traders_bias: bullish if >60% positive, bearish if <40%, mixed otherwise
+        # - Determine average_position: long if net positive, short if net negative
+        # - Calculate confidence based on data consistency and trader count
+
+        data = {
+            "traders_bias": "neutral",
+            "average_position": "neutral",
+            "confidence": 0,
+            "interpretation": "MCP integration pending - top PnL traders will be analyzed",
+            "mcp_tool": tool_name,
+            "mcp_params": params
+        }
+
+        return MCPSignalResult(success=True, data=data)
+
+    except Exception as e:
+        logger.warning(f"Failed to fetch top PnL data for {symbol}: {e}")
+        return MCPSignalResult(success=False, error=str(e))
