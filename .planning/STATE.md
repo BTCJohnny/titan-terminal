@@ -1,14 +1,14 @@
 ---
 gsd_state_version: 1.0
-milestone: v0.3
-milestone_name: TA Ensemble
-status: complete
-last_updated: "2026-02-28T11:10:00.000Z"
+milestone: v0.4
+milestone_name: Nansen Agent + Telegram Agent
+status: defining_requirements
+last_updated: "2026-02-28T12:00:00.000Z"
 progress:
-  total_phases: 6
-  completed_phases: 6
-  total_plans: 14
-  completed_plans: 14
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State
@@ -18,58 +18,22 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-28)
 
 **Core value:** Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
-**Current focus:** Milestone v0.3 complete. Ready for next milestone.
+**Current focus:** Milestone v0.4 — Nansen Agent + Telegram Agent
 
 ## Current Position
 
-Phase: 13 of 13 (TAMentor Implementation)
-Plan: 2 of 2 (COMPLETE)
-Status: Milestone v0.3 TA Ensemble SHIPPED
-Last activity: 2026-02-28 — Milestone v0.3 archived
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-02-28 — Milestone v0.4 started
 
-Progress: [========================] 100% (14/14 plans complete, v0.3 SHIPPED)
-
-## Performance Metrics
-
-**Velocity:**
-- Total plans completed: 23 (v0.1 + v0.2 + v0.3)
-- Average duration: ~3-4 min per plan
-- Total execution time: ~3 days for v0.3
-
-**By Phase:**
-
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| v0.1 (1-4) | 6 | ~90 min | ~15 min |
-| v0.2 (5-7) | 3 | ~45 min | ~15 min |
-| v0.3 (8-13) | 14 | ~3 days | ~3 min |
-
-**Recent Trend:**
-- Last milestone: v0.3 completed 14 plans across 6 phases
-- Trend: Stable execution, improving test coverage
-
-*Updated after v0.3 milestone completion*
-
-| Phase 08 P01 | 260s | 3 tasks | 3 files |
-| Phase 08 P02 | 200s | 3 tasks | 3 files |
-| Phase 09 P01 | 110s | 2 tasks | 2 files |
-| Phase 09 P02 | 167s | 3 tasks | 3 files |
-| Phase 10 P01 | 92s | 2 tasks | 2 files |
-| Phase 10 P02 | 277s | 3 tasks | 1 files |
-| Phase 10 P03 | 652s | 3 tasks | 2 files |
-| Phase 11 P01 | 90s | 2 tasks | 1 files |
-| Phase 11 P02 | 107s | 2 tasks | 1 files |
-| Phase 11 P03 | 181s | 2 tasks | 2 files |
-| Phase 12 P01 | 174s | 2 tasks | 2 files |
-| Phase 12 P02 | 183s | 2 tasks | 2 files |
-| Phase 13 P01 | 105s | 2 tasks | 1 files |
-| Phase 13 P02 | 192s | 2 tasks | 2 files |
+Progress: [░░░░░░░░░░░░░░░░░░░░░░░░] 0%
 
 ## Accumulated Context
 
 ### Decisions
 
-Carried forward:
+Carried forward from v0.3:
 - Settings class for env vars, constants.py for static values
 - CCXT/Binance public API for OHLCV (no auth needed)
 - Exponential backoff retry (1s, 2s, 4s + jitter) for rate limits
@@ -81,11 +45,11 @@ Carried forward:
 
 ### Pending Todos
 
-None — v0.3 milestone complete.
+None — v0.4 requirements being defined.
 
 ### Research Flags
 
-None active — next milestone will define new research areas.
+None active — v0.4 scope defined via user context.
 
 ### Tech Debt
 
@@ -103,10 +67,10 @@ From v0.1 (carried forward):
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Milestone v0.3 archived
+Stopped at: Defining v0.4 requirements
 Resume file: N/A
-Next action: Run `/gsd:new-milestone` to define v1.0 Core Agents
+Next action: Complete requirements definition
 
 ---
 
-*State updated after v0.3 milestone completion*
+*State updated for v0.4 milestone start*

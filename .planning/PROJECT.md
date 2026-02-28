@@ -8,6 +8,18 @@ A multi-agent crypto trading dashboard that aggregates technical analysis, on-ch
 
 Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
 
+## Current Milestone: v0.4 Nansen Agent + Telegram Agent
+
+**Goal:** Build two production-ready agents: Nansen on-chain agent using live Nansen MCP tools, and Telegram signal agent reading from the live signals database.
+
+**Target features:**
+- Nansen Agent with 5-signal framework (exchange flows, smart money, whales, top PnL, fresh wallets)
+- Funding rate from Hyperliquid perps (via Nansen MCP if available)
+- Telegram Agent connected to signals.db with 48h query window
+- New DB tables: onchain_snapshots and ta_snapshots
+- Vault logging for Nansen analysis to Obsidian
+- Full test coverage for both agents
+
 ## Current State
 
 **Shipped:** v0.3 TA Ensemble (2026-02-28)
@@ -155,4 +167,4 @@ Scoring: 4-5 bullish → ACCUMULATION, 2-3 → MIXED, 0-1 → DISTRIBUTION
 | Direct Anthropic SDK for TAMentor (v0.3) | Cleaner implementation, explicit conflict rules in prompt | ✓ Good |
 
 ---
-*Last updated: 2026-02-28 after v0.3 milestone*
+*Last updated: 2026-02-28 after v0.4 milestone started*
