@@ -176,7 +176,7 @@ Phases TBD - run `/gsd:new-milestone` to define
 | 9. Alpha Factors Module | v0.3 | 2/2 | Complete | 2026-02-27 |
 | 10. Wyckoff Detection Module | 3/3 | Complete    | 2026-02-27 | - |
 | 11. WeeklySubagent + TASignal Extension | 3/3 | Complete    | 2026-02-27 | - |
-| 12. Daily + FourHour Subagents | 2/2 | Complete   | 2026-02-28 | - |
+| 12. Daily + FourHour Subagents | 2/2 | Complete    | 2026-02-28 | - |
 | 13. TAMentor Implementation | v0.3 | 0/TBD | Not started | - |
 
 ---
