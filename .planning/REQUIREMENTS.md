@@ -17,7 +17,7 @@ Requirements for milestone v0.4: Nansen Agent + Telegram Agent.
 - [x] **NANS-06**: Agent fetches funding rate from Hyperliquid perps endpoint (marks unavailable if not in MCP)
 - [x] **NANS-07**: Agent aggregates 5 signals into overall bullish/bearish/neutral with confidence 0-100
 - [x] **NANS-08**: Agent outputs valid NansenSignal Pydantic model
-- [ ] **NANS-09**: Agent logs every analysis to Obsidian vault (signal-combinations.md with date/symbol/signals/outcome)
+- [x] **NANS-09**: Agent logs every analysis to Obsidian vault (signal-combinations.md with date/symbol/signals/outcome)
 - [x] **NANS-10**: Agent handles missing MCP data gracefully (neutral confidence 0, log warning, continue)
 
 ### Telegram Agent
@@ -89,7 +89,7 @@ Requirements for milestone v0.4: Nansen Agent + Telegram Agent.
 | NANS-06 | Phase 15 | Complete |
 | NANS-07 | Phase 15 | Complete |
 | NANS-08 | Phase 15 | Complete |
-| NANS-09 | Phase 15 | Pending |
+| NANS-09 | Phase 15 | Complete |
 | NANS-10 | Phase 15 | Complete |
 | TELE-01 | Phase 16 | Pending |
 | TELE-02 | Phase 16 | Pending |

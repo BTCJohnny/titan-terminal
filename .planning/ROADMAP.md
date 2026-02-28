@@ -51,7 +51,7 @@ See: `.planning/milestones/v0.3-ROADMAP.md`
 **Milestone Goal:** Build two production-ready agents: Nansen on-chain agent using live Nansen MCP tools with 5-signal framework and vault logging, and Telegram signal agent reading from live signals database with 48h query window.
 
 - [x] **Phase 14: Foundation** - Pydantic models and database schema for on-chain and TA snapshots (completed 2026-02-28)
-- [ ] **Phase 15: Nansen Agent** - 5-signal on-chain framework with MCP integration and Obsidian vault logging
+- [x] **Phase 15: Nansen Agent** - 5-signal on-chain framework with MCP integration and Obsidian vault logging (completed 2026-02-28)
 - [ ] **Phase 16: Telegram Agent** - signals.db integration with 48h confluence tracking
 - [ ] **Phase 17: Test Coverage** - Comprehensive unit tests for both agents
 
@@ -148,7 +148,7 @@ Phases execute in numeric order: 1 → 2 → ... → 13 → 14 → 15 → 16 →
 | 12. Daily + FourHour Subagents | v0.3 | 2/2 | Complete | 2026-02-28 |
 | 13. TAMentor Implementation | v0.3 | 2/2 | Complete | 2026-02-28 |
 | 14. Foundation | 2/2 | Complete    | 2026-02-28 | - |
-| 15. Nansen Agent | 2/3 | In Progress|  | - |
+| 15. Nansen Agent | 3/3 | Complete   | 2026-02-28 | - |
 | 16. Telegram Agent | v0.4 | 0/? | Not started | - |
 | 17. Test Coverage | v0.4 | 0/? | Not started | - |
 
