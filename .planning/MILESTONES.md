@@ -2,6 +2,33 @@
 
 ## Completed Milestones
 
+### v0.3 TA Ensemble — Shipped 2026-02-28
+
+**Delivered:** Complete TA analysis pipeline with 3 pure computational subagents (Weekly, Daily, 4H), Wyckoff pattern detection, alpha factors, and TAMentor synthesis with conflict resolution.
+
+**Stats:** 6 phases, 14 plans, ~30 tasks, 9,860 Python LOC (+4,959 from v0.2)
+
+**Key accomplishments:**
+1. Shared technical indicators module — RSI, MACD, Bollinger Bands, ADX, OBV, VWAP, ATR using pandas-ta
+2. Support/resistance detection using scipy peak detection with prominence tuning
+3. Alpha factors computation — Momentum score, volume anomaly, MA deviation, volatility scores
+4. Wyckoff pattern detection — Phase A-E classification, Spring/Upthrust/SOS/SOW event detection with confidence scoring
+5. Extended TASignal model with optional wyckoff and alpha_factors fields (backward compatible)
+6. Pure computational subagents — WeeklySubagent (104 candles), DailySubagent (730 candles), FourHourSubagent (4380 candles) with weighted confluence scoring
+7. TAMentor reimplemented with direct Anthropic SDK and 4 explicit conflict resolution rules
+
+**Tech Debt Resolved from v0.2:**
+- OHLCVClient now integrated into production subagents
+
+**Tech Debt Accepted:**
+- Pre-existing smoke test failure: test_daily_subagent_smoke expects _call_claude method from BaseAgent
+- pandas 3.0 deprecation warning in pandas-ta (non-blocking, upstream fix pending)
+- Bollinger Bands, OBV, VWAP implemented but not yet consumed by subagent analysis logic
+
+**Archive:** `.planning/milestones/v0.3-*`
+
+---
+
 ### v0.2 Data Foundation — Shipped 2026-02-27
 
 **Delivered:** Clean data infrastructure with CCXT/Binance OHLCV client, consolidated configuration, and comprehensive unit test coverage.
@@ -20,7 +47,7 @@
 - Two parallel config systems → Consolidated to Settings + constants.py
 
 **Tech Debt Accepted:**
-- OHLCVClient not yet integrated into production code (planned for v1.0)
+- OHLCVClient not yet integrated into production code → **Resolved in v0.3**
 - market_data.py deprecated but still in use (migration pending)
 
 **Archive:** `.planning/milestones/v0.2-*`
@@ -51,12 +78,9 @@
 ## Future Milestones
 
 ### v1.0 Core Agents
-- Full TA Ensemble implementation (Weekly, Daily, 4H subagents)
-- Wyckoff phase detection
-- Technical indicators
 - Nansen 5-signal framework
 - Risk/Levels agent
-- Integration tests
+- Integration tests on BTC, ETH, SOL
 
 ### v1.1 API & Dashboard
 - FastAPI endpoints (/morning-report, /chat)
@@ -65,4 +89,4 @@
 
 ---
 
-*Last updated: 2026-02-27*
+*Last updated: 2026-02-28*

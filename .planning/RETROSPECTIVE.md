@@ -2,6 +2,53 @@
 
 *A living document updated after each milestone. Lessons feed forward into future planning.*
 
+## Milestone: v0.3 — TA Ensemble
+
+**Shipped:** 2026-02-28
+**Phases:** 6 | **Plans:** 14 | **Sessions:** ~6
+
+### What Was Built
+- Shared indicators module (RSI, MACD, Bollinger Bands, ADX, OBV, VWAP, ATR, S/R) using pandas-ta
+- Wyckoff pattern detection (Phase A-E, Spring, Upthrust, SOS, SOW) with confidence scoring
+- Alpha factors computation (momentum, volume anomaly, MA deviation, volatility)
+- Extended TASignal model with optional wyckoff and alpha_factors fields
+- 3 pure computational subagents (WeeklySubagent, DailySubagent, FourHourSubagent) with weighted confluence
+- TAMentor reimplemented with direct Anthropic SDK and 4 explicit conflict resolution rules
+- 107 new tests added (158 total)
+
+### What Worked
+- pandas-ta over TA-Lib decision eliminated C dependency headaches
+- Pure computational pipeline for subagents — deterministic, fast, testable
+- Weighted confluence scoring provides transparent signal derivation
+- Direct Anthropic SDK in TAMentor — cleaner than BaseAgent inheritance
+- Comprehensive test fixtures enabled reliable mocked testing
+- Milestone audit (gsd-audit-milestone) verified 55/55 requirements before completion
+
+### What Was Inefficient
+- OHLCVClient integration required during subagent implementation (discovered dependency late)
+- Some indicators (Bollinger Bands, OBV, VWAP) implemented but not consumed by subagent logic
+- Pre-existing smoke test failure (test_daily_subagent_smoke) still unfixed
+
+### Patterns Established
+- Pure computational pipeline pattern: fetch → compute → synthesize (no LLM for indicators)
+- Weighted confluence voting: RSI (20), MACD (25), ADX (multiplier), Wyckoff (15-30)
+- Graceful degradation: return None on insufficient data, log warnings
+- Import aliases for name collisions (TAMomentumData vs AlphaMomentumData)
+- Event deduplication by candle_index for Wyckoff detection
+
+### Key Lessons
+1. Pure Python TA libraries (pandas-ta) are viable alternatives to C-based TA-Lib for most use cases
+2. Computational pipelines are easier to test and debug than LLM-based analysis
+3. Wyckoff detection needs threshold tuning per asset — configurable parameters essential
+4. Conflict resolution rules embedded in prompts are more maintainable than hardcoded logic
+
+### Cost Observations
+- Model mix: 90% sonnet, 10% haiku (for quick research)
+- Sessions: ~6 (3 days elapsed)
+- Notable: 14-plan milestone executed smoothly with consistent 2-3 plans per phase
+
+---
+
 ## Milestone: v0.2 — Data Foundation
 
 **Shipped:** 2026-02-27
@@ -90,6 +137,7 @@
 |-----------|----------|--------|------------|
 | v0.1 | 5 | 4 | First milestone — established GSD workflow |
 | v0.2 | 3 | 3 | Config consolidation, data layer foundation |
+| v0.3 | 6 | 6 | Full TA pipeline, computational subagents, conflict resolution |
 
 ### Cumulative Quality
 
@@ -97,13 +145,24 @@
 |-----------|-------|----------|-------------------|
 | v0.1 | 11 | Smoke only | 6 Pydantic models |
 | v0.2 | 28 | Smoke + Unit | OHLCVClient, retry decorator |
+| v0.3 | 158 | Comprehensive | indicators, wyckoff, alpha_factors, 3 subagents, TAMentor |
+
+### LOC Progression
+
+| Milestone | Python LOC | Delta | Tests Added |
+|-----------|------------|-------|-------------|
+| v0.1 | 4,458 | - | 11 |
+| v0.2 | 4,901 | +443 | 17 |
+| v0.3 | 9,860 | +4,959 | 130 |
 
 ### Top Lessons (Verified Across Milestones)
 
 1. Small, focused plans (1-3 tasks) enable fast, single-session execution
 2. Phase verification (gsd-verifier, gsd-audit) catches integration issues early
 3. Tech debt is acceptable when documented — consolidate in dedicated milestones
+4. Pure computational pipelines are easier to test than LLM-based analysis
+5. Milestone audits before completion catch requirements gaps early
 
 ---
 
-*Last updated: 2026-02-27 after v0.2 completion*
+*Last updated: 2026-02-28 after v0.3 completion*

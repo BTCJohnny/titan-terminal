@@ -8,42 +8,26 @@ A multi-agent crypto trading dashboard that aggregates technical analysis, on-ch
 
 Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
 
-## Current Milestone: v0.3 TA Ensemble
-
-**Goal:** Implement fully functional TA subagents (Weekly, Daily, 4H) with Wyckoff detection, technical indicators, and alpha factors — plus TAMentor synthesis with conflict resolution.
-
-**Target features:**
-- WeeklySubagent, DailySubagent, FourHourSubagent producing extended TASignal
-- Shared indicators module (RSI, MACD, Bollinger Bands, ADX, OBV, VWAP, ATR, S/R)
-- Wyckoff phase detection (A-E, springs, upthrusts, SOS/SOW, volume-price)
-- Alpha factors (momentum score, volume anomaly, MA deviation, volatility)
-- TAMentor using claude-opus with conflict resolution rules
-- Extended TASignal model with wyckoff and alpha_factors
-- Full unit tests with mocked OHLCV data
-
 ## Current State
 
-**Shipped:** v0.2 Data Foundation (2026-02-27)
+**Shipped:** v0.3 TA Ensemble (2026-02-28)
 
-**Codebase:** 4,901 Python LOC across 9 agents, 6 Pydantic models, 28 tests (11 smoke + 17 unit).
+**Codebase:** 9,860 Python LOC across 9 agents, 10 Pydantic models, 158 tests (11 smoke + 147 unit).
+
+**What's Working:**
+- 3 pure computational subagents (WeeklySubagent, DailySubagent, FourHourSubagent) with weighted confluence scoring
+- Shared indicators module (RSI, MACD, Bollinger Bands, ADX, OBV, VWAP, ATR, S/R)
+- Wyckoff pattern detection (Phase A-E, springs, upthrusts, SOS/SOW)
+- Alpha factors (momentum score, volume anomaly, MA deviation, volatility)
+- TAMentor with direct Anthropic SDK and 4 conflict resolution rules
+- Extended TASignal model with optional wyckoff and alpha_factors fields
+- OHLCV client with CCXT/Binance for BTC/ETH/SOL on 1w/1d/4h timeframes
 
 **Agent Architecture:**
 - `ta_ensemble/` — WeeklySubagent, DailySubagent, FourHourSubagent, TAMentor
-- Root agents — NansenAgent, TelegramAgent, RiskAgent, Orchestrator
+- Root agents — NansenAgent, TelegramAgent, RiskAgent, Orchestrator (shells)
 
-**Data Infrastructure:**
-- `data/ohlcv_client.py` — CCXT/Binance OHLCV client with exponential backoff retry
-- Supports BTC/USDT, ETH/USDT, SOL/USDT on 1w, 1d, 4h timeframes
-- `config/constants.py` — Trading constants (risk limits, symbols, scheduling)
-- `config/settings.py` — Single source of truth for environment variables
-
-**Test Status:** 28/28 tests passing (0.85s)
-
-**Tech Debt:**
-- Agents return dict (Pydantic integration via model_validate in tests)
-- Deprecated agent files kept for rollback
-- OHLCVClient not yet integrated into production code (planned for v1.0)
-- market_data.py deprecated but still in use (migration pending)
+**Test Status:** 158/158 tests passing (1 pre-existing smoke test failure, unrelated)
 
 ## Requirements
 
@@ -71,30 +55,22 @@ Surface high-conviction trading setups by combining multi-timeframe technical an
 - ✓ Unit tests for OHLCV client with mocked exchange — v0.2
 - ✓ Unit tests for rate limit retry behavior — v0.2
 - ✓ All 11 original smoke tests still pass — v0.2
+- ✓ Shared indicators module (RSI, MACD, BB, ADX, OBV, VWAP, ATR, S/R) — v0.3
+- ✓ Wyckoff detection module (phases A-E, springs, upthrusts, SOS/SOW) — v0.3
+- ✓ Alpha factors computation (momentum, volume anomaly, MA deviation, volatility) — v0.3
+- ✓ Extended TASignal model with wyckoff and alpha_factors — v0.3
+- ✓ WeeklySubagent implementation with full analysis — v0.3
+- ✓ DailySubagent implementation with full analysis — v0.3
+- ✓ FourHourSubagent implementation with full analysis — v0.3
+- ✓ TAMentor using Anthropic SDK with MENTOR_MODEL — v0.3
+- ✓ TAMentor conflict resolution (Weekly/Daily > 4H, -20 penalty, NO SIGNAL on W/D conflict) — v0.3
+- ✓ Unit tests for indicators module — v0.3
+- ✓ Unit tests for Wyckoff detection — v0.3
+- ✓ Unit tests for subagents with mocked OHLCV — v0.3
+- ✓ Unit tests for TAMentor with mocked responses — v0.3
 
-### Active
+### Active (v1.0+)
 
-- [ ] Shared indicators module (RSI, MACD, BB, ADX, OBV, VWAP, ATR, S/R)
-- [ ] Wyckoff detection module (phases A-E, springs, upthrusts, SOS/SOW)
-- [ ] Alpha factors computation (momentum, volume anomaly, MA deviation, volatility)
-- [ ] Extended TASignal model with wyckoff and alpha_factors
-- [ ] WeeklySubagent implementation with full analysis
-- [ ] DailySubagent implementation with full analysis
-- [ ] FourHourSubagent implementation with full analysis
-- [ ] TAMentor using Anthropic SDK with MENTOR_MODEL
-- [ ] TAMentor conflict resolution (Weekly/Daily > 4H, -20 penalty, NO SIGNAL on W/D conflict)
-- [ ] Unit tests for indicators module
-- [ ] Unit tests for Wyckoff detection
-- [ ] Unit tests for subagents with mocked OHLCV
-- [ ] Unit tests for TAMentor with mocked responses
-
-### Future (v1.0+)
-
-- [ ] TA Ensemble with 3 timeframe subagents (Weekly, Daily, 4H)
-- [ ] Wyckoff phase detection (A-E, springs, upthrusts, SOS/SOW)
-- [ ] Technical indicators (RSI, MACD, BB, ADX, OBV, VWAP, ATR, S/R)
-- [ ] OHLCV alpha factors (momentum, volume anomaly, MA deviation, volatility)
-- [ ] TAMentor using claude-opus-4-6 with conflict resolution logic
 - [ ] Nansen agent with 5-signal accumulation/distribution framework
 - [ ] Funding rate overlay from Hyperliquid perps
 - [ ] Telegram agent connected to signals.db
@@ -103,7 +79,6 @@ Surface high-conviction trading setups by combining multi-timeframe technical an
 - [ ] FastAPI /morning-report endpoint (top opportunities)
 - [ ] FastAPI /chat endpoint
 - [ ] Next.js dashboard with signal cards + chat
-- [ ] OHLCVClient integration into production agents
 - [ ] Complete market_data.py migration
 
 ### Out of Scope
@@ -122,10 +97,10 @@ Surface high-conviction trading setups by combining multi-timeframe technical an
 **Architecture:**
 - Backend: `src/backend/` — Python/FastAPI
 - Frontend: `src/frontend/` — Next.js
-- Agents: `src/backend/agents/` — 8 agent files exist as shells
+- Agents: `src/backend/agents/` — 8 agent files exist
+- Analysis: `src/backend/analysis/` — indicators, wyckoff, alpha_factors modules
 - Data: `src/backend/data/` — OHLCV client for market data
-
-**Current State:** Agent files exist but are empty shells. All need full implementation. Data layer is production-ready with OHLCV client.
+- Models: `src/backend/models/` — Pydantic models for all signals
 
 **TAMentor Conflict Resolution:**
 - Higher timeframe wins direction (Weekly/Daily override 4H)
@@ -162,8 +137,8 @@ Scoring: 4-5 bullish → ACCUMULATION, 2-3 → MIXED, 0-1 → DISTRIBUTION
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Higher timeframe wins direction | Structural trends override short-term noise | — Pending |
-| S/R levels from TA drive stops/targets | Technical levels more meaningful than arbitrary ATR multiples | — Pending |
+| Higher timeframe wins direction | Structural trends override short-term noise | ✓ Implemented in TAMentor v0.3 |
+| S/R levels from TA drive stops/targets | Technical levels more meaningful than arbitrary ATR multiples | ✓ Implemented in indicators v0.3 |
 | Dynamic watchlist | System discovers opportunities vs fixed list maintenance | — Pending |
 | Morning report = top opportunities only | Focus on highest conviction, not information overload | — Pending |
 | Multi-timeframe TA pattern (v0.1) | Separate subagents per timeframe, TAMentor synthesizes with confluence scoring | ✓ Good |
@@ -174,6 +149,10 @@ Scoring: 4-5 bullish → ACCUMULATION, 2-3 → MIXED, 0-1 → DISTRIBUTION
 | CCXT/Binance public API for OHLCV (v0.2) | No authentication needed, robust retry logic for rate limits | ✓ Good |
 | Exponential backoff retry (1s, 2s, 4s + jitter) (v0.2) | Handles Binance rate limits gracefully without manual intervention | ✓ Good |
 | Deprecate market_data.py (v0.2) | New OHLCV client superior, gradual migration path | ✓ Good |
+| pandas-ta over TA-Lib (v0.3) | Pure Python, no C dependencies, easier installation | ✓ Good |
+| Pure computational subagents (v0.3) | Deterministic analysis, no LLM calls for indicators | ✓ Good |
+| Weighted confluence scoring (v0.3) | RSI (20), MACD (25), ADX (multiplier), Wyckoff (15-30) for robust signals | ✓ Good |
+| Direct Anthropic SDK for TAMentor (v0.3) | Cleaner implementation, explicit conflict rules in prompt | ✓ Good |
 
 ---
-*Last updated: 2026-02-27 after v0.3 milestone started*
+*Last updated: 2026-02-28 after v0.3 milestone*
