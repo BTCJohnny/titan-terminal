@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Nansen Agent + Telegram Agent
 status: unknown
-last_updated: "2026-02-28T21:13:09.979Z"
+last_updated: "2026-02-28T21:18:42.429Z"
 progress:
   total_phases: 2
   completed_phases: 1
   total_plans: 5
-  completed_plans: 3
+  completed_plans: 5
 ---
 
 # Project State
@@ -23,25 +23,25 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 ## Current Position
 
 Phase: 15 of 17 (Nansen Agent)
-Plan: 01 of 03 (completed)
-Status: Ready for plan 02
-Last activity: 2026-02-28 — Completed plan 15-01 (MCP Integration Layer)
+Plan: 02 of 03 (completed)
+Status: Ready for plan 03
+Last activity: 2026-02-28 — Completed plan 15-02 (Nansen Agent Implementation)
 
-Progress: [██████░░░░░░░░░░░░░░░░░░] 33%
+Progress: [████████░░░░░░░░░░░░░░░░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
+- Total plans completed: 5
 - Average duration: 2 min
-- Total execution time: 0.13 hours
+- Total execution time: 0.17 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 14 | 2 | 4 min | 2 min |
-| 15 | 1 | 2 min | 2 min |
+| 15 | 2 | 4 min | 2 min |
 
 **Recent Trend:**
 - Last 5 plans: 2 min
@@ -49,6 +49,7 @@ Progress: [██████░░░░░░░░░░░░░░░░░
 | Phase 14 P02 | 105 | 3 tasks | 3 files |
 | Phase 14 P01 | 2 | 3 tasks | 2 files |
 | Phase 15 P01 | 2 | 3 tasks | 2 files |
+| Phase 15-nansen-agent P02 | 2 | 3 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,10 @@ Recent decisions affecting current work:
 - [Phase 15]: MCP functions prepare request parameters and return placeholder data until actual MCP integration
 - [Phase 15]: Fresh wallets returns neutral signal with confidence 0 when no MCP tool available (graceful degradation)
 - [Phase 15]: Funding rate applies contrarian interpretation: >+0.01% = bearish, <-0.01% = bullish
+- [Phase 15-02]: Signals classified as bullish/bearish only if confidence > 50, otherwise neutral
+- [Phase 15-02]: Overall bias: 4-5 bullish signals = ACCUMULATION, 0-1 = DISTRIBUTION, 2-3 = MIXED/neutral
+- [Phase 15-02]: Confidence scoring: base 50 + (alignment_bonus * 10), where alignment_bonus = abs(bullish - bearish)
+- [Phase 15-02]: Key insights built in _aggregate_signals() from high-confidence signals for cleaner code flow
 
 ### Pending Todos
 
@@ -82,10 +87,10 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Completed 15-01-PLAN.md (MCP Integration Layer)
+Stopped at: Completed 15-02-PLAN.md (Nansen Agent Implementation)
 Resume file: None
-Next action: Run /gsd:execute-plan 15-02 to continue Nansen Agent phase
+Next action: Run /gsd:execute-plan 15-03 to continue Nansen Agent phase
 
 ---
 
-*State updated: 2026-02-28 after completing plan 15-01*
+*State updated: 2026-02-28 after completing plan 15-02*

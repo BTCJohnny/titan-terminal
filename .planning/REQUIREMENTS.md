@@ -15,10 +15,10 @@ Requirements for milestone v0.4: Nansen Agent + Telegram Agent.
 - [x] **NANS-04**: Agent fetches top PnL wallets direction with notable count via Nansen MCP
 - [x] **NANS-05**: Agent fetches fresh wallet activity level with interpretation via Nansen MCP
 - [x] **NANS-06**: Agent fetches funding rate from Hyperliquid perps endpoint (marks unavailable if not in MCP)
-- [ ] **NANS-07**: Agent aggregates 5 signals into overall bullish/bearish/neutral with confidence 0-100
-- [ ] **NANS-08**: Agent outputs valid NansenSignal Pydantic model
+- [x] **NANS-07**: Agent aggregates 5 signals into overall bullish/bearish/neutral with confidence 0-100
+- [x] **NANS-08**: Agent outputs valid NansenSignal Pydantic model
 - [ ] **NANS-09**: Agent logs every analysis to Obsidian vault (signal-combinations.md with date/symbol/signals/outcome)
-- [ ] **NANS-10**: Agent handles missing MCP data gracefully (neutral confidence 0, log warning, continue)
+- [x] **NANS-10**: Agent handles missing MCP data gracefully (neutral confidence 0, log warning, continue)
 
 ### Telegram Agent
 
@@ -87,10 +87,10 @@ Requirements for milestone v0.4: Nansen Agent + Telegram Agent.
 | NANS-04 | Phase 15 | Complete |
 | NANS-05 | Phase 15 | Complete |
 | NANS-06 | Phase 15 | Complete |
-| NANS-07 | Phase 15 | Pending |
-| NANS-08 | Phase 15 | Pending |
+| NANS-07 | Phase 15 | Complete |
+| NANS-08 | Phase 15 | Complete |
 | NANS-09 | Phase 15 | Pending |
-| NANS-10 | Phase 15 | Pending |
+| NANS-10 | Phase 15 | Complete |
 | TELE-01 | Phase 16 | Pending |
 | TELE-02 | Phase 16 | Pending |
 | TELE-03 | Phase 16 | Pending |
