@@ -84,12 +84,13 @@ Plans:
   4. Agent outputs valid NansenSignal Pydantic model matching MODL-01 schema
   5. Every analysis logs to /Users/johnny_main/Developer/obsidian-vault/obsidian-vault/agents/nansen/signal-combinations.md with date, symbol, signals, outcome
   6. Agent handles missing MCP data gracefully (neutral with confidence 0, logs warning, continues)
-**Plans**: 3 plans
+**Plans**: 4 plans
 
 Plans:
-- [ ] 15-01-PLAN.md - MCP integration layer (exchange flows, smart money, whales, top PnL, fresh wallets, funding rate)
-- [ ] 15-02-PLAN.md - Signal aggregation and NansenAgent core implementation
-- [ ] 15-03-PLAN.md - Obsidian vault logging integration
+- [x] 15-01-PLAN.md - MCP integration layer (exchange flows, smart money, whales, top PnL, fresh wallets, funding rate)
+- [x] 15-02-PLAN.md - Signal aggregation and NansenAgent core implementation
+- [x] 15-03-PLAN.md - Obsidian vault logging integration
+- [ ] 15-04-PLAN.md - Gap closure: Wire live MCP tool invocations (token address mapping + callback mechanism)
 
 ### Phase 16: Telegram Agent
 **Goal**: Production-ready Telegram signal agent that queries signals.db for last 48h, calculates confluence across signals, and identifies best signal
