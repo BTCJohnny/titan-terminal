@@ -126,10 +126,11 @@ Plans:
   3. Both subagents handle insufficient history gracefully with warnings
   4. Unit tests verify both subagents with mocked OHLCV
   5. All three subagents produce consistent TASignal structure
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 12-01: TBD
+- [ ] 12-01-PLAN.md — DailySubagent implementation + comprehensive test suite
+- [ ] 12-02-PLAN.md — FourHourSubagent implementation + comprehensive test suite
 
 ### Phase 13: TAMentor Implementation
 **Goal**: Synthesize all timeframe signals with intelligent conflict resolution
@@ -175,8 +176,8 @@ Phases TBD - run `/gsd:new-milestone` to define
 | 9. Alpha Factors Module | v0.3 | 2/2 | Complete | 2026-02-27 |
 | 10. Wyckoff Detection Module | 3/3 | Complete    | 2026-02-27 | - |
 | 11. WeeklySubagent + TASignal Extension | 3/3 | Complete    | 2026-02-27 | - |
-| 12. Daily + FourHour Subagents | v0.3 | 0/TBD | Not started | - |
+| 12. Daily + FourHour Subagents | v0.3 | 0/2 | Not started | - |
 | 13. TAMentor Implementation | v0.3 | 0/TBD | Not started | - |
 
 ---
-*Roadmap updated: 2026-02-27 for Phase 11 planning*
+*Roadmap updated: 2026-02-28 for Phase 12 planning*
