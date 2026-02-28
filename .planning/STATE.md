@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Nansen Agent + Telegram Agent
 status: unknown
-last_updated: "2026-02-28T15:43:50.624Z"
+last_updated: "2026-02-28T15:44:34.374Z"
 progress:
   total_phases: 1
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -23,31 +23,30 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 ## Current Position
 
 Phase: 14 of 17 (Foundation)
-Plan: Ready to plan
-Status: Ready to plan Phase 14
-Last activity: 2026-02-28 — v0.4 roadmap created
+Plan: 01 of 04 (completed)
+Status: Ready for plan 02
+Last activity: 2026-02-28 — Completed plan 14-01 (Extend Pydantic Models)
 
-Progress: [░░░░░░░░░░░░░░░░░░░░░░░░] 0%
+Progress: [████░░░░░░░░░░░░░░░░░░░░] 25%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: N/A
-- Total execution time: 0 hours
+- Total plans completed: 1
+- Average duration: 2 min
+- Total execution time: 0.03 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 14 | 1 | 2 min | 2 min |
 
 **Recent Trend:**
-- Last 5 plans: N/A
-- Trend: N/A
-
-*Will be populated after first plan completion*
+- Last 5 plans: 2 min
+- Trend: Initial plan complete
 | Phase 14 P02 | 105 | 3 tasks | 3 files |
+| Phase 14 P01 | 2 | 3 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -63,6 +62,9 @@ Recent decisions affecting current work:
 - v0.2: CCXT/Binance public API for OHLCV with exponential backoff retry
 - [Phase 14]: External signals.db path with env var override for flexibility
 - [Phase 14]: Separate signals_db module for external database operations
+- [Phase 14-01]: Added avg_confidence as new field alongside existing confidence field to avoid breaking changes in TelegramSignal
+- [Phase 14-01]: FundingRate nested model follows existing pattern (not exported from __init__.py, only top-level models exported)
+- [Phase 14-01]: Used datetime.utcnow default factory for timestamp fields to auto-generate on model instantiation
 
 ### Pending Todos
 
@@ -75,10 +77,10 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-28
-Stopped at: Roadmap created for v0.4
+Stopped at: Completed 14-01-PLAN.md (Extend Pydantic Models)
 Resume file: None
-Next action: Run /gsd:plan-phase 14 to plan Foundation phase
+Next action: Run /gsd:execute-plan 14-02 to continue Foundation phase
 
 ---
 
-*State updated: 2026-02-28 after v0.4 roadmap creation*
+*State updated: 2026-02-28 after completing plan 14-01*

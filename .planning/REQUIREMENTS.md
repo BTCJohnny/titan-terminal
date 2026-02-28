@@ -31,8 +31,8 @@ Requirements for milestone v0.4: Nansen Agent + Telegram Agent.
 
 ### Models
 
-- [ ] **MODL-01**: NansenSignal Pydantic model with all specified fields (symbol, exchange_flow, smart_money, whale_activity, top_pnl_wallets, fresh_wallets, funding_rate, overall_signal, confidence, signal_count_bullish, signal_count_bearish, reasoning, timestamp)
-- [ ] **MODL-02**: TelegramSignal Pydantic model with all specified fields (symbol, signals_found, active_signals, overall_sentiment, confluence_count, avg_confidence, best_signal, reasoning, timestamp)
+- [x] **MODL-01**: NansenSignal Pydantic model with all specified fields (symbol, exchange_flow, smart_money, whale_activity, top_pnl_wallets, fresh_wallets, funding_rate, overall_signal, confidence, signal_count_bullish, signal_count_bearish, reasoning, timestamp)
+- [x] **MODL-02**: TelegramSignal Pydantic model with all specified fields (symbol, signals_found, active_signals, overall_sentiment, confluence_count, avg_confidence, best_signal, reasoning, timestamp)
 
 ### Database
 
@@ -97,8 +97,8 @@ Requirements for milestone v0.4: Nansen Agent + Telegram Agent.
 | TELE-04 | Phase 16 | Pending |
 | TELE-05 | Phase 16 | Pending |
 | TELE-06 | Phase 16 | Pending |
-| MODL-01 | Phase 14 | Pending |
-| MODL-02 | Phase 14 | Pending |
+| MODL-01 | Phase 14 | Complete |
+| MODL-02 | Phase 14 | Complete |
 | DB-01 | Phase 14 | Complete |
 | DB-02 | Phase 14 | Complete |
 | DB-03 | Phase 14 | Complete |
