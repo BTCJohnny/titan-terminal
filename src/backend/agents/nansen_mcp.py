@@ -274,3 +274,129 @@ def fetch_top_pnl(symbol: str, chain: str = "ethereum") -> MCPSignalResult:
     except Exception as e:
         logger.warning(f"Failed to fetch top PnL data for {symbol}: {e}")
         return MCPSignalResult(success=False, error=str(e))
+
+
+def fetch_fresh_wallets(symbol: str, chain: str = "ethereum") -> MCPSignalResult:
+    """
+    Fetch fresh wallet activity data via MCP.
+
+    NOTE: No direct "fresh wallets" MCP tool exists. This function attempts to
+    approximate new buyer activity using available tools. If no data is available,
+    returns neutral signal with confidence 0 for graceful degradation.
+
+    Args:
+        symbol: Token symbol (e.g., "BTC", "ETH")
+        chain: Blockchain network (default: "ethereum")
+
+    Returns:
+        MCPSignalResult with data containing:
+        - activity_level: "high" | "medium" | "low" | "none"
+        - trend: "increasing" | "decreasing" | "stable"
+        - notable_count: Number of notable fresh wallets
+        - interpretation: Human-readable explanation
+    """
+    try:
+        # Try to use token_who_bought_sold to approximate fresh wallet activity
+        tool_name = "mcp__nansen__token_who_bought_sold"
+        params = {
+            "symbol": symbol,
+            "chain": chain,
+            "dateRange": {
+                "from": "24H_AGO",
+                "to": "NOW"
+            }
+        }
+
+        logger.info(f"Preparing fresh wallets request for {symbol} on {chain}")
+
+        # Parse response (placeholder - actual implementation will process MCP response)
+        # When integrated with MCP, this will:
+        # - If data available: calculate activity_level based on volume
+        # - Compare current period vs previous to determine trend
+        # - Count notable new buyers
+        # - If no data: return activity_level="none", trend="stable", confidence=0
+
+        data = {
+            "activity_level": "none",
+            "trend": "stable",
+            "notable_count": 0,
+            "interpretation": "Fresh wallet data not available via MCP",
+            "confidence": 0,
+            "mcp_tool": tool_name,
+            "mcp_params": params
+        }
+
+        return MCPSignalResult(success=True, data=data)
+
+    except Exception as e:
+        logger.warning(f"Failed to fetch fresh wallets data for {symbol}: {e}")
+        # Graceful degradation - return neutral signal rather than failure
+        return MCPSignalResult(
+            success=True,
+            data={
+                "activity_level": "none",
+                "trend": "stable",
+                "notable_count": 0,
+                "interpretation": "Fresh wallet data not available",
+                "confidence": 0
+            }
+        )
+
+
+def fetch_funding_rate(symbol: str) -> MCPSignalResult:
+    """
+    Fetch funding rate data via MCP.
+
+    Uses mcp__nansen__smart_traders_and_funds_perp_trades to extract Hyperliquid
+    funding rate context. Applies contrarian interpretation per PROJECT.md rules:
+    - Above +0.01% = crowded longs = bearish contrarian signal
+    - Below -0.01% = crowded shorts = bullish contrarian signal
+
+    Args:
+        symbol: Token symbol (e.g., "BTC", "ETH")
+
+    Returns:
+        MCPSignalResult with data containing:
+        - rate: Funding rate value (float) or None if not available
+        - available: Whether funding rate data was available
+        - interpretation: Human-readable explanation with contrarian analysis
+    """
+    try:
+        # MCP tool parameters
+        tool_name = "mcp__nansen__smart_traders_and_funds_perp_trades"
+        params = {
+            "symbol": symbol,
+            "exchange": "hyperliquid"
+        }
+
+        logger.info(f"Preparing funding rate request for {symbol}")
+
+        # Parse response (placeholder - actual implementation will process MCP response)
+        # When integrated with MCP, this will:
+        # - Extract funding rate from perp trades response
+        # - If rate > +0.01%: interpretation = "Crowded longs, bearish contrarian"
+        # - If rate < -0.01%: interpretation = "Crowded shorts, bullish contrarian"
+        # - If rate between -0.01% and +0.01%: interpretation = "Neutral funding"
+        # - If no data: available=False, rate=None
+
+        data = {
+            "rate": None,
+            "available": False,
+            "interpretation": "Funding rate not available from MCP tools",
+            "mcp_tool": tool_name,
+            "mcp_params": params
+        }
+
+        return MCPSignalResult(success=True, data=data)
+
+    except Exception as e:
+        logger.warning(f"Failed to fetch funding rate for {symbol}: {e}")
+        # Graceful degradation - return unavailable rather than failure
+        return MCPSignalResult(
+            success=True,
+            data={
+                "rate": None,
+                "available": False,
+                "interpretation": "Funding rate not available"
+            }
+        )

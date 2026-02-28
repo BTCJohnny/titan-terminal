@@ -7,6 +7,15 @@ from .ta_ensemble import WeeklySubagent, DailySubagent, FourHourSubagent, TAMent
 from .risk_agent import RiskAgent
 from .mentor import MentorCriticAgent
 from .orchestrator import Orchestrator
+from .nansen_mcp import (
+    fetch_exchange_flows,
+    fetch_smart_money,
+    fetch_whale_activity,
+    fetch_top_pnl,
+    fetch_fresh_wallets,
+    fetch_funding_rate,
+    MCPSignalResult,
+)
 
 __all__ = [
     'BaseAgent',
@@ -20,4 +29,11 @@ __all__ = [
     'RiskAgent',
     'MentorCriticAgent',
     'Orchestrator',
+    'fetch_exchange_flows',
+    'fetch_smart_money',
+    'fetch_whale_activity',
+    'fetch_top_pnl',
+    'fetch_fresh_wallets',
+    'fetch_funding_rate',
+    'MCPSignalResult',
 ]
