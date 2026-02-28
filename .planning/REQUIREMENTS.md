@@ -1,0 +1,124 @@
+# Requirements: Titan Terminal
+
+**Defined:** 2026-02-28
+**Core Value:** Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
+
+## v0.4 Requirements
+
+Requirements for milestone v0.4: Nansen Agent + Telegram Agent.
+
+### Nansen Agent
+
+- [ ] **NANS-01**: Agent fetches exchange flow direction (inflow/outflow/neutral) with magnitude via Nansen MCP
+- [ ] **NANS-02**: Agent fetches smart money activity (accumulating/distributing/neutral) with confidence via Nansen MCP
+- [ ] **NANS-03**: Agent fetches whale activity direction with magnitude via Nansen MCP
+- [ ] **NANS-04**: Agent fetches top PnL wallets direction with notable count via Nansen MCP
+- [ ] **NANS-05**: Agent fetches fresh wallet activity level with interpretation via Nansen MCP
+- [ ] **NANS-06**: Agent fetches funding rate from Hyperliquid perps endpoint (marks unavailable if not in MCP)
+- [ ] **NANS-07**: Agent aggregates 5 signals into overall bullish/bearish/neutral with confidence 0-100
+- [ ] **NANS-08**: Agent outputs valid NansenSignal Pydantic model
+- [ ] **NANS-09**: Agent logs every analysis to Obsidian vault (signal-combinations.md with date/symbol/signals/outcome)
+- [ ] **NANS-10**: Agent handles missing MCP data gracefully (neutral confidence 0, log warning, continue)
+
+### Telegram Agent
+
+- [ ] **TELE-01**: Agent queries `signals` table in signals.db (not telegram_signals)
+- [ ] **TELE-02**: Agent filters signals from last 48 hours with status pending/active
+- [ ] **TELE-03**: Agent extracts entry_1/2/3, stop_loss, target_1-5 from signals
+- [ ] **TELE-04**: Agent calculates confluence_count (number of signals agreeing on direction)
+- [ ] **TELE-05**: Agent identifies best_signal (highest confidence_score)
+- [ ] **TELE-06**: Agent outputs valid TelegramSignal Pydantic model
+
+### Models
+
+- [ ] **MODL-01**: NansenSignal Pydantic model with all specified fields (symbol, exchange_flow, smart_money, whale_activity, top_pnl_wallets, fresh_wallets, funding_rate, overall_signal, confidence, signal_count_bullish, signal_count_bearish, reasoning, timestamp)
+- [ ] **MODL-02**: TelegramSignal Pydantic model with all specified fields (symbol, signals_found, active_signals, overall_sentiment, confluence_count, avg_confidence, best_signal, reasoning, timestamp)
+
+### Database
+
+- [ ] **DB-01**: Create `onchain_snapshots` table in signals.db with all Nansen signal fields
+- [ ] **DB-02**: Create `ta_snapshots` table in signals.db with weekly/daily/4h direction/confidence fields
+- [ ] **DB-03**: Snapshot tables are append-only — never modify existing signals table
+- [ ] **DB-04**: Database path loaded from settings/config, not hardcoded
+
+### Tests
+
+- [ ] **TEST-01**: Unit tests for each of the 5 Nansen signals (exchange flow, smart money, whales, top PnL, fresh wallets)
+- [ ] **TEST-02**: Unit tests for Nansen overall signal aggregation logic
+- [ ] **TEST-03**: Unit tests for Nansen vault logging (appends to signal-combinations.md)
+- [ ] **TEST-04**: Unit tests for Nansen graceful handling when MCP returns no data
+- [ ] **TEST-05**: Unit tests for Telegram agent with signals present
+- [ ] **TEST-06**: Unit tests for Telegram agent with no signals (empty result)
+- [ ] **TEST-07**: Unit tests for Telegram confluence counting logic
+- [ ] **TEST-08**: Unit tests for Telegram 48h window filter
+- [ ] **TEST-09**: Unit tests for new DB table creation (onchain_snapshots, ta_snapshots)
+- [ ] **TEST-10**: Unit tests for insert operations into both snapshot tables
+
+## Future Requirements
+
+### v1.0+ Pending
+
+- Risk/Levels agent (2% max risk, 3:1 min R:R, S/R-based stops)
+- Integration tests on BTC, ETH, SOL
+- FastAPI /morning-report endpoint (top opportunities)
+- FastAPI /chat endpoint
+- Next.js dashboard with signal cards + chat
+- Complete market_data.py migration
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| Copying Titan Trading code | Rewrite cleanly — reference only |
+| Simulated/fallback data for Nansen | Must use live MCP tools only |
+| Claude knowledge fallback for on-chain | No signal without real data |
+| Automated trade execution | Analysis/signals only |
+| Mobile app | Web dashboard first |
+| Real-time websocket streaming | Polling sufficient for v1 |
+| Modifying existing signals table | Snapshot tables are append-only |
+
+## Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| NANS-01 | TBD | Pending |
+| NANS-02 | TBD | Pending |
+| NANS-03 | TBD | Pending |
+| NANS-04 | TBD | Pending |
+| NANS-05 | TBD | Pending |
+| NANS-06 | TBD | Pending |
+| NANS-07 | TBD | Pending |
+| NANS-08 | TBD | Pending |
+| NANS-09 | TBD | Pending |
+| NANS-10 | TBD | Pending |
+| TELE-01 | TBD | Pending |
+| TELE-02 | TBD | Pending |
+| TELE-03 | TBD | Pending |
+| TELE-04 | TBD | Pending |
+| TELE-05 | TBD | Pending |
+| TELE-06 | TBD | Pending |
+| MODL-01 | TBD | Pending |
+| MODL-02 | TBD | Pending |
+| DB-01 | TBD | Pending |
+| DB-02 | TBD | Pending |
+| DB-03 | TBD | Pending |
+| DB-04 | TBD | Pending |
+| TEST-01 | TBD | Pending |
+| TEST-02 | TBD | Pending |
+| TEST-03 | TBD | Pending |
+| TEST-04 | TBD | Pending |
+| TEST-05 | TBD | Pending |
+| TEST-06 | TBD | Pending |
+| TEST-07 | TBD | Pending |
+| TEST-08 | TBD | Pending |
+| TEST-09 | TBD | Pending |
+| TEST-10 | TBD | Pending |
+
+**Coverage:**
+- v0.4 requirements: 28 total
+- Mapped to phases: 0 (pending roadmap)
+- Unmapped: 28 ⚠️
+
+---
+*Requirements defined: 2026-02-28*
+*Last updated: 2026-02-28 after initial definition*
