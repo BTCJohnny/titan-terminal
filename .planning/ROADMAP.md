@@ -145,11 +145,11 @@ Plans:
   6. Conflict warnings surfaced in synthesis_notes field
   7. Unit tests cover all 3 conflict scenarios with mocked Claude responses
   8. All 28 original tests plus new tests pass (target 50+ total)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 13-01: TBD
-- [ ] 13-02: TBD
+- [ ] 13-01-PLAN.md — Reimplement TAMentor with direct Anthropic SDK and conflict resolution rules
+- [ ] 13-02-PLAN.md — Comprehensive test suite covering all conflict scenarios
 
 ### v1.0 Core Agents (Planned)
 
