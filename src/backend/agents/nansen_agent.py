@@ -13,6 +13,7 @@ from .nansen_mcp import (
     fetch_top_pnl, fetch_fresh_wallets, fetch_funding_rate
 )
 from .vault_logger import log_nansen_analysis
+from ..db.signals_db import insert_onchain_snapshot
 
 logger = logging.getLogger(__name__)
 
@@ -159,7 +160,7 @@ class NansenAgent:
 
         return (bias, confidence, key_insights, bullish_count, bearish_count)
 
-    def analyze(self, symbol: str, log_to_vault: bool = True) -> NansenSignal:
+    def analyze(self, symbol: str, market_data: dict = None, log_to_vault: bool = True) -> NansenSignal:
         """Analyze on-chain data for a symbol using 5-signal framework.
 
         Fetches all 6 signals (5 on-chain + funding rate) via MCP integration layer,
@@ -167,6 +168,7 @@ class NansenAgent:
 
         Args:
             symbol: Trading symbol (e.g., "BTC", "ETH")
+            market_data: Market data dict from orchestrator (unused - agent fetches own data via CLI)
             log_to_vault: Whether to log analysis to Obsidian vault (default: True)
 
         Returns:
@@ -331,6 +333,35 @@ class NansenAgent:
         )
 
         logger.debug(f"Generated NansenSignal for {symbol}: {signal.overall_signal.bias} with {signal.overall_signal.confidence}% confidence")
+
+        # Store on-chain snapshot in signals.db (per DB-01)
+        try:
+            snapshot_data = {
+                'symbol': signal.symbol,
+                'timestamp': signal.timestamp.isoformat(),
+                'exchange_flow_direction': signal.exchange_flows.net_direction,
+                'exchange_flow_magnitude': signal.exchange_flows.magnitude,
+                'exchange_flow_confidence': signal.exchange_flows.confidence,
+                'smart_money_direction': signal.smart_money.direction,
+                'smart_money_confidence': signal.smart_money.confidence,
+                'whale_activity_direction': signal.whale_activity.net_flow,
+                'whale_activity_confidence': signal.whale_activity.confidence,
+                'top_pnl_bias': signal.top_pnl.traders_bias,
+                'top_pnl_confidence': signal.top_pnl.confidence,
+                'fresh_wallets_level': signal.fresh_wallets.activity_level,
+                'fresh_wallets_trend': signal.fresh_wallets.trend,
+                'funding_rate': signal.funding_rate.rate if signal.funding_rate else None,
+                'funding_rate_available': signal.funding_rate.available if signal.funding_rate else False,
+                'overall_bias': signal.overall_signal.bias,
+                'overall_confidence': signal.overall_signal.confidence,
+                'signal_count_bullish': signal.signal_count_bullish,
+                'signal_count_bearish': signal.signal_count_bearish,
+                'reasoning': signal.reasoning,
+            }
+            insert_onchain_snapshot(snapshot_data)
+            logger.debug(f"Stored on-chain snapshot for {symbol}")
+        except Exception as e:
+            logger.warning(f"Failed to store on-chain snapshot for {symbol}: {e}")
 
         # Log to Obsidian vault (per NANS-09)
         if log_to_vault:
