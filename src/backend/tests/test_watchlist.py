@@ -82,3 +82,74 @@ class TestMergedWatchlist:
             results = orchestrator.run_morning_batch(mock_fetcher)
             assert len(results) > 0
             orchestrator.get_merged_watchlist.assert_called_once()
+
+    def test_run_morning_batch_sorts_orchestrator_output(self):
+        """Verify sort logic works with real OrchestratorOutput (not mocked dicts).
+
+        Regression test: .get() was used on OrchestratorOutput which has no .get() method.
+        """
+        from datetime import datetime
+        from src.backend.models.orchestrator_output import OrchestratorOutput
+
+        orchestrator = Orchestrator()
+        mock_fetcher = MagicMock(return_value={'current_price': 65000})
+
+        # Build two real OrchestratorOutput instances with different confidence
+        low_conf = OrchestratorOutput(
+            symbol='ETH',
+            timestamp=datetime.now(),
+            accumulation_score=40,
+            distribution_score=30,
+            confidence=55,
+            suggested_action='Long Spot',
+        )
+        high_conf = OrchestratorOutput(
+            symbol='BTC',
+            timestamp=datetime.now(),
+            accumulation_score=80,
+            distribution_score=10,
+            confidence=85,
+            suggested_action='Long Spot',
+        )
+
+        # analyze_symbol returns OrchestratorOutput — cycle through them
+        with patch.object(orchestrator, 'get_merged_watchlist', return_value=['BTC', 'ETH']), \
+             patch.object(orchestrator, 'analyze_symbol', side_effect=[high_conf, low_conf]):
+            results = orchestrator.run_morning_batch(mock_fetcher)
+            # Must not raise AttributeError
+            assert len(results) == 2
+            # Sorted by confidence descending
+            assert results[0].confidence >= results[1].confidence
+            assert results[0].symbol == 'BTC'
+            assert results[1].symbol == 'ETH'
+
+    def test_run_morning_batch_handles_mixed_results(self):
+        """Sort handles mix of OrchestratorOutput (success) and error dicts (failure)."""
+        from datetime import datetime
+        from src.backend.models.orchestrator_output import OrchestratorOutput
+
+        orchestrator = Orchestrator()
+        mock_fetcher = MagicMock(return_value={'current_price': 65000})
+
+        good_result = OrchestratorOutput(
+            symbol='BTC',
+            timestamp=datetime.now(),
+            accumulation_score=80,
+            distribution_score=10,
+            confidence=85,
+            suggested_action='Long Spot',
+        )
+
+        # analyze_symbol succeeds for BTC, raises for ETH (caught as error dict)
+        def side_effect(symbol, data):
+            if symbol == 'BTC':
+                return good_result
+            raise RuntimeError("API timeout")
+
+        with patch.object(orchestrator, 'get_merged_watchlist', return_value=['BTC', 'ETH']), \
+             patch.object(orchestrator, 'analyze_symbol', side_effect=side_effect):
+            results = orchestrator.run_morning_batch(mock_fetcher)
+            # BTC is actionable, ETH error dict has suggested_action='Avoid'
+            # So only BTC should appear (actionable filter removes Avoid)
+            assert len(results) == 1
+            assert results[0].symbol == 'BTC'
