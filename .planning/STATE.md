@@ -22,10 +22,10 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 
 ## Current Position
 
-Phase: 18 of 18 (Orchestrator Integration Fixes)
+Phase: 19 of 19 (DB Init & Test Isolation)
 Plan: 01 of 01 (complete)
-Status: Plan 18-01 complete — all plans executed
-Last activity: 2026-03-01 — Completed plan 18-01 (Orchestrator integration fixes)
+Status: Plan 19-01 complete — all plans executed
+Last activity: 2026-03-01 — Completed plan 19-01 (DB init and test isolation)
 
 Progress: [████████████████████████] 100%
 
@@ -100,6 +100,8 @@ Recent decisions affecting current work:
 - [Phase 17-test-coverage]: Use tmp_path fixture with patch.object for vault_logger file paths to avoid real filesystem writes in tests
 - [Phase 18]: Use model_dump(mode='json') for datetime-safe JSON serialization of Pydantic models in orchestrator journal
 - [Phase 18]: market_data parameter in NansenAgent.analyze() is intentionally unused - agent fetches own data via CLI/MCP
+- [Phase 19]: Module-level vault_logger override in nansen_agent.py: import vault_logger as module, set VAULT_PATH and SIGNAL_LOG_FILE attributes — keeps vault_logger.py untouched
+- [Phase 19]: NANSEN_VAULT_PATH added to Settings class with same hardcoded default as vault_logger.py — overridable via env var
 
 ### Pending Todos
 
@@ -112,9 +114,9 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 18-01-PLAN.md (Orchestrator integration fixes)
+Stopped at: Completed 19-01-PLAN.md (DB init and test isolation)
 Resume file: None
-Next action: Phase 18 complete - all integration bugs closed (INT-01 through INT-04)
+Next action: Phase 19 complete - DB-01 and DB-02 gaps closed, snapshot tables initialize at startup, Nansen tests DB-isolated
 
 ---
 

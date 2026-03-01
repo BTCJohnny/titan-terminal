@@ -55,7 +55,7 @@ See: `.planning/milestones/v0.3-ROADMAP.md`
 - [x] **Phase 16: Telegram Agent** - signals.db integration with 48h confluence tracking (gap closure pending) (completed 2026-03-01)
 - [x] **Phase 17: Test Coverage** - Comprehensive unit tests for both agents (completed 2026-03-01)
 - [x] **Phase 18: Orchestrator Integration Fixes** - Fix orchestrator Pydantic access, signature mismatches, and wire snapshot storage (gap closure) (completed 2026-03-01)
-- [ ] **Phase 19: Database Initialization & Test Isolation** - Wire init_snapshot_tables() at startup, mock DB calls in tests, resolve dead insert_ta_snapshot export (gap closure)
+- [x] **Phase 19: Database Initialization & Test Isolation** - Wire init_snapshot_tables() at startup, mock DB calls in tests, resolve dead insert_ta_snapshot export (gap closure) (completed 2026-03-01)
 
 ## Phase Details
 
@@ -189,7 +189,7 @@ Phases execute in numeric order: 1 → 2 → ... → 13 → 14 → 15 → 16 →
 | 16. Telegram Agent | 2/2 | Complete    | 2026-03-01 | - |
 | 17. Test Coverage | 3/3 | Complete    | 2026-03-01 | - |
 | 18. Orchestrator Integration Fixes | 1/1 | Complete    | 2026-03-01 | - |
-| 19. DB Init & Test Isolation | 0/1 | Pending     | - | - |
+| 19. DB Init & Test Isolation | 1/1 | Complete   | 2026-03-01 | - |
 
 ---
 *Roadmap updated: 2026-02-28 after v0.4 roadmap creation*
