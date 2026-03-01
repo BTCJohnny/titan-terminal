@@ -71,7 +71,7 @@ See: `.planning/milestones/v0.4-ROADMAP.md`
 - [x] **Phase 21: Watchlist + Orchestrator Integration** - Configurable watchlist, Telegram supplementation, Mentor SDK synthesis, deprecated file cleanup (completed 2026-03-01)
 - [x] **Phase 22: API Endpoints** - Complete /morning-report, /analyze/{symbol}, and /chat FastAPI endpoints (completed 2026-03-01)
 - [x] **Phase 23: Dashboard** - Next.js morning report with expandable signal cards and chat sidebar (completed 2026-03-01)
-- [ ] **Phase 24: Integration Tests** - End-to-end pipeline tests on BTC, ETH, SOL
+- [ ] **Phase 24: Integration Tests** - End-to-end pipeline tests on BTC, ETH, SOL (2 plans)
 
 ## Phase Details
 
@@ -150,10 +150,11 @@ Plans:
   1. BTC integration test runs TA → Nansen → Telegram → Risk and produces a complete OrchestratorOutput without errors
   2. ETH integration test runs the same full pipeline and produces a complete OrchestratorOutput without errors
   3. SOL integration test runs the same full pipeline and produces a complete OrchestratorOutput without errors
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 24-01: Integration tests for BTC, ETH, and SOL (full pipeline, real data, asserts on output shape)
+- [ ] 24-01-PLAN.md — Backend integration tests: BTC, ETH, SOL via live /morning-report and /analyze/{symbol} (Wave 1)
+- [ ] 24-02-PLAN.md — Dashboard rendering test: mock-vs-real fix + human verify (Wave 2)
 
 ## Progress
 
