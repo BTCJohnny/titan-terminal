@@ -9,7 +9,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from src.backend.config.settings import settings
+from ..config.settings import settings
 
 
 def get_signals_connection() -> sqlite3.Connection:
