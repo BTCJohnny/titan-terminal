@@ -44,7 +44,7 @@ Requirements for v0.5 Risk Agent + API + Dashboard. Each maps to roadmap phases.
 - [ ] **INTG-01**: End-to-end integration test for BTC (TA → Nansen → Telegram → Risk → Output)
 - [ ] **INTG-02**: End-to-end integration test for ETH (full pipeline)
 - [ ] **INTG-03**: End-to-end integration test for SOL (full pipeline)
-- [ ] **INTG-04**: Orchestrator chains all agents including RiskAgent in analyze_symbol()
+- [x] **INTG-04**: Orchestrator chains all agents including RiskAgent in analyze_symbol()
 - [ ] **INTG-05**: All deprecated agent files removed (clean codebase)
 
 ## Future Requirements
@@ -101,7 +101,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INTG-01 | Phase 24 | Pending |
 | INTG-02 | Phase 24 | Pending |
 | INTG-03 | Phase 24 | Pending |
-| INTG-04 | Phase 21 | Pending |
+| INTG-04 | Phase 21 | Complete |
 | INTG-05 | Phase 21 | Pending |
 
 **Coverage:**

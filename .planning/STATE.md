@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
-**Current focus:** Phase 20 — Risk Agent
+**Current focus:** Phase 21 — Watchlist + Orchestrator Integration
 
 ## Current Position
 
 Phase: 21 of 24 (Watchlist + Orchestrator Integration)
-Plan: 1 of 3 in current phase (plan 01 complete)
-Status: Phase 21 in progress — Plan 01 complete
-Last activity: 2026-03-01 — Phase 21 Plan 01 complete (Configurable Watchlist + Telegram Supplementation)
+Plan: 2 of 3 in current phase (plan 02 complete)
+Status: Phase 21 in progress — Plans 01 and 02 complete
+Last activity: 2026-03-01 — Phase 21 Plan 02 complete (Mentor SDK Synthesis replacing MentorCriticAgent)
 
-Progress: [█░░░░░░░░░] 15% (v0.5)
+Progress: [██░░░░░░░░] 20% (v0.5)
 
 ## Accumulated Context
 
@@ -51,6 +51,10 @@ Recent decisions affecting current work:
 - [Phase 21-01]: run_morning_batch() signature changed — market_data_fetcher first, symbols optional second
 - [Phase 21-01]: MENTOR_MODEL default updated to claude-opus-4-6 per CONTEXT.md locked decision
 - [Phase 21-01]: Telegram 72h lookback for watchlist supplementation (not 48h used elsewhere)
+- [Phase 21-02]: analyze_symbol() now returns OrchestratorOutput directly (not raw dict)
+- [Phase 21-02]: direction field added as proper OrchestratorOutput Pydantic field (Literal BULLISH/BEARISH/NO SIGNAL); @property direction removed
+- [Phase 21-02]: Mentor SDK call uses settings.MENTOR_MODEL at temperature=0.2, max_tokens=4000
+- [Phase 21-02]: Obsidian vault logging for confidence > 75 signals at agents/orchestrator/session-notes.md
 
 ### Pending Todos
 
@@ -64,10 +68,10 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 21-01-PLAN.md (Configurable Watchlist + Telegram Supplementation)
+Stopped at: Completed 21-02-PLAN.md (Mentor SDK Synthesis + Obsidian Vault Logging)
 Resume file: None
-Next action: /gsd:execute-phase 21 (Phase 21 — Plan 02)
+Next action: /gsd:execute-phase 21 (Phase 21 — Plan 03)
 
 ---
 
-*State updated: 2026-03-01 after Phase 21 Plan 01 completion*
+*State updated: 2026-03-01 after Phase 21 Plan 02 completion*
