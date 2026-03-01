@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: 21 of 24 (Watchlist + Orchestrator Integration)
-Plan: 3 of 3 in current phase (plan 03 complete — phase 21 complete)
-Status: Phase 21 complete — all 3 plans done
-Last activity: 2026-03-01 — Phase 21 Plan 03 complete (Deprecated Agent Stubs Deletion)
+Plan: 4 of 4 in current phase (plan 04 complete — phase 21 complete)
+Status: Phase 21 complete — all 4 plans done
+Last activity: 2026-03-01 — Phase 21 Plan 04 complete (run_morning_batch Sort Fix)
 
 Progress: [██░░░░░░░░] 20% (v0.5)
 
@@ -56,6 +56,7 @@ Recent decisions affecting current work:
 - [Phase 21-02]: Mentor SDK call uses settings.MENTOR_MODEL at temperature=0.2, max_tokens=4000
 - [Phase 21-02]: Obsidian vault logging for confidence > 75 signals at agents/orchestrator/session-notes.md
 - [Phase 21-watchlist-orchestrator-integration]: Deprecated stubs (nansen.py, telegram.py, risk_levels.py, mentor.py) deleted — production agent module now clean
+- [Phase 21-04]: _get_field() module-level helper added to orchestrator.py — type-safe field extraction for mixed OrchestratorOutput/error-dict result lists in run_morning_batch()
 
 ### Pending Todos
 
@@ -69,10 +70,10 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 21-03-PLAN.md (Deprecated Agent Stubs Deletion — Phase 21 complete)
+Stopped at: Completed 21-04-PLAN.md (run_morning_batch Sort Fix — Phase 21 complete)
 Resume file: None
 Next action: /gsd:execute-phase 22 (Phase 22 — FastAPI Endpoints)
 
 ---
 
-*State updated: 2026-03-01 after Phase 21 Plan 03 completion (Phase 21 complete)*
+*State updated: 2026-03-01 after Phase 21 Plan 04 completion (Phase 21 complete)*
