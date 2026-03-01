@@ -133,26 +133,27 @@ class Orchestrator(BaseAgent):
 
         return final_signal
 
-    def _synthesize_results(self, symbol: str, wyckoff: dict, nansen: dict,
-                           telegram: dict, ta: dict, risk: dict,
+    def _synthesize_results(self, symbol: str, wyckoff: dict, nansen: "NansenSignal",
+                           telegram: "TelegramSignal", ta: dict, risk: dict,
                            past_patterns: list, wyckoff_stats: Optional[dict]) -> dict:
         """Synthesize all specialist outputs into a unified signal."""
 
         # Extract key data points
+        # wyckoff, ta, risk are plain dicts; nansen and telegram are Pydantic models
         wyckoff_composite = wyckoff.get('composite_analysis', {})
-        nansen_overall = nansen.get('overall_signal', {})
+        nansen_overall = nansen.overall_signal
         ta_overall = ta.get('overall', {})
         risk_verdict = risk.get('final_verdict', {})
 
         # Calculate accumulation/distribution score
         wyckoff_bias = wyckoff_composite.get('overall_bias', 'neutral')
-        nansen_bias = nansen_overall.get('bias', 'neutral')
+        nansen_bias = nansen_overall.bias
         ta_bias = ta_overall.get('bias', 'neutral')
 
         acc_score, dist_score = self._calculate_acc_dist_scores(
             wyckoff_bias, nansen_bias, ta_bias,
             wyckoff_composite.get('confluence_score', 50),
-            nansen_overall.get('confidence', 50),
+            nansen_overall.confidence,
             ta_overall.get('confidence', 50)
         )
 
@@ -165,9 +166,9 @@ class Orchestrator(BaseAgent):
         # Calculate confidence (weighted average)
         confidence = self._calculate_confidence(
             wyckoff_composite.get('confluence_score', 50),
-            nansen_overall.get('confidence', 50),
+            nansen_overall.confidence,
             ta_overall.get('confidence', 50),
-            telegram.get('confidence', 0),
+            telegram.confidence,
             risk_verdict.get('confidence', 50)
         )
 
@@ -189,9 +190,9 @@ class Orchestrator(BaseAgent):
             'suggested_action': suggested_action,
             'wyckoff_phase': wyckoff_composite.get('overall_phase'),
             'wyckoff_summary': wyckoff_composite.get('notes'),
-            'nansen_summary': nansen_overall.get('key_insights', []),
+            'nansen_summary': nansen_overall.key_insights,
             'ta_summary': ta_overall.get('notes'),
-            'telegram_signals': telegram.get('relevant_signals', []),
+            'telegram_signals': [s.model_dump() for s in telegram.relevant_signals],
             'entry_zone': risk.get('entry_zone', {}),
             'stop_loss': risk.get('stop_loss', {}).get('price'),
             'tp1': risk.get('take_profits', {}).get('tp1', {}).get('price'),
@@ -287,8 +288,8 @@ class Orchestrator(BaseAgent):
 
         return signal
 
-    def _record_to_journal(self, signal: dict, wyckoff: dict, nansen: dict,
-                          telegram: dict, ta: dict, risk: dict,
+    def _record_to_journal(self, signal: dict, wyckoff: dict, nansen: "NansenSignal",
+                          telegram: "TelegramSignal", ta: dict, risk: dict,
                           mentor: dict) -> int:
         """Record signal to SignalJournal for self-learning."""
 
@@ -308,8 +309,8 @@ class Orchestrator(BaseAgent):
             'tp1': signal.get('tp1'),
             'tp2': signal.get('tp2'),
             'risk_reward': signal.get('risk_reward'),
-            'nansen_data': json.dumps(nansen),
-            'telegram_data': json.dumps(telegram),
+            'nansen_data': json.dumps(nansen.model_dump()),
+            'telegram_data': json.dumps(telegram.model_dump()),
             'wyckoff_data': json.dumps(wyckoff),
             'ta_data': json.dumps(ta),
             'risk_data': json.dumps(risk),
