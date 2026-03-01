@@ -26,7 +26,13 @@ class Settings:
 
     # Model Configuration
     MODEL_NAME: str = os.getenv("MODEL_NAME", "claude-sonnet-4-20250514")
-    MENTOR_MODEL: str = os.getenv("MENTOR_MODEL", "claude-sonnet-4-20250514")
+    MENTOR_MODEL: str = os.getenv("MENTOR_MODEL", "claude-opus-4-6")
+
+    # Watchlist — configurable via env var (comma-separated) or defaults to core symbols
+    WATCHLIST: list[str] = [
+        s.strip() for s in
+        os.getenv("WATCHLIST", "BTC,ETH,SOL,AVAX,ARB,LINK").split(",")
+    ]
 
     # Database
     SIGNALS_DB_PATH: str = os.getenv("SIGNALS_DB_PATH", "/Users/johnny_main/Developer/data/signals/signals.db")

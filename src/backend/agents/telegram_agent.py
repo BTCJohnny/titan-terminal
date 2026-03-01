@@ -57,6 +57,37 @@ def _query_signals(symbol: str, hours: int = 48, limit: int = 20) -> list[dict]:
         return []
 
 
+def get_recent_signal_symbols(hours: int = 72) -> list[str]:
+    """Get distinct symbols from Telegram signals in the last N hours.
+
+    Used for watchlist supplementation — merges Telegram-sourced symbols
+    into the configured watchlist.
+
+    Args:
+        hours: Lookback window (default 72h per user decision)
+
+    Returns:
+        List of unique symbol strings (uppercased, deduplicated)
+    """
+    try:
+        conn = get_signals_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT DISTINCT UPPER(symbol) as symbol
+            FROM signals
+            WHERE status IN ('pending', 'active')
+            AND datetime(created_at) > datetime('now', ? || ' hours')
+            ORDER BY symbol
+        """, (f"-{hours}",))
+        symbols = [row['symbol'] for row in cursor.fetchall()]
+        conn.close()
+        logger.info(f"Found {len(symbols)} unique symbols from Telegram signals in last {hours}h")
+        return symbols
+    except Exception as e:
+        logger.warning(f"Failed to query Telegram signal symbols: {e}")
+        return []
+
+
 class TelegramAgent:
     """Telegram signal scanning agent.
 
