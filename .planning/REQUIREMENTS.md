@@ -24,12 +24,12 @@ Requirements for v0.5 Risk Agent + API + Dashboard. Each maps to roadmap phases.
 
 ### API
 
-- [ ] **API-01**: /morning-report endpoint returns top 3-5 opportunities ranked by confluence score
-- [ ] **API-02**: /morning-report runs analysis on-demand (not cached/scheduled)
-- [ ] **API-03**: /morning-report response includes TA, on-chain, Telegram, and risk data per symbol
+- [x] **API-01**: /morning-report endpoint returns top 3-5 opportunities ranked by confluence score
+- [x] **API-02**: /morning-report runs analysis on-demand (not cached/scheduled)
+- [x] **API-03**: /morning-report response includes TA, on-chain, Telegram, and risk data per symbol
 - [ ] **API-04**: /chat endpoint accepts natural language query and returns signal Q&A
 - [ ] **API-05**: /chat uses Anthropic SDK to generate natural language summaries from pipeline data
-- [ ] **API-06**: /analyze/{symbol} runs full pipeline (TA + Nansen + Telegram + Risk) for a single symbol
+- [x] **API-06**: /analyze/{symbol} runs full pipeline (TA + Nansen + Telegram + Risk) for a single symbol
 
 ### Dashboard
 
@@ -87,12 +87,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | WTCH-01 | Phase 21 | Complete |
 | WTCH-02 | Phase 21 | Complete |
 | WTCH-03 | Phase 21 | Complete |
-| API-01 | Phase 22 | Pending |
-| API-02 | Phase 22 | Pending |
-| API-03 | Phase 22 | Pending |
+| API-01 | Phase 22 | Complete |
+| API-02 | Phase 22 | Complete |
+| API-03 | Phase 22 | Complete |
 | API-04 | Phase 22 | Pending |
 | API-05 | Phase 22 | Pending |
-| API-06 | Phase 22 | Pending |
+| API-06 | Phase 22 | Complete |
 | DASH-01 | Phase 23 | Pending |
 | DASH-02 | Phase 23 | Pending |
 | DASH-03 | Phase 23 | Pending |

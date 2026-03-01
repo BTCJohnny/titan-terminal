@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Risk Agent + API + Dashboard
 status: unknown
-last_updated: "2026-03-01T12:44:41.719Z"
+last_updated: "2026-03-01T13:51:12.995Z"
 progress:
-  total_phases: 2
+  total_phases: 3
   completed_phases: 2
-  total_plans: 7
-  completed_plans: 7
+  total_plans: 9
+  completed_plans: 8
 ---
 
 # Project State
@@ -18,14 +18,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
-**Current focus:** Phase 21 — Watchlist + Orchestrator Integration
+**Current focus:** Phase 22 — FastAPI Endpoints
 
 ## Current Position
 
-Phase: 21 of 24 (Watchlist + Orchestrator Integration)
-Plan: 4 of 4 in current phase (plan 04 complete — phase 21 complete)
-Status: Phase 21 complete — all 4 plans done
-Last activity: 2026-03-01 — Phase 21 Plan 04 complete (run_morning_batch Sort Fix)
+Phase: 22 of 24 (FastAPI Endpoints)
+Plan: 1 of 2 in current phase (plan 01 complete — /morning-report and /analyze/{symbol} endpoints)
+Status: Phase 22 in progress — plan 01 done
+Last activity: 2026-03-01 — Phase 22 Plan 01 complete (API Endpoints — real OrchestratorOutput)
 
 Progress: [██░░░░░░░░] 20% (v0.5)
 
@@ -57,6 +57,8 @@ Recent decisions affecting current work:
 - [Phase 21-02]: Obsidian vault logging for confidence > 75 signals at agents/orchestrator/session-notes.md
 - [Phase 21-watchlist-orchestrator-integration]: Deprecated stubs (nansen.py, telegram.py, risk_levels.py, mentor.py) deleted — production agent module now clean
 - [Phase 21-04]: _get_field() module-level helper added to orchestrator.py — type-safe field extraction for mixed OrchestratorOutput/error-dict result lists in run_morning_batch()
+- [Phase 22]: No caching on /morning-report — always on-demand via run_morning_batch()
+- [Phase 22]: Dynamic _MODULE_PATH detection for pytest patch namespace compatibility
 
 ### Pending Todos
 
@@ -70,10 +72,10 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 21-04-PLAN.md (run_morning_batch Sort Fix — Phase 21 complete)
+Stopped at: Completed 22-01-PLAN.md (API Endpoints — real OrchestratorOutput)
 Resume file: None
-Next action: /gsd:execute-phase 22 (Phase 22 — FastAPI Endpoints)
+Next action: /gsd:execute-phase 22 (Phase 22 Plan 02 — next API endpoint plan)
 
 ---
 
-*State updated: 2026-03-01 after Phase 21 Plan 04 completion (Phase 21 complete)*
+*State updated: 2026-03-01 after Phase 22 Plan 01 completion*
