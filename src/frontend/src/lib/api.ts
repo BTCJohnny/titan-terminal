@@ -1,88 +1,18 @@
 /**
  * API client for Titan Terminal backend
+ * Matches Phase 22 FastAPI endpoints exactly.
  */
 
-// Force fallback if env var not picked up (Next.js client-side quirk)
-// Backend runs on port 8001 by default
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8001"
+import type { AnalyzeResponse, MorningReportResponse, ChatResponse } from "./types"
 
-// Debug: log the API base URL on load
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+
 console.log("[Titan API] Base URL:", API_BASE)
-console.log("[Titan API] Env var:", process.env.NEXT_PUBLIC_API_URL)
-
-export interface WhaleAlert {
-  symbol: string
-  alert_type: 'whale_buy' | 'whale_sell' | 'fresh_wallet' | 'smart_accumulation'
-  amount_usd: number
-  description: string
-  timestamp: string
-  severity: 'high' | 'medium' | 'low'
-}
-
-export interface MarketContext {
-  btc_dominance: number
-  btc_price: number
-  btc_24h_change: number
-  total_market_cap: number
-  funding_skew: 'long_heavy' | 'short_heavy' | 'neutral'
-  overall_mood: 'greed' | 'fear' | 'neutral'
-  mood_score: number
-}
-
-export interface Signal {
-  symbol: string
-  accumulation_score: number | null
-  distribution_score: number | null
-  confidence: number
-  suggested_action: string
-  wyckoff_phase: string | null
-  entry_zone: { low: number; high: number; ideal: number } | null
-  stop_loss: number | null
-  tp1: number | null
-  tp2: number | null
-  risk_reward: number | null
-  mentor_verdict: string | null
-  mentor_concerns: string[] | null
-  learning_context: string | null
-  signal_id: number | null
-  // Smart money fields
-  unusual_activity_score: number | null
-  smart_flow_usd: number | null
-  whale_count: number | null
-  fresh_wallets: number | null
-  narrative: string | null
-  price_24h_change: number | null
-  volume_24h: number | null
-  sparkline: number[] | null
-}
-
-export interface MorningReport {
-  timestamp: string
-  batch_id: string
-  signals: Signal[]
-  market_summary: string | null
-  market_context: MarketContext | null
-  whale_alerts: WhaleAlert[] | null
-}
-
-export interface ChatResponse {
-  response: string
-  timestamp: string
-}
-
-export interface Stats {
-  total_signals: number
-  outcomes: Record<string, number>
-  win_rate: number
-  avg_pnl: number
-  total_closed_trades: number
-}
 
 /**
- * Health check - test backend connectivity AND /api/* CORS
+ * Health check — tests both GET / and GET /api/health-test (CORS on API routes)
  */
 export async function checkHealth(): Promise<{ ok: boolean; message: string }> {
-  // Test root endpoint first
   const rootUrl = `${API_BASE}/`
   console.log("[Titan API] Health check (root):", rootUrl)
   try {
@@ -93,7 +23,6 @@ export async function checkHealth(): Promise<{ ok: boolean; message: string }> {
     const rootData = await rootRes.json()
     console.log("[Titan API] Root OK:", rootData)
 
-    // Test /api/* endpoint to verify CORS on API routes
     const apiUrl = `${API_BASE}/api/health-test`
     console.log("[Titan API] Health check (api):", apiUrl)
     const apiRes = await fetch(apiUrl, { method: "GET" })
@@ -110,79 +39,48 @@ export async function checkHealth(): Promise<{ ok: boolean; message: string }> {
   }
 }
 
-export async function getMorningReport(refresh: boolean = false): Promise<MorningReport> {
-  const url = `${API_BASE}/api/morning-report?refresh=${refresh}`
+/**
+ * Fetch the morning report — always on-demand, no caching.
+ * GET /api/morning-report
+ */
+export async function getMorningReport(): Promise<MorningReportResponse> {
+  const url = `${API_BASE}/api/morning-report`
   console.log("[Titan API] Fetching morning report:", url)
   const res = await fetch(url)
   if (!res.ok) {
-    throw new Error(`Failed to fetch morning report: ${res.statusText}`)
+    throw new Error(`Failed to fetch morning report: ${res.status} ${res.statusText}`)
   }
   return res.json()
 }
 
-export async function analyzeSymbol(symbol: string): Promise<Signal> {
-  const url = `${API_BASE}/api/analyze/${symbol}`
+/**
+ * Analyze a single symbol on demand.
+ * GET /api/analyze/{symbol}
+ */
+export async function analyzeSymbol(symbol: string): Promise<AnalyzeResponse> {
+  const url = `${API_BASE}/api/analyze/${encodeURIComponent(symbol)}`
   console.log("[Titan API] Analyzing symbol:", url)
   const res = await fetch(url)
   if (!res.ok) {
-    throw new Error(`Failed to analyze ${symbol}: ${res.statusText}`)
+    throw new Error(`Failed to analyze ${symbol}: ${res.status} ${res.statusText}`)
   }
   return res.json()
 }
 
-export async function sendChat(message: string, context?: Record<string, unknown>): Promise<ChatResponse> {
+/**
+ * Send a chat question to the backend.
+ * POST /api/chat — body: {question: string}
+ */
+export async function sendChat(question: string): Promise<ChatResponse> {
   const url = `${API_BASE}/api/chat`
   console.log("[Titan API] Sending chat:", url)
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message, context }),
+    body: JSON.stringify({ question }),
   })
   if (!res.ok) {
-    throw new Error(`Chat error: ${res.statusText}`)
-  }
-  return res.json()
-}
-
-export async function recordOutcome(
-  signalId: number,
-  outcome: string,
-  pnl?: number,
-  notes?: string
-): Promise<void> {
-  const url = `${API_BASE}/api/outcome`
-  console.log("[Titan API] Recording outcome:", url)
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      signal_id: signalId,
-      outcome,
-      pnl,
-      notes,
-    }),
-  })
-  if (!res.ok) {
-    throw new Error(`Failed to record outcome: ${res.statusText}`)
-  }
-}
-
-export async function getStats(): Promise<Stats> {
-  const url = `${API_BASE}/api/stats`
-  console.log("[Titan API] Fetching stats:", url)
-  const res = await fetch(url)
-  if (!res.ok) {
-    throw new Error(`Failed to fetch stats: ${res.statusText}`)
-  }
-  return res.json()
-}
-
-export async function getHistory(limit: number = 20): Promise<{ signals: Signal[] }> {
-  const url = `${API_BASE}/api/history?limit=${limit}`
-  console.log("[Titan API] Fetching history:", url)
-  const res = await fetch(url)
-  if (!res.ok) {
-    throw new Error(`Failed to fetch history: ${res.statusText}`)
+    throw new Error(`Chat error: ${res.status} ${res.statusText}`)
   }
   return res.json()
 }
