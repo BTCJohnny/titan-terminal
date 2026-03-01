@@ -2,29 +2,17 @@
 
 ## What This Is
 
-A multi-agent crypto trading dashboard that aggregates technical analysis, on-chain intelligence, and alpha signals into actionable trading opportunities. Backend in Python/FastAPI with 9 specialized agents, frontend in Next.js, type-safe Pydantic output models, comprehensive test coverage, and production-ready data infrastructure.
+A multi-agent crypto trading dashboard that aggregates technical analysis, on-chain intelligence, and Telegram signal tracking into actionable trading opportunities. Backend in Python/FastAPI with 9 specialized agents (3 TA subagents, TAMentor, NansenAgent, TelegramAgent, RiskAgent, Orchestrator), frontend in Next.js, type-safe Pydantic output models, comprehensive test coverage, and production-ready data infrastructure.
 
 ## Core Value
 
 Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
 
-## Current Milestone: v0.4 Nansen Agent + Telegram Agent
-
-**Goal:** Build two production-ready agents: Nansen on-chain agent using live Nansen MCP tools, and Telegram signal agent reading from the live signals database.
-
-**Target features:**
-- Nansen Agent with 5-signal framework (exchange flows, smart money, whales, top PnL, fresh wallets)
-- Funding rate from Hyperliquid perps (via Nansen MCP if available)
-- Telegram Agent connected to signals.db with 48h query window
-- New DB tables: onchain_snapshots and ta_snapshots
-- Vault logging for Nansen analysis to Obsidian
-- Full test coverage for both agents
-
 ## Current State
 
-**Shipped:** v0.3 TA Ensemble (2026-02-28)
+**Shipped:** v0.4 Nansen Agent + Telegram Agent (2026-03-01)
 
-**Codebase:** 9,860 Python LOC across 9 agents, 10 Pydantic models, 158 tests (11 smoke + 147 unit).
+**Codebase:** 12,838 Python LOC across 9 agents, 10 Pydantic models, 213 tests (11 smoke + 202 unit).
 
 **What's Working:**
 - 3 pure computational subagents (WeeklySubagent, DailySubagent, FourHourSubagent) with weighted confluence scoring
@@ -32,14 +20,18 @@ Surface high-conviction trading setups by combining multi-timeframe technical an
 - Wyckoff pattern detection (Phase A-E, springs, upthrusts, SOS/SOW)
 - Alpha factors (momentum score, volume anomaly, MA deviation, volatility)
 - TAMentor with direct Anthropic SDK and 4 conflict resolution rules
-- Extended TASignal model with optional wyckoff and alpha_factors fields
+- NansenAgent with 5-signal on-chain framework via Nansen CLI subprocess calls
+- Obsidian vault logging for every Nansen analysis
+- TelegramAgent with signals.db integration, 48h query window, confluence counting
+- Database infrastructure: onchain_snapshots and ta_snapshots tables initialized at startup
+- End-to-end orchestrator flow: analyze_symbol() chains NansenAgent + TelegramAgent → synthesis → journal
 - OHLCV client with CCXT/Binance for BTC/ETH/SOL on 1w/1d/4h timeframes
 
 **Agent Architecture:**
 - `ta_ensemble/` — WeeklySubagent, DailySubagent, FourHourSubagent, TAMentor
-- Root agents — NansenAgent, TelegramAgent, RiskAgent, Orchestrator (shells)
+- Root agents — NansenAgent (production), TelegramAgent (production), RiskAgent (shell), Orchestrator (production)
 
-**Test Status:** 158/158 tests passing (1 pre-existing smoke test failure, unrelated)
+**Test Status:** 213/213 tests passing
 
 ## Requirements
 
@@ -80,12 +72,22 @@ Surface high-conviction trading setups by combining multi-timeframe technical an
 - ✓ Unit tests for Wyckoff detection — v0.3
 - ✓ Unit tests for subagents with mocked OHLCV — v0.3
 - ✓ Unit tests for TAMentor with mocked responses — v0.3
+- ✓ NansenAgent with 5-signal framework (exchange flows, smart money, whales, top PnL, fresh wallets) — v0.4
+- ✓ Funding rate overlay from Hyperliquid perps — v0.4
+- ✓ Telegram agent connected to signals.db with 48h query window — v0.4
+- ✓ NansenSignal Pydantic model with all MODL-01 fields — v0.4
+- ✓ TelegramSignal Pydantic model with all MODL-02 fields — v0.4
+- ✓ onchain_snapshots and ta_snapshots tables in signals.db — v0.4
+- ✓ Database path from settings, not hardcoded — v0.4
+- ✓ Obsidian vault logging for Nansen analysis — v0.4
+- ✓ Graceful handling of missing MCP data — v0.4
+- ✓ Unit tests for Nansen agent (28 tests) — v0.4
+- ✓ Unit tests for Telegram agent (16 tests) — v0.4
+- ✓ Unit tests for DB snapshot operations (13 tests) — v0.4
+- ✓ End-to-end orchestrator integration — v0.4
 
-### Active (v1.0+)
+### Active
 
-- [ ] Nansen agent with 5-signal accumulation/distribution framework
-- [ ] Funding rate overlay from Hyperliquid perps
-- [ ] Telegram agent connected to signals.db
 - [ ] Risk/Levels agent (2% max risk, 3:1 min R:R, S/R-based stops)
 - [ ] Integration tests on BTC, ETH, SOL
 - [ ] FastAPI /morning-report endpoint (top opportunities)
@@ -99,6 +101,7 @@ Surface high-conviction trading setups by combining multi-timeframe technical an
 - Automated trade execution — this is analysis/signals only
 - Mobile app — web dashboard first
 - Real-time websocket streaming — polling sufficient for v1
+- Modifying existing signals table — snapshot tables are append-only
 
 ## Context
 
@@ -113,6 +116,7 @@ Surface high-conviction trading setups by combining multi-timeframe technical an
 - Analysis: `src/backend/analysis/` — indicators, wyckoff, alpha_factors modules
 - Data: `src/backend/data/` — OHLCV client for market data
 - Models: `src/backend/models/` — Pydantic models for all signals
+- Database: `src/backend/db/` — signals_db module for snapshot storage
 
 **TAMentor Conflict Resolution:**
 - Higher timeframe wins direction (Weekly/Daily override 4H)
@@ -165,6 +169,11 @@ Scoring: 4-5 bullish → ACCUMULATION, 2-3 → MIXED, 0-1 → DISTRIBUTION
 | Pure computational subagents (v0.3) | Deterministic analysis, no LLM calls for indicators | ✓ Good |
 | Weighted confluence scoring (v0.3) | RSI (20), MACD (25), ADX (multiplier), Wyckoff (15-30) for robust signals | ✓ Good |
 | Direct Anthropic SDK for TAMentor (v0.3) | Cleaner implementation, explicit conflict rules in prompt | ✓ Good |
+| Nansen CLI subprocess over MCP (v0.4) | Production-ready without Claude Code dependency, graceful error handling | ✓ Good |
+| Pure computational TelegramAgent (v0.4) | No LLM calls, direct DB query + confluence logic, deterministic | ✓ Good |
+| Separate snapshot tables (v0.4) | Append-only snapshots preserve history without modifying signals table | ✓ Good |
+| Module-level vault path override (v0.4) | Import vault_logger as module, override VAULT_PATH attribute — keeps vault_logger.py untouched | ✓ Good |
+| model_dump(mode='json') for serialization (v0.4) | Handles datetime fields cleanly for Pydantic JSON serialization | ✓ Good |
 
 ---
-*Last updated: 2026-02-28 after v0.4 milestone started*
+*Last updated: 2026-03-01 after v0.4 milestone*

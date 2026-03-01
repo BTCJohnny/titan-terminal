@@ -2,6 +2,35 @@
 
 ## Completed Milestones
 
+### v0.4 Nansen Agent + Telegram Agent — Shipped 2026-03-01
+
+**Delivered:** Two production-ready agents: NansenAgent with 5-signal on-chain framework (exchange flows, smart money, whales, top PnL, fresh wallets) via Nansen CLI with Obsidian vault logging, and TelegramAgent with signals.db integration and 48h confluence tracking. End-to-end orchestrator integration verified with 57 new tests.
+
+**Stats:** 6 phases, 13 plans, 12,838 Python LOC (+2,978 from v0.3), 213 tests total (+55)
+
+**Key accomplishments:**
+1. NansenSignal & TelegramSignal Pydantic models with type-safe nested signal structures
+2. NansenAgent with 5-signal on-chain framework via Nansen CLI subprocess calls
+3. Signal aggregation logic: 4-5 bullish = ACCUMULATION, 0-1 = DISTRIBUTION, contrarian funding rate overlay
+4. Obsidian vault logging for every Nansen analysis (signal-combinations.md)
+5. TelegramAgent with signals.db integration, 48h query window, and confluence counting
+6. 57 unit tests covering all Nansen, Telegram, and DB snapshot functionality
+7. End-to-end orchestrator integration fixes (Pydantic attribute access, model_dump serialization)
+8. Database initialization at startup with onchain_snapshots and ta_snapshots tables
+
+**Tech Debt Resolved from v0.3:**
+- Pre-existing smoke test for daily subagent now working with computational pipeline
+
+**Tech Debt Accepted:**
+- `insert_ta_snapshot` is dead code (forward infrastructure for future TA agent)
+- `funding_rate` fetched/stored but not read by `_synthesize_results()`
+- `datetime.utcnow()` deprecated in Python 3.12 across 3 files
+- SUMMARY frontmatter missing `requirements_completed` for 8 requirements (documentation gap only)
+
+**Archive:** `.planning/milestones/v0.4-*`
+
+---
+
 ### v0.3 TA Ensemble — Shipped 2026-02-28
 
 **Delivered:** Complete TA analysis pipeline with 3 pure computational subagents (Weekly, Daily, 4H), Wyckoff pattern detection, alpha factors, and TAMentor synthesis with conflict resolution.
@@ -77,16 +106,16 @@
 
 ## Future Milestones
 
-### v1.0 Core Agents
-- Nansen 5-signal framework
-- Risk/Levels agent
+### v0.5 Risk Agent + Integration
+- Risk/Levels agent (2% max risk, 3:1 min R:R, S/R-based stops)
 - Integration tests on BTC, ETH, SOL
+- Complete market_data.py migration
 
-### v1.1 API & Dashboard
+### v1.0 API & Dashboard
 - FastAPI endpoints (/morning-report, /chat)
 - Next.js dashboard with signal cards
 - Chat interface
 
 ---
 
-*Last updated: 2026-02-28*
+*Last updated: 2026-03-01*
