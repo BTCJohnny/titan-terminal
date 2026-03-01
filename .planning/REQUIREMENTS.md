@@ -78,37 +78,37 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| RISK-01 | — | Pending |
-| RISK-02 | — | Pending |
-| RISK-03 | — | Pending |
-| RISK-04 | — | Pending |
-| RISK-05 | — | Pending |
-| RISK-06 | — | Pending |
-| WTCH-01 | — | Pending |
-| WTCH-02 | — | Pending |
-| WTCH-03 | — | Pending |
-| API-01 | — | Pending |
-| API-02 | — | Pending |
-| API-03 | — | Pending |
-| API-04 | — | Pending |
-| API-05 | — | Pending |
-| API-06 | — | Pending |
-| DASH-01 | — | Pending |
-| DASH-02 | — | Pending |
-| DASH-03 | — | Pending |
-| DASH-04 | — | Pending |
-| DASH-05 | — | Pending |
-| INTG-01 | — | Pending |
-| INTG-02 | — | Pending |
-| INTG-03 | — | Pending |
-| INTG-04 | — | Pending |
-| INTG-05 | — | Pending |
+| RISK-01 | Phase 20 | Pending |
+| RISK-02 | Phase 20 | Pending |
+| RISK-03 | Phase 20 | Pending |
+| RISK-04 | Phase 20 | Pending |
+| RISK-05 | Phase 20 | Pending |
+| RISK-06 | Phase 20 | Pending |
+| WTCH-01 | Phase 21 | Pending |
+| WTCH-02 | Phase 21 | Pending |
+| WTCH-03 | Phase 21 | Pending |
+| API-01 | Phase 22 | Pending |
+| API-02 | Phase 22 | Pending |
+| API-03 | Phase 22 | Pending |
+| API-04 | Phase 22 | Pending |
+| API-05 | Phase 22 | Pending |
+| API-06 | Phase 22 | Pending |
+| DASH-01 | Phase 23 | Pending |
+| DASH-02 | Phase 23 | Pending |
+| DASH-03 | Phase 23 | Pending |
+| DASH-04 | Phase 23 | Pending |
+| DASH-05 | Phase 23 | Pending |
+| INTG-01 | Phase 24 | Pending |
+| INTG-02 | Phase 24 | Pending |
+| INTG-03 | Phase 24 | Pending |
+| INTG-04 | Phase 21 | Pending |
+| INTG-05 | Phase 21 | Pending |
 
 **Coverage:**
 - v0.5 requirements: 25 total
-- Mapped to phases: 0
-- Unmapped: 25 ⚠️
+- Mapped to phases: 25
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-01*
-*Last updated: 2026-03-01 after initial definition*
+*Last updated: 2026-03-01 after v0.5 roadmap creation — traceability complete*
