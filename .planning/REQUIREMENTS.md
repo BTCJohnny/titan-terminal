@@ -36,8 +36,8 @@ Requirements for milestone v0.4: Nansen Agent + Telegram Agent.
 
 ### Database
 
-- [x] **DB-01**: Create `onchain_snapshots` table in signals.db with all Nansen signal fields
-- [x] **DB-02**: Create `ta_snapshots` table in signals.db with weekly/daily/4h direction/confidence fields
+- [ ] **DB-01**: Create `onchain_snapshots` table in signals.db with all Nansen signal fields
+- [ ] **DB-02**: Create `ta_snapshots` table in signals.db with weekly/daily/4h direction/confidence fields
 - [x] **DB-03**: Snapshot tables are append-only — never modify existing signals table
 - [x] **DB-04**: Database path loaded from settings/config, not hardcoded
 
@@ -99,8 +99,8 @@ Requirements for milestone v0.4: Nansen Agent + Telegram Agent.
 | TELE-06 | Phase 18 (gap closure) | Complete |
 | MODL-01 | Phase 14 | Complete |
 | MODL-02 | Phase 14 | Complete |
-| DB-01 | Phase 18 (gap closure) | Complete |
-| DB-02 | Phase 14 | Complete |
+| DB-01 | Phase 19 (gap closure) | Pending |
+| DB-02 | Phase 19 (gap closure) | Pending |
 | DB-03 | Phase 14 | Complete |
 | DB-04 | Phase 18 (gap closure) | Complete |
 | TEST-01 | Phase 17 | Complete |
@@ -125,6 +125,7 @@ Requirements for milestone v0.4: Nansen Agent + Telegram Agent.
 - Phase 16 (Telegram Agent): 5 requirements
 - Phase 17 (Test Coverage): 10 requirements
 - Phase 18 (Orchestrator Integration Fixes): 6 requirements (gap closure)
+- Phase 19 (DB Init & Test Isolation): 2 requirements (gap closure)
 
 ---
 *Requirements defined: 2026-02-28*

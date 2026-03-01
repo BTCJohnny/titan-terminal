@@ -5,7 +5,7 @@
 - ✅ **v0.1 Project Scaffold** - Phases 1-4 (shipped 2026-02-26)
 - ✅ **v0.2 Data Foundation** - Phases 5-7 (shipped 2026-02-27)
 - ✅ **v0.3 TA Ensemble** - Phases 8-13 (shipped 2026-02-28)
-- 🚧 **v0.4 Nansen Agent + Telegram Agent** - Phases 14-18 (in progress)
+- 🚧 **v0.4 Nansen Agent + Telegram Agent** - Phases 14-19 (in progress)
 
 ## Phases
 
@@ -55,6 +55,7 @@ See: `.planning/milestones/v0.3-ROADMAP.md`
 - [x] **Phase 16: Telegram Agent** - signals.db integration with 48h confluence tracking (gap closure pending) (completed 2026-03-01)
 - [x] **Phase 17: Test Coverage** - Comprehensive unit tests for both agents (completed 2026-03-01)
 - [x] **Phase 18: Orchestrator Integration Fixes** - Fix orchestrator Pydantic access, signature mismatches, and wire snapshot storage (gap closure) (completed 2026-03-01)
+- [ ] **Phase 19: Database Initialization & Test Isolation** - Wire init_snapshot_tables() at startup, mock DB calls in tests, resolve dead insert_ta_snapshot export (gap closure)
 
 ## Phase Details
 
@@ -149,6 +150,20 @@ Plans:
 Plans:
 - [ ] 18-01-PLAN.md - Fix orchestrator Pydantic access, NansenAgent signature, snapshot wiring, and import style
 
+### Phase 19: Database Initialization & Test Isolation
+**Goal**: Ensure snapshot tables are initialized at startup and test suite doesn't touch real databases
+**Depends on**: Phase 18
+**Requirements**: DB-01, DB-02
+**Gap Closure:** Closes DB-01 partial, DB-02 partial, and test isolation integration gap from v0.4 audit
+**Success Criteria** (what must be TRUE):
+  1. init_snapshot_tables() is called during orchestrator/app startup before any agent runs
+  2. test_nansen_agent.py mocks insert_onchain_snapshot in all analyze() tests
+  3. insert_ta_snapshot is either wired to a TA agent or explicitly documented as deferred infrastructure
+**Plans**: TBD
+
+Plans:
+- [ ] 19-01-PLAN.md - Wire init_snapshot_tables() at startup, fix test isolation, resolve insert_ta_snapshot
+
 ## Progress
 
 **Execution Order:**
@@ -174,6 +189,7 @@ Phases execute in numeric order: 1 → 2 → ... → 13 → 14 → 15 → 16 →
 | 16. Telegram Agent | 2/2 | Complete    | 2026-03-01 | - |
 | 17. Test Coverage | 3/3 | Complete    | 2026-03-01 | - |
 | 18. Orchestrator Integration Fixes | 1/1 | Complete    | 2026-03-01 | - |
+| 19. DB Init & Test Isolation | 0/1 | Pending     | - | - |
 
 ---
 *Roadmap updated: 2026-02-28 after v0.4 roadmap creation*
