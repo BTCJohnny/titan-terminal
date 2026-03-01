@@ -52,9 +52,14 @@ def init_db():
             risk_data TEXT,
             mentor_critique TEXT,
 
+            -- Paper-trading-ready fields
+            direction TEXT,  -- BULLISH/BEARISH/NO SIGNAL (from OrchestratorOutput.direction)
+            entry_ideal REAL,  -- ideal entry price (midpoint of entry_zone)
+            reasoning TEXT,  -- full Mentor reasoning text (flat text version)
+
             -- Outcome tracking (self-learning)
             outcome TEXT,  -- 'win', 'loss', 'breakeven', 'skipped'
-            outcome_pnl REAL,
+            outcome_pnl REAL,  -- outcome PnL as percentage (pnl_percent for paper trading)
             outcome_notes TEXT,
             outcome_timestamp TEXT,
 
@@ -63,6 +68,18 @@ def init_db():
             created_at TEXT DEFAULT CURRENT_TIMESTAMP
         )
     """)
+
+    # Migration: add columns for existing databases
+    # (SQLite does not support ALTER TABLE IF NOT EXISTS — use try/except)
+    for col_def in [
+        "ALTER TABLE signal_journal ADD COLUMN direction TEXT",
+        "ALTER TABLE signal_journal ADD COLUMN entry_ideal REAL",
+        "ALTER TABLE signal_journal ADD COLUMN reasoning TEXT",
+    ]:
+        try:
+            cursor.execute(col_def)
+        except sqlite3.OperationalError:
+            pass  # Column already exists
 
     # Past patterns cache for self-learning
     cursor.execute("""
@@ -119,8 +136,8 @@ def record_signal(signal_data: dict) -> int:
             suggested_action, entry_zone_low, entry_zone_high,
             stop_loss, tp1, tp2, risk_reward,
             nansen_data, telegram_data, wyckoff_data, ta_data, risk_data,
-            mentor_critique, batch_id
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            mentor_critique, direction, entry_ideal, reasoning, batch_id
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         signal_data.get('symbol'),
         signal_data.get('timestamp', datetime.now().isoformat()),
@@ -143,6 +160,9 @@ def record_signal(signal_data: dict) -> int:
         signal_data.get('ta_data'),
         signal_data.get('risk_data'),
         signal_data.get('mentor_critique'),
+        signal_data.get('direction'),
+        signal_data.get('entry_ideal'),
+        signal_data.get('reasoning'),
         signal_data.get('batch_id'),
     ))
 
