@@ -50,7 +50,7 @@ class RiskReward(BaseModel):
     to_tp1: float = Field(..., description="Risk/reward ratio to TP1")
     to_tp2: Optional[float] = Field(None, description="Risk/reward ratio to TP2")
     meets_minimum: bool = Field(
-        ..., description="Meets minimum 2:1 ratio per 3 Laws"
+        ..., description="Meets minimum 3:1 ratio per 3 Laws"
     )
 
 
@@ -83,10 +83,10 @@ class ThreeLawsCheck(BaseModel):
         ..., description="Law 1: Max 2% risk per trade"
     )
     law_2_rr: Literal["pass", "fail"] = Field(
-        ..., description="Law 2: Min 2:1 risk/reward"
+        ..., description="Law 2: Min 3:1 risk/reward"
     )
-    law_3_positions: Literal["pass", "check_current_positions"] = Field(
-        ..., description="Law 3: Max 3 concurrent positions"
+    law_3_positions: Literal["pass", "fail"] = Field(
+        ..., description="Law 3: Max 5 concurrent positions"
     )
     overall: Literal["approved", "rejected", "caution"] = Field(
         ..., description="Overall verdict"
@@ -120,9 +120,18 @@ class RiskOutput(BaseModel):
     stop_loss: StopLoss = Field(..., description="Stop loss (MODL-05)")
     take_profits: TakeProfits = Field(..., description="Take profits (MODL-05)")
     risk_reward: RiskReward = Field(..., description="Risk/reward (MODL-05)")
-    position_sizing: PositionSizing = Field(
-        ..., description="Position sizing (MODL-05)"
+    position_sizing: Optional[PositionSizing] = Field(
+        None, description="Position sizing (MODL-05), populated when account_size provided"
     )
-    funding_filter: FundingFilter = Field(..., description="Funding rate analysis")
+    funding_filter: Optional[FundingFilter] = Field(
+        None, description="Funding rate analysis, populated when funding data available"
+    )
     three_laws_check: ThreeLawsCheck = Field(..., description="3 Laws validation")
     final_verdict: FinalVerdict = Field(..., description="Final recommendation")
+    approved: bool = Field(..., description="Whether trade passes all 3 Laws")
+    rejection_reasons: list[str] = Field(
+        default_factory=list, description="Reasons for rejection, empty if approved"
+    )
+    position_size_units: Optional[float] = Field(
+        None, description="Position size in units of the asset, calculated when account_size provided"
+    )
