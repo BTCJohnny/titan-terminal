@@ -292,6 +292,7 @@ class TestNansenGracefulHandling:
         assert result.data["net_flow"] == "neutral"
         assert result.data["confidence"] == 0
 
+    @patch('src.backend.agents.nansen_agent.insert_onchain_snapshot')
     @patch('src.backend.agents.nansen_agent.fetch_fresh_wallets')
     @patch('src.backend.agents.nansen_agent.fetch_top_pnl')
     @patch('src.backend.agents.nansen_agent.fetch_whale_activity')
@@ -308,6 +309,7 @@ class TestNansenGracefulHandling:
         mock_whale,
         mock_top_pnl,
         mock_fresh_wallets,
+        mock_insert_snapshot,
     ):
         """When all signals return neutral defaults, analyze() returns valid NansenSignal.
 
@@ -594,6 +596,7 @@ class TestNansenVaultLogging:
 
         assert result is False
 
+    @patch('src.backend.agents.nansen_agent.insert_onchain_snapshot')
     @patch('src.backend.agents.nansen_agent.fetch_fresh_wallets')
     @patch('src.backend.agents.nansen_agent.fetch_top_pnl')
     @patch('src.backend.agents.nansen_agent.fetch_whale_activity')
@@ -610,6 +613,7 @@ class TestNansenVaultLogging:
         mock_whale,
         mock_top_pnl,
         mock_fresh_wallets,
+        mock_insert_snapshot,
     ):
         """NansenAgent.analyze(..., log_to_vault=True) calls log_nansen_analysis once."""
         self._setup_all_fetch_mocks(
@@ -624,6 +628,7 @@ class TestNansenVaultLogging:
         call_args = mock_log.call_args[0]
         assert isinstance(call_args[0], NansenSignal)
 
+    @patch('src.backend.agents.nansen_agent.insert_onchain_snapshot')
     @patch('src.backend.agents.nansen_agent.fetch_fresh_wallets')
     @patch('src.backend.agents.nansen_agent.fetch_top_pnl')
     @patch('src.backend.agents.nansen_agent.fetch_whale_activity')
@@ -640,6 +645,7 @@ class TestNansenVaultLogging:
         mock_whale,
         mock_top_pnl,
         mock_fresh_wallets,
+        mock_insert_snapshot,
     ):
         """NansenAgent.analyze(..., log_to_vault=False) does NOT call log_nansen_analysis."""
         self._setup_all_fetch_mocks(
