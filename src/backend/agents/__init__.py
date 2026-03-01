@@ -5,7 +5,6 @@ from .nansen_agent import NansenAgent
 from .telegram_agent import TelegramAgent
 from .ta_ensemble import WeeklySubagent, DailySubagent, FourHourSubagent, TAMentor
 from .risk_agent import RiskAgent
-from .mentor import MentorCriticAgent
 from .orchestrator import Orchestrator
 from .nansen_mcp import (
     fetch_exchange_flows,
@@ -32,7 +31,6 @@ __all__ = [
     'FourHourSubagent',
     'TAMentor',
     'RiskAgent',
-    'MentorCriticAgent',
     'Orchestrator',
     'fetch_exchange_flows',
     'fetch_smart_money',

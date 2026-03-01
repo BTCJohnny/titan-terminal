@@ -1,10 +1,9 @@
 """Orchestrator - Main brain that coordinates all specialist agents."""
 import json
+import anthropic
 from datetime import datetime
 from typing import Optional
 import uuid
-
-import anthropic
 
 from .base import BaseAgent
 from .wyckoff import WyckoffAgent
@@ -35,7 +34,7 @@ You weight the specialists:
 - Telegram Alpha: 10% (sentiment/confluence)
 - Risk/Levels: 10% (execution quality)
 
-Final confidence = weighted average adjusted by mentor critique.
+Final confidence = weighted average adjusted by mentor synthesis.
 
 Output clean, actionable signals. The user is not a professional trader - make it crystal clear.
 Output ONLY valid JSON, no additional text."""
@@ -75,7 +74,7 @@ class Orchestrator(BaseAgent):
         merged = list(dict.fromkeys(base_symbols + telegram_symbols))
         return merged
 
-    def analyze(self, symbol: str, context: dict) -> OrchestratorOutput:
+    def analyze(self, symbol: str, context: dict) -> dict:
         """Required by BaseAgent - delegates to analyze_symbol."""
         return self.analyze_symbol(symbol, context)
 
@@ -148,14 +147,13 @@ class Orchestrator(BaseAgent):
 
         # 6. Record to SignalJournal
         signal_id = self._record_to_journal_v2(mentor_output, wyckoff_result, nansen_result,
-                                               telegram_result, ta_result, risk_result)
+                                                telegram_result, ta_result, risk_result)
         mentor_output.signal_id = signal_id
 
         return mentor_output
 
     def _build_mentor_context(self, symbol, wyckoff, nansen, telegram, ta, risk, past_patterns, wyckoff_stats):
         """Build structured context string for Mentor SDK call."""
-        # Format each agent's output as readable sections
         context = f"""## Symbol: {symbol}
 
 ### Wyckoff Analysis
@@ -314,7 +312,6 @@ Remember: Output ONLY valid JSON. reasoning MUST be complete — capture your fu
         """
         import os
         from pathlib import Path
-        import logging
 
         vault_base = Path(settings.NANSEN_VAULT_PATH).parent.parent  # Up from agents/nansen to vault root
         obsidian_path = vault_base / "agents" / "orchestrator" / "session-notes.md"
@@ -340,6 +337,7 @@ Remember: Output ONLY valid JSON. reasoning MUST be complete — capture your fu
                 f.write(entry)
 
         except Exception as e:
+            import logging
             logging.getLogger(__name__).warning(f"Failed to log to Obsidian vault: {e}")
 
     def _record_to_journal_v2(self, output: OrchestratorOutput, wyckoff, nansen, telegram, ta, risk) -> int:
@@ -398,21 +396,11 @@ Remember: Output ONLY valid JSON. reasoning MUST be complete — capture your fu
                 })
 
         # Sort by confidence (highest first), filter out Avoid unless all are Avoid
-        def get_confidence(r):
-            if isinstance(r, OrchestratorOutput):
-                return r.confidence or 0
-            return r.get('confidence', 0)
-
-        def get_action(r):
-            if isinstance(r, OrchestratorOutput):
-                return r.suggested_action
-            return r.get('suggested_action', 'Avoid')
-
-        actionable = [r for r in results if get_action(r) != 'Avoid']
+        actionable = [r for r in results if r.get('suggested_action') != 'Avoid']
         if actionable:
-            results = sorted(actionable, key=get_confidence, reverse=True)
+            results = sorted(actionable, key=lambda x: x.get('confidence', 0), reverse=True)
         else:
-            results = sorted(results, key=get_confidence, reverse=True)
+            results = sorted(results, key=lambda x: x.get('confidence', 0), reverse=True)
 
         # Limit to top 8-20
         return results[:20]
