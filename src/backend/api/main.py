@@ -196,7 +196,7 @@ async def get_morning_report_mock():
             accumulation_score=30, distribution_score=65,
             reasoning="Distribution pattern detected. Exchange inflows increasing while on-chain metrics show weakening demand. Risk/reward unfavorable at current levels.",
             entry_zone=None, stop_loss=None, tp1=None, tp2=None, risk_reward=None,
-            three_laws_check={"law_1_risk": "fail", "law_2_rr": "fail", "law_3_positions": "check_current_positions", "overall": "rejected"},
+            three_laws_check={"law_1_risk": "fail", "law_2_rr": "fail", "law_3_positions": "fail", "overall": "rejected"},
             wyckoff_phase="Distribution",
             nansen_summary=[
                 "Smart money reducing exposure — 8 large wallets sold 1200 BTC this week, bearish signal",
@@ -214,7 +214,7 @@ async def get_morning_report_mock():
             reasoning="Neutral positioning. On-chain metrics are mixed with no clear directional bias. Wait for clearer setup before entering.",
             entry_zone={"low": 145.0, "high": 160.0, "ideal": 152.0},
             stop_loss=138.0, tp1=175.0, tp2=195.0, risk_reward=2.1,
-            three_laws_check={"law_1_risk": "pass", "law_2_rr": "pass", "law_3_positions": "check_current_positions", "overall": "caution"},
+            three_laws_check={"law_1_risk": "pass", "law_2_rr": "pass", "law_3_positions": "fail", "overall": "caution"},
             wyckoff_phase="Ranging",
             nansen_summary=[
                 "Smart money neutral — no significant position changes detected",

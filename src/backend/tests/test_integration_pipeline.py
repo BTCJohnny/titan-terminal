@@ -164,7 +164,9 @@ def test_morning_report_btc_eth_sol():
     - All returned signals pass _assert_valid_signal
     - Returned symbols are a subset of {BTC, ETH, SOL}
     """
-    with httpx.Client(timeout=120) as client:
+    # Each symbol requires 3 LLM calls (4h subagent + TA mentor + orchestrator mentor).
+    # With 3 symbols in batch, allow up to 600s to handle sequential processing.
+    with httpx.Client(timeout=600) as client:
         r = client.get(f"{BASE_URL}/api/morning-report", params={"symbols": "BTC,ETH,SOL"})
 
     assert r.status_code == 200, (
@@ -205,7 +207,8 @@ def test_analyze_single_symbol(symbol: str):
     - Response body passes _assert_valid_signal
     - 'symbol' in response matches requested symbol
     """
-    with httpx.Client(timeout=90) as client:
+    # Each symbol requires 3 LLM calls; allow up to 300s for a single symbol.
+    with httpx.Client(timeout=300) as client:
         r = client.get(f"{BASE_URL}/api/analyze/{symbol}")
 
     assert r.status_code == 200, (
@@ -229,7 +232,7 @@ def test_morning_report_response_shape_matches_mock():
     - Identical top-level keys: timestamp, count, signals
     - Each signal with identical field names (values may differ)
     """
-    with httpx.Client(timeout=120) as client:
+    with httpx.Client(timeout=600) as client:
         mock_r = client.get(f"{BASE_URL}/api/morning-report-mock")
         assert mock_r.status_code == 200, \
             f"/api/morning-report-mock returned {mock_r.status_code}"
@@ -237,7 +240,7 @@ def test_morning_report_response_shape_matches_mock():
         real_r = client.get(
             f"{BASE_URL}/api/morning-report",
             params={"symbols": "BTC"},
-            timeout=120
+            timeout=300
         )
         assert real_r.status_code == 200, \
             f"/api/morning-report?symbols=BTC returned {real_r.status_code}: {real_r.text[:500]}"

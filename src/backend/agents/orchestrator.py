@@ -117,8 +117,10 @@ class Orchestrator(BaseAgent):
 
         # TA Ensemble Multi-Timeframe Analysis
         # Run all 3 timeframe subagents
-        weekly_result = self.weekly_subagent.analyze(symbol, market_data)
-        daily_result = self.daily_subagent.analyze(symbol, market_data)
+        # Note: weekly/daily subagents fetch their own OHLCV data internally (symbol only).
+        # The fourhour subagent accepts an optional context dict.
+        weekly_result = self.weekly_subagent.analyze(symbol)
+        daily_result = self.daily_subagent.analyze(symbol)
         fourhour_result = self.fourhour_subagent.analyze(symbol, market_data)
 
         # Synthesize with TA Mentor

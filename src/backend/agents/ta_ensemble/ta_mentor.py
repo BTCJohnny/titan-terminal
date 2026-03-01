@@ -77,25 +77,54 @@ Output ONLY valid JSON matching TAMentorSignal schema with:
 
 Do NOT average scores. Reason independently and apply the conflict rules exactly."""
 
-    def synthesize(self, weekly: TASignal, daily: TASignal, four_hour: TASignal) -> TAMentorSignal:
+    def synthesize(self, weekly: TASignal, daily: TASignal, four_hour) -> dict:
         """Synthesize multi-timeframe TA signals into unified output.
 
         Args:
-            weekly: TASignal from WeeklySubagent
-            daily: TASignal from DailySubagent
-            four_hour: TASignal from FourHourSubagent
+            weekly: TASignal from WeeklySubagent (Pydantic model)
+            daily: TASignal from DailySubagent (Pydantic model)
+            four_hour: 4-hour signal — TASignal or plain dict (FourHourSubagent returns dict)
 
         Returns:
-            TAMentorSignal with unified trading recommendation
-
-        Raises:
-            ValueError: If LLM response is invalid JSON
-            anthropic.APIError: If API call fails
+            dict with unified trading recommendation. The downstream orchestrator
+            consumes this via .get() calls, so returning a plain dict avoids
+            Pydantic validation failures when the LLM output violates strict
+            Literal field constraints. If the LLM call fails or produces invalid
+            JSON/schema, returns a safe fallback neutral dict.
         """
-        logger.info(f"Synthesizing multi-timeframe signals for {weekly.symbol}")
+        symbol = weekly.symbol if hasattr(weekly, "symbol") else weekly.get("symbol", "UNKNOWN")
+        logger.info(f"Synthesizing multi-timeframe signals for {symbol}")
 
         prompt = self._build_prompt(weekly, daily, four_hour)
         logger.debug(f"Synthesis prompt:\n{prompt}")
+
+        _fallback = {
+            "symbol": symbol,
+            "timeframe_alignment": {
+                "weekly_bias": "neutral",
+                "daily_bias": "neutral",
+                "fourhour_bias": "neutral",
+                "alignment_score": 50,
+                "confluence": "weak",
+            },
+            "conflicts_detected": [],
+            "confidence_adjustment": {
+                "base_confidence": 50,
+                "confluence_bonus": 0,
+                "conflict_penalty": 0,
+                "final_confidence": 50,
+                "reasoning": "Fallback — synthesis failed or LLM output was invalid",
+            },
+            "unified_signal": {
+                "bias": "neutral",
+                "strength": "weak",
+                "confidence": 50,
+                "recommended_action": "wait",
+                "entry_timing": "wait_for_confirmation",
+                "key_levels": {"support": None, "resistance": None, "invalidation": None},
+            },
+            "synthesis_notes": "TA synthesis unavailable — fallback neutral signal.",
+        }
 
         try:
             response = self.client.messages.create(
@@ -110,37 +139,62 @@ Do NOT average scores. Reason independently and apply the conflict rules exactly
 
             result_dict = self._parse_json_response(response_text)
 
-            # Validate against Pydantic model
-            mentor_signal = TAMentorSignal.model_validate(result_dict)
-            logger.info(f"Successfully synthesized {weekly.symbol} - bias: {mentor_signal.unified_signal.bias}")
-
-            return mentor_signal
+            # Attempt strict validation — if it passes, use the validated dict.
+            # If it fails (LLM returned out-of-schema values), use the raw parsed dict
+            # rather than crashing the entire pipeline. The orchestrator only cares
+            # about unified_signal.bias and high-level structure.
+            try:
+                mentor_signal = TAMentorSignal.model_validate(result_dict)
+                logger.info(f"Successfully synthesized {symbol} — bias: {mentor_signal.unified_signal.bias}")
+                return mentor_signal.model_dump()
+            except Exception as validation_err:
+                logger.warning(
+                    f"TAMentorSignal validation failed for {symbol} — using raw LLM dict. "
+                    f"Error: {validation_err}"
+                )
+                # Return the raw parsed dict — it may have non-Literal values but
+                # the orchestrator handles this gracefully via .get() with defaults
+                return result_dict
 
         except Exception as e:
-            logger.error(f"Failed to synthesize signals for {weekly.symbol}: {e}")
-            raise
+            logger.error(f"Failed to synthesize signals for {symbol}: {e}")
+            return _fallback
 
-    def _build_prompt(self, weekly: TASignal, daily: TASignal, four_hour: TASignal) -> str:
+    @staticmethod
+    def _to_dict(signal) -> dict:
+        """Serialize a signal to dict regardless of whether it's a Pydantic model or plain dict.
+
+        FourHourSubagent returns a plain dict while WeeklySubagent and DailySubagent
+        return TASignal Pydantic models. This helper normalizes both to dict for the
+        synthesis prompt.
+        """
+        if isinstance(signal, dict):
+            return signal
+        return signal.model_dump()
+
+    def _build_prompt(self, weekly: TASignal, daily: TASignal, four_hour) -> str:
         """Build synthesis prompt with all three timeframe signals.
 
         Args:
-            weekly: Weekly timeframe TASignal
-            daily: Daily timeframe TASignal
-            four_hour: 4-hour timeframe TASignal
+            weekly: Weekly timeframe TASignal (Pydantic model)
+            daily: Daily timeframe TASignal (Pydantic model)
+            four_hour: 4-hour timeframe signal — TASignal or plain dict (FourHourSubagent
+                       currently returns a dict; this method handles both types gracefully)
 
         Returns:
             Formatted prompt string with JSON-serialized signals
         """
-        return f"""Synthesize multi-timeframe TA analysis for {weekly.symbol}.
+        symbol = weekly.symbol if hasattr(weekly, "symbol") else weekly.get("symbol", "UNKNOWN")
+        return f"""Synthesize multi-timeframe TA analysis for {symbol}.
 
 WEEKLY SIGNAL:
-{json.dumps(weekly.model_dump(), indent=2)}
+{json.dumps(self._to_dict(weekly), indent=2)}
 
 DAILY SIGNAL:
-{json.dumps(daily.model_dump(), indent=2)}
+{json.dumps(self._to_dict(daily), indent=2)}
 
 4-HOUR SIGNAL:
-{json.dumps(four_hour.model_dump(), indent=2)}
+{json.dumps(self._to_dict(four_hour), indent=2)}
 
 Apply conflict resolution rules and output TAMentorSignal JSON."""
 

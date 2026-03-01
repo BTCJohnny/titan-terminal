@@ -28,11 +28,16 @@ class EntryZoneSimple(BaseModel):
 
 
 class ThreeLawsCheckSimple(BaseModel):
-    """Simplified 3 Laws check."""
+    """Simplified 3 Laws check.
+
+    Note: law_3_positions was previously Literal["pass", "check_current_positions"].
+    Updated to Literal["pass", "fail"] to match RiskAgent's ThreeLawsCheck model
+    (decision: open_position_count is now an explicit input, returning pass/fail).
+    """
 
     law_1_risk: Literal["pass", "fail"] = Field(..., description="Law 1: Max 2% risk")
     law_2_rr: Literal["pass", "fail"] = Field(..., description="Law 2: Min 2:1 RR")
-    law_3_positions: Literal["pass", "check_current_positions"] = Field(
+    law_3_positions: Literal["pass", "fail"] = Field(
         ..., description="Law 3: Max 3 positions"
     )
     overall: Literal["approved", "rejected", "caution"] = Field(

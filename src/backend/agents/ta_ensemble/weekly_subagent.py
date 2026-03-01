@@ -52,7 +52,9 @@ class WeeklySubagent:
         """Analyze weekly timeframe for a symbol.
 
         Args:
-            symbol: Trading pair symbol (e.g., "BTC/USDT")
+            symbol: Trading pair symbol. Accepts short form ("BTC") or full form
+                    ("BTC/USDT") — short-form symbols are automatically normalized
+                    to BTC/USDT format for OHLCV fetching.
 
         Returns:
             TASignal with populated wyckoff and alpha_factors fields
@@ -60,6 +62,10 @@ class WeeklySubagent:
         Logs:
             Warning if fewer than 52 candles returned
         """
+        # Normalize short-form symbols (BTC -> BTC/USDT) for OHLCVClient compatibility
+        if "/" not in symbol:
+            symbol = f"{symbol}/USDT"
+
         # Step 1: Fetch OHLCV data
         client = get_ohlcv_client()
         candles = client.fetch_ohlcv(symbol, self.TIMEFRAME, limit=self.CANDLE_LIMIT)
