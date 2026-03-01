@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Risk Agent + API + Dashboard
 status: unknown
-last_updated: "2026-03-01T16:50:21.508Z"
+last_updated: "2026-03-01T17:45:01.471Z"
 progress:
-  total_phases: 4
+  total_phases: 5
   completed_phases: 4
-  total_plans: 12
-  completed_plans: 12
+  total_plans: 14
+  completed_plans: 13
 ---
 
 # Project State
@@ -18,14 +18,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
-**Current focus:** Phase 23 — Next.js Dashboard
+**Current focus:** Phase 24 — Integration Tests
 
 ## Current Position
 
-Phase: 23 of 24 (Next.js Dashboard)
-Plan: 3 of 3 in current phase (plan 03 complete — ChatPanel + complete three-column dashboard verified)
-Status: Phase 23 complete
-Last activity: 2026-03-01 — Phase 23 Plan 03 complete (ChatPanel, "Open in Claude.ai", dashboard verified in browser)
+Phase: 24 of 24 (Integration Tests)
+Plan: 1 of 2 in current phase (plan 01 complete — integration tests for BTC/ETH/SOL, all 6 tests green)
+Status: Phase 24 in progress
+Last activity: 2026-03-01 — Phase 24 Plan 01 complete (integration tests created, 5 pipeline bugs fixed, all 6 tests pass)
 
 Progress: [███░░░░░░░] 33% (v0.5)
 
@@ -71,6 +71,9 @@ Recent decisions affecting current work:
 - [Phase 23-03]: Health check only on mount; report fetch runs on explicit button click — prevents blocking initial render
 - [Phase 23-03]: /api/morning-report-mock retained in main.py for offline UI testing without live orchestrator
 - [Phase 23-03]: Optional symbols param added to /api/morning-report and getMorningReport() for future filtering
+- [Phase 24-integration-tests]: ThreeLawsCheckSimple.law_3_positions updated to Literal[pass,fail] — was ['pass','check_current_positions'], now matches RiskAgent ThreeLawsCheck
+- [Phase 24-integration-tests]: TAMentor.synthesize() returns plain dict (not TAMentorSignal) — orchestrator uses .get() pattern; validation errors fall back to raw LLM dict to avoid pipeline crashes
+- [Phase 24-integration-tests]: Integration test BASE_URL auto-detects backend on port 8000 (standard) or 8001 (fallback) via health check service field
 
 ### Pending Todos
 
@@ -84,10 +87,10 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 23-03-PLAN.md (ChatPanel, "Open in Claude.ai", full dashboard verified)
+Stopped at: Completed 24-01-PLAN.md (integration tests for BTC/ETH/SOL, 5 pipeline bugs fixed, all 6 tests green)
 Resume file: None
-Next action: /gsd:execute-phase 24 (Phase 24 — Integration Tests)
+Next action: /gsd:execute-phase 24 (Phase 24 Plan 02 — remaining integration tests if any)
 
 ---
 
-*State updated: 2026-03-01 after Phase 23 Plan 03 completion (Phase 23 complete)*
+*State updated: 2026-03-01 after Phase 24 Plan 01 completion (integration tests green, 5 pipeline bugs fixed)*
