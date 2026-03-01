@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Nansen Agent + Telegram Agent
 status: unknown
-last_updated: "2026-03-01T07:46:18.287Z"
+last_updated: "2026-03-01T08:15:37.093Z"
 progress:
-  total_phases: 3
+  total_phases: 4
   completed_phases: 3
-  total_plans: 8
-  completed_plans: 8
+  total_plans: 11
+  completed_plans: 11
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-28)
 
 **Core value:** Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
-**Current focus:** Phase 16 — Telegram Agent
+**Current focus:** Phase 17 — Test Coverage
 
 ## Current Position
 
-Phase: 16 of 17 (Telegram Agent)
-Plan: 02 of 02 (completed)
-Status: Phase complete - all 2 plans executed
-Last activity: 2026-03-01 — Completed plan 16-02 (Gap closure - signature fix)
+Phase: 17 of 17 (Test Coverage)
+Plan: 02 of 03 (in progress)
+Status: Plan 17-02 complete — 2 of 3 plans executed
+Last activity: 2026-03-01 — Completed plan 17-02 (Telegram agent comprehensive tests)
 
-Progress: [█████████░░░░░░░░░░░░░░░] 47%
+Progress: [█████████████░░░░░░░░░░░] 53%
 
 ## Performance Metrics
 
@@ -55,6 +55,7 @@ Progress: [█████████░░░░░░░░░░░░░░
 | Phase 15 P04 | 153 | 1 tasks | 1 files |
 | Phase 16-telegram-agent P01 | 80 | 2 tasks | 1 files |
 | Phase 16-telegram-agent P02 | 95 | 2 tasks | 2 files |
+| Phase 17-test-coverage P03 | 3 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -90,6 +91,9 @@ Recent decisions affecting current work:
 - [Phase 16-01]: Freshness threshold at 12 hours for crypto signal quality in fast-moving markets
 - [Phase 16-02]: market_data parameter intentionally unused in TelegramAgent - agent queries own database
 - [Phase 16-02]: Default value None for market_data maintains backward compatibility with single-argument calls
+- [Phase 17-test-coverage]: _NoCloseConnection wrapper class required because sqlite3.Connection.close is read-only in Python 3.12+
+- [Phase 17-02]: Mock _query_signals at module boundary for agent.analyze() tests; patch get_signals_connection with in-memory SQLite for SQL-level filter tests
+- [Phase 17-02]: test_analyze_invalid_direction_filtered asserts signals_found==0 because filtered rows are not counted in channel_signals
 
 ### Pending Todos
 
@@ -102,10 +106,10 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 16-02-PLAN.md (Gap closure - signature fix)
+Stopped at: Completed 17-03-PLAN.md (signals_db snapshot table and insert tests)
 Resume file: None
-Next action: Phase 16 complete - ready for next phase or milestone completion
+Next action: Phase 17 complete - all 3 plans executed
 
 ---
 
-*State updated: 2026-03-01 after completing plan 16-02*
+*State updated: 2026-03-01 after completing plan 17-03*

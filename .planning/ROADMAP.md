@@ -154,7 +154,7 @@ Phases execute in numeric order: 1 → 2 → ... → 13 → 14 → 15 → 16 →
 | 14. Foundation | 2/2 | Complete    | 2026-02-28 | - |
 | 15. Nansen Agent | 4/4 | Complete    | 2026-03-01 | - |
 | 16. Telegram Agent | 2/2 | Complete    | 2026-03-01 | - |
-| 17. Test Coverage | v0.4 | 0/3 | Not started | - |
+| 17. Test Coverage | 2/3 | In Progress|  | - |
 
 ---
 *Roadmap updated: 2026-02-28 after v0.4 roadmap creation*

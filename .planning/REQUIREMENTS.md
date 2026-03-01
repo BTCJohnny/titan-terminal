@@ -47,12 +47,12 @@ Requirements for milestone v0.4: Nansen Agent + Telegram Agent.
 - [ ] **TEST-02**: Unit tests for Nansen overall signal aggregation logic
 - [ ] **TEST-03**: Unit tests for Nansen vault logging (appends to signal-combinations.md)
 - [ ] **TEST-04**: Unit tests for Nansen graceful handling when MCP returns no data
-- [ ] **TEST-05**: Unit tests for Telegram agent with signals present
-- [ ] **TEST-06**: Unit tests for Telegram agent with no signals (empty result)
-- [ ] **TEST-07**: Unit tests for Telegram confluence counting logic
-- [ ] **TEST-08**: Unit tests for Telegram 48h window filter
-- [ ] **TEST-09**: Unit tests for new DB table creation (onchain_snapshots, ta_snapshots)
-- [ ] **TEST-10**: Unit tests for insert operations into both snapshot tables
+- [x] **TEST-05**: Unit tests for Telegram agent with signals present
+- [x] **TEST-06**: Unit tests for Telegram agent with no signals (empty result)
+- [x] **TEST-07**: Unit tests for Telegram confluence counting logic
+- [x] **TEST-08**: Unit tests for Telegram 48h window filter
+- [x] **TEST-09**: Unit tests for new DB table creation (onchain_snapshots, ta_snapshots)
+- [x] **TEST-10**: Unit tests for insert operations into both snapshot tables
 
 ## Future Requirements
 
@@ -107,12 +107,12 @@ Requirements for milestone v0.4: Nansen Agent + Telegram Agent.
 | TEST-02 | Phase 17 | Pending |
 | TEST-03 | Phase 17 | Pending |
 | TEST-04 | Phase 17 | Pending |
-| TEST-05 | Phase 17 | Pending |
-| TEST-06 | Phase 17 | Pending |
-| TEST-07 | Phase 17 | Pending |
-| TEST-08 | Phase 17 | Pending |
-| TEST-09 | Phase 17 | Pending |
-| TEST-10 | Phase 17 | Pending |
+| TEST-05 | Phase 17 | Complete |
+| TEST-06 | Phase 17 | Complete |
+| TEST-07 | Phase 17 | Complete |
+| TEST-08 | Phase 17 | Complete |
+| TEST-09 | Phase 17 | Complete |
+| TEST-10 | Phase 17 | Complete |
 
 **Coverage:**
 - v0.4 requirements: 32 total
