@@ -85,12 +85,12 @@ See: `.planning/milestones/v0.4-ROADMAP.md`
   3. User receives a calculated position size when a portfolio value is provided as input
   4. When no portfolio value is provided, the agent returns risk zones (stop/target/R:R) without errors
   5. RiskAgent returns a valid RiskOutput Pydantic model in all code paths — no raw dicts
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 20-01: Integrate RiskOutput model and implement dual-mode logic (risk zones vs. position sizing)
-- [ ] 20-02: S/R-based stop and target derivation with 2% risk cap and 3:1 R:R enforcement
-- [ ] 20-03: Unit tests for RiskAgent covering both modes and edge cases
+- [ ] 20-01-PLAN.md — Rewrite RiskOutput model + deterministic RiskAgent (Wave 1)
+- [ ] 20-02-PLAN.md — TDD: S/R stop/target derivation, 2% risk cap, 3:1 R:R enforcement (Wave 2)
+- [ ] 20-03-PLAN.md — Wire RiskOutput into Orchestrator + update orchestrator tests (Wave 2)
 
 ### Phase 21: Watchlist + Orchestrator Integration
 **Goal**: Orchestrator runs the complete agent chain on a configurable, dynamically extended watchlist
