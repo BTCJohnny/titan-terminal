@@ -5,7 +5,7 @@
 - ✅ **v0.1 Project Scaffold** - Phases 1-4 (shipped 2026-02-26)
 - ✅ **v0.2 Data Foundation** - Phases 5-7 (shipped 2026-02-27)
 - ✅ **v0.3 TA Ensemble** - Phases 8-13 (shipped 2026-02-28)
-- 🚧 **v0.4 Nansen Agent + Telegram Agent** - Phases 14-17 (in progress)
+- 🚧 **v0.4 Nansen Agent + Telegram Agent** - Phases 14-18 (in progress)
 
 ## Phases
 
@@ -54,6 +54,7 @@ See: `.planning/milestones/v0.3-ROADMAP.md`
 - [x] **Phase 15: Nansen Agent** - 5-signal on-chain framework with MCP integration and Obsidian vault logging (completed 2026-02-28)
 - [x] **Phase 16: Telegram Agent** - signals.db integration with 48h confluence tracking (gap closure pending) (completed 2026-03-01)
 - [x] **Phase 17: Test Coverage** - Comprehensive unit tests for both agents (completed 2026-03-01)
+- [ ] **Phase 18: Orchestrator Integration Fixes** - Fix orchestrator Pydantic access, signature mismatches, and wire snapshot storage (gap closure)
 
 ## Phase Details
 
@@ -131,6 +132,23 @@ Plans:
 - [ ] 17-02-PLAN.md - Telegram agent tests (signals present/empty, confluence counting, 48h filter)
 - [ ] 17-03-PLAN.md - Database tests (snapshot table creation, insert operations)
 
+### Phase 18: Orchestrator Integration Fixes
+**Goal**: Fix all orchestrator-level integration issues so analyze_symbol() works end-to-end without runtime errors
+**Depends on**: Phase 15, Phase 16, Phase 17
+**Requirements**: NANS-07, NANS-08, NANS-09, TELE-06, DB-01, DB-04
+**Gap Closure:** Closes INT-01, INT-02, INT-03, INT-04 from v0.4 audit
+**Success Criteria** (what must be TRUE):
+  1. orchestrator._synthesize_results() uses attribute access on NansenSignal/TelegramSignal (no .get() calls)
+  2. orchestrator uses .model_dump() for JSON serialization of Pydantic models
+  3. NansenAgent.analyze() accepts market_data: dict = None parameter matching TelegramAgent pattern
+  4. NansenAgent.analyze() calls insert_onchain_snapshot() after constructing NansenSignal
+  5. signals_db.py uses relative import for settings (from ..config.settings import settings)
+  6. orchestrator.analyze_symbol() completes without AttributeError or TypeError
+**Plans**: 1 plan
+
+Plans:
+- [ ] 18-01-PLAN.md - Fix orchestrator Pydantic access, NansenAgent signature, snapshot wiring, and import style
+
 ## Progress
 
 **Execution Order:**
@@ -155,6 +173,7 @@ Phases execute in numeric order: 1 → 2 → ... → 13 → 14 → 15 → 16 →
 | 15. Nansen Agent | 4/4 | Complete    | 2026-03-01 | - |
 | 16. Telegram Agent | 2/2 | Complete    | 2026-03-01 | - |
 | 17. Test Coverage | 3/3 | Complete    | 2026-03-01 | - |
+| 18. Orchestrator Integration Fixes | v0.4 | 0/1 | Pending | - |
 
 ---
 *Roadmap updated: 2026-02-28 after v0.4 roadmap creation*
