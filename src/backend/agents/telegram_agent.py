@@ -69,11 +69,12 @@ class TelegramAgent:
         self.name = "Telegram Alpha"
         logger.info(f"Initialized {self.name} agent")
 
-    def analyze(self, symbol: str) -> TelegramSignal:
+    def analyze(self, symbol: str, market_data: dict = None) -> TelegramSignal:
         """Analyze Telegram signals for a symbol.
 
         Args:
             symbol: Trading symbol (e.g., 'BTC')
+            market_data: Optional market data dict (unused, accepted for orchestrator compatibility)
 
         Returns:
             TelegramSignal with aggregated analysis
