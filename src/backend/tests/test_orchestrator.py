@@ -11,6 +11,33 @@ from src.backend.models.nansen_signal import (
     TopPnL, WhaleActivity, OnChainOverall
 )
 from src.backend.models.telegram_signal import TelegramSignal
+from src.backend.models.risk_output import (
+    RiskOutput, EntryZone, StopLoss, TakeProfit, TakeProfits,
+    RiskReward, PositionSizing, ThreeLawsCheck, FinalVerdict
+)
+
+
+def _make_risk_output(symbol="BTC"):
+    """Create a valid RiskOutput instance for use in tests."""
+    return RiskOutput(
+        symbol=symbol,
+        current_price=65000.0,
+        trade_direction="long",
+        approved=True,
+        rejection_reasons=[],
+        entry_zone=EntryZone(low=64000, high=65500, ideal=64500, entry_reasoning="S/R zone"),
+        stop_loss=StopLoss(price=63000, type="structure", distance_percent=3.08, reasoning="Below support"),
+        take_profits=TakeProfits(
+            tp1=TakeProfit(price=72000, rr_ratio=3.5, reasoning="Resistance level"),
+            tp2=TakeProfit(price=75000, rr_ratio=5.0, reasoning="Major resistance"),
+        ),
+        risk_reward=RiskReward(to_tp1=3.5, to_tp2=5.0, meets_minimum=True),
+        position_sizing=None,
+        funding_filter=None,
+        three_laws_check=ThreeLawsCheck(law_1_risk="pass", law_2_rr="pass", law_3_positions="pass", overall="approved"),
+        final_verdict=FinalVerdict(action="long_spot", confidence=75, notes="Good setup"),
+        position_size_units=None,
+    )
 
 
 class TestOrchestrator:
@@ -89,7 +116,7 @@ class TestOrchestrator:
                         with patch.object(orchestrator.daily_subagent, 'analyze', return_value={"overall": {"bias": "bullish", "confidence": 70}}):
                             with patch.object(orchestrator.fourhour_subagent, 'analyze', return_value={"overall": {"bias": "neutral", "confidence": 55}}):
                                 with patch.object(orchestrator.ta_mentor, 'synthesize', return_value={"unified_signal": {"bias": "bullish"}, "overall": {"confidence": 70, "notes": "Bullish"}, "key_levels": {}}):
-                                    with patch.object(orchestrator.risk, 'analyze', return_value={"final_verdict": {"action": "long_spot", "confidence": 75}, "entry_zone": {}, "stop_loss": {}, "take_profits": {}, "risk_reward": {}, "three_laws_check": {}}):
+                                    with patch.object(orchestrator.risk, 'analyze', return_value=_make_risk_output("BTC")):
                                         with patch.object(orchestrator.mentor, 'critique', return_value={"verdict": "proceed", "confidence_adjustment": 0, "concerns": []}):
                                             with patch('src.backend.agents.orchestrator.get_similar_patterns', return_value=[]):
                                                 with patch('src.backend.agents.orchestrator.get_pattern_stats', return_value=None):
