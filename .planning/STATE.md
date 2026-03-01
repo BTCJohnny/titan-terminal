@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Risk Agent + API + Dashboard
 status: unknown
-last_updated: "2026-03-01T13:51:12.995Z"
+last_updated: "2026-03-01T13:54:35Z"
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 9
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: 22 of 24 (FastAPI Endpoints)
-Plan: 1 of 2 in current phase (plan 01 complete — /morning-report and /analyze/{symbol} endpoints)
-Status: Phase 22 in progress — plan 01 done
-Last activity: 2026-03-01 — Phase 22 Plan 01 complete (API Endpoints — real OrchestratorOutput)
+Plan: 2 of 2 in current phase (plan 02 complete — /chat endpoint with Anthropic SDK)
+Status: Phase 22 complete — all plans done
+Last activity: 2026-03-01 — Phase 22 Plan 02 complete (/chat endpoint with Anthropic SDK + signal context)
 
-Progress: [██░░░░░░░░] 20% (v0.5)
+Progress: [███░░░░░░░] 33% (v0.5)
 
 ## Accumulated Context
 
@@ -59,6 +59,9 @@ Recent decisions affecting current work:
 - [Phase 21-04]: _get_field() module-level helper added to orchestrator.py — type-safe field extraction for mixed OrchestratorOutput/error-dict result lists in run_morning_batch()
 - [Phase 22]: No caching on /morning-report — always on-demand via run_morning_batch()
 - [Phase 22]: Dynamic _MODULE_PATH detection for pytest patch namespace compatibility
+- [Phase 22-02]: ChatRequest uses 'question' field (not 'message') per CONTEXT.md locked decision
+- [Phase 22-02]: settings.MODEL_NAME used for /chat (not MENTOR_MODEL — that is for Orchestrator Mentor agent)
+- [Phase 22-02]: Signal context built from signal_journal via get_recent_signals(limit=10), top 5 shown in system prompt
 
 ### Pending Todos
 
@@ -72,10 +75,10 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 22-01-PLAN.md (API Endpoints — real OrchestratorOutput)
+Stopped at: Completed 22-02-PLAN.md (/chat endpoint with Anthropic SDK and signal context)
 Resume file: None
-Next action: /gsd:execute-phase 22 (Phase 22 Plan 02 — next API endpoint plan)
+Next action: /gsd:execute-phase 23 (Phase 23 — Next.js Dashboard)
 
 ---
 
-*State updated: 2026-03-01 after Phase 22 Plan 01 completion*
+*State updated: 2026-03-01 after Phase 22 Plan 02 completion*

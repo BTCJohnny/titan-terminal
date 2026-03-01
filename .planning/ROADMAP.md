@@ -69,7 +69,7 @@ See: `.planning/milestones/v0.4-ROADMAP.md`
 
 - [x] **Phase 20: Risk Agent** - Complete RiskAgent with S/R stops, R:R enforcement, and position sizing (completed 2026-03-01)
 - [x] **Phase 21: Watchlist + Orchestrator Integration** - Configurable watchlist, Telegram supplementation, Mentor SDK synthesis, deprecated file cleanup (completed 2026-03-01)
-- [ ] **Phase 22: API Endpoints** - Complete /morning-report, /analyze/{symbol}, and /chat FastAPI endpoints
+- [x] **Phase 22: API Endpoints** - Complete /morning-report, /analyze/{symbol}, and /chat FastAPI endpoints (completed 2026-03-01)
 - [ ] **Phase 23: Dashboard** - Next.js morning report with expandable signal cards and chat sidebar
 - [ ] **Phase 24: Integration Tests** - End-to-end pipeline tests on BTC, ETH, SOL
 
@@ -180,7 +180,7 @@ Plans:
 | 19. DB Init & Test Isolation | v0.4 | 1/1 | Complete | 2026-03-01 |
 | 20. Risk Agent | 3/3 | Complete    | 2026-03-01 | - |
 | 21. Watchlist + Orchestrator Integration | 4/4 | Complete    | 2026-03-01 | - |
-| 22. API Endpoints | 1/2 | In Progress|  | - |
+| 22. API Endpoints | 2/2 | Complete   | 2026-03-01 | - |
 | 23. Dashboard | v0.5 | 0/3 | Not started | - |
 | 24. Integration Tests | v0.5 | 0/1 | Not started | - |
 
