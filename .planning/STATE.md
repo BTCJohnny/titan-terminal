@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v0.5
 milestone_name: Risk Agent + API + Dashboard
-status: ready_to_plan
+status: in_progress
 last_updated: "2026-03-01"
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 13
-  completed_plans: 0
+  completed_plans: 1
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: 20 of 24 (Risk Agent)
-Plan: 0 of 3 in current phase
-Status: Ready to plan
-Last activity: 2026-03-01 — v0.5 roadmap created, 5 phases defined (20-24)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-03-01 — Phase 20 Plan 01 complete (RiskAgent deterministic validator)
 
-Progress: [░░░░░░░░░░] 0% (v0.5)
+Progress: [█░░░░░░░░░] 8% (v0.5)
 
 ## Accumulated Context
 
@@ -36,7 +36,11 @@ Progress: [░░░░░░░░░░] 0% (v0.5)
 Decisions logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- RiskOutput Pydantic model exists but is not yet wired into risk_agent.py — Phase 20 completes this
+- RiskAgent is now a pure-Python deterministic validator (no LLM calls, no BaseAgent inheritance)
+- RiskOutput model updated: approved/rejection_reasons/position_size_units added; position_sizing and funding_filter made Optional
+- law_3_positions changed to Literal[pass, fail] — open_position_count is now an explicit input
+- Wider stop rule: when S/R-derived stop and proposed stop differ, use the wider (more conservative) stop
+- Law 1 (2% risk) passes by default when no account_size — cannot enforce without portfolio size
 - FastAPI already has /morning-report, /analyze/{symbol}, /chat endpoint stubs — Phase 22 completes them
 - Next.js already has rich-signal-card, market-context-bar, chat component stubs — Phase 23 completes them
 - market_data.py already removed per instructions — no migration needed
@@ -53,10 +57,10 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Roadmap created for v0.5, ready to plan Phase 20
+Stopped at: Completed 20-01-PLAN.md (RiskAgent deterministic pre-trade validator)
 Resume file: None
-Next action: /gsd:plan-phase 20
+Next action: /gsd:execute-phase 20 (Plan 02)
 
 ---
 
-*State updated: 2026-03-01 after v0.5 roadmap creation*
+*State updated: 2026-03-01 after Phase 20 Plan 01 completion*

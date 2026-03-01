@@ -178,7 +178,7 @@ Plans:
 | 17. Test Coverage | v0.4 | 3/3 | Complete | 2026-03-01 |
 | 18. Orchestrator Integration Fixes | v0.4 | 1/1 | Complete | 2026-03-01 |
 | 19. DB Init & Test Isolation | v0.4 | 1/1 | Complete | 2026-03-01 |
-| 20. Risk Agent | v0.5 | 0/3 | Not started | - |
+| 20. Risk Agent | 1/3 | In Progress|  | - |
 | 21. Watchlist + Orchestrator Integration | v0.5 | 0/3 | Not started | - |
 | 22. API Endpoints | v0.5 | 0/3 | Not started | - |
 | 23. Dashboard | v0.5 | 0/3 | Not started | - |
