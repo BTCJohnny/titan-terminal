@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Risk Agent + API + Dashboard
 status: unknown
-last_updated: "2026-03-01T11:41:24.785Z"
+last_updated: "2026-03-01T12:08:00.000Z"
 progress:
   total_phases: 1
   completed_phases: 1
@@ -22,10 +22,10 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 
 ## Current Position
 
-Phase: 20 of 24 (Risk Agent)
-Plan: 3 of 3 in current phase (phase complete)
-Status: Phase 20 complete — ready for Phase 21
-Last activity: 2026-03-01 — Phase 20 Plan 03 complete (Orchestrator RiskOutput integration)
+Phase: 21 of 24 (Watchlist + Orchestrator Integration)
+Plan: 1 of 3 in current phase (plan 01 complete)
+Status: Phase 21 in progress — Plan 01 complete
+Last activity: 2026-03-01 — Phase 21 Plan 01 complete (Configurable Watchlist + Telegram Supplementation)
 
 Progress: [█░░░░░░░░░] 15% (v0.5)
 
@@ -47,6 +47,10 @@ Recent decisions affecting current work:
 - Plan 02: all 29 TDD tests pass; Law 1 auto-sizing prevents violation via normal paths; no code changes needed to Plan 01 implementation
 - [Phase 20-risk-agent]: Orchestrator type hints updated: risk parameter is now RiskOutput, not dict
 - [Phase 20-risk-agent]: approved and rejection_reasons added to synthesis output for calling code
+- [Phase 21-01]: WATCHLIST defaults to BTC,ETH,SOL,AVAX,ARB,LINK (sensible subset, not full HYPERLIQUID_PERPS)
+- [Phase 21-01]: run_morning_batch() signature changed — market_data_fetcher first, symbols optional second
+- [Phase 21-01]: MENTOR_MODEL default updated to claude-opus-4-6 per CONTEXT.md locked decision
+- [Phase 21-01]: Telegram 72h lookback for watchlist supplementation (not 48h used elsewhere)
 
 ### Pending Todos
 
@@ -60,10 +64,10 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 20-03-PLAN.md (Orchestrator RiskOutput integration)
+Stopped at: Completed 21-01-PLAN.md (Configurable Watchlist + Telegram Supplementation)
 Resume file: None
-Next action: /gsd:execute-phase 21 (Phase 21 — Orchestrator Integration)
+Next action: /gsd:execute-phase 21 (Phase 21 — Plan 02)
 
 ---
 
-*State updated: 2026-03-01 after Phase 20 Plan 03 completion (Phase 20 complete)*
+*State updated: 2026-03-01 after Phase 21 Plan 01 completion*

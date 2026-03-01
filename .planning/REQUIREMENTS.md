@@ -18,9 +18,9 @@ Requirements for v0.5 Risk Agent + API + Dashboard. Each maps to roadmap phases.
 
 ### Watchlist
 
-- [ ] **WTCH-01**: User can configure a watchlist via settings (not just hardcoded constants)
-- [ ] **WTCH-02**: Watchlist is supplemented by symbols from Telegram signals (last 48-72h)
-- [ ] **WTCH-03**: Morning report iterates the merged watchlist (config + Telegram)
+- [x] **WTCH-01**: User can configure a watchlist via settings (not just hardcoded constants)
+- [x] **WTCH-02**: Watchlist is supplemented by symbols from Telegram signals (last 48-72h)
+- [x] **WTCH-03**: Morning report iterates the merged watchlist (config + Telegram)
 
 ### API
 
@@ -84,9 +84,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RISK-04 | Phase 20 | Complete |
 | RISK-05 | Phase 20 | Complete |
 | RISK-06 | Phase 20 | Complete |
-| WTCH-01 | Phase 21 | Pending |
-| WTCH-02 | Phase 21 | Pending |
-| WTCH-03 | Phase 21 | Pending |
+| WTCH-01 | Phase 21 | Complete |
+| WTCH-02 | Phase 21 | Complete |
+| WTCH-03 | Phase 21 | Complete |
 | API-01 | Phase 22 | Pending |
 | API-02 | Phase 22 | Pending |
 | API-03 | Phase 22 | Pending |
