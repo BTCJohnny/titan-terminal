@@ -103,10 +103,10 @@ Plans:
   4. Agent calculates confluence_count (number of signals agreeing on direction)
   5. Agent identifies best_signal by highest confidence_score
   6. Agent outputs valid TelegramSignal Pydantic model matching MODL-02 schema
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 16-01: TBD
+- [ ] 16-01-PLAN.md - TelegramAgent implementation with database query and confluence logic
 
 ### Phase 17: Test Coverage
 **Goal**: Comprehensive unit test coverage for all Nansen and Telegram agent functionality
@@ -150,7 +150,7 @@ Phases execute in numeric order: 1 → 2 → ... → 13 → 14 → 15 → 16 →
 | 13. TAMentor Implementation | v0.3 | 2/2 | Complete | 2026-02-28 |
 | 14. Foundation | 2/2 | Complete    | 2026-02-28 | - |
 | 15. Nansen Agent | 4/4 | Complete    | 2026-03-01 | - |
-| 16. Telegram Agent | v0.4 | 0/? | Not started | - |
+| 16. Telegram Agent | v0.4 | 0/1 | Planned | - |
 | 17. Test Coverage | v0.4 | 0/? | Not started | - |
 
 ---
