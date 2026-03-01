@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Nansen Agent + Telegram Agent
 status: unknown
-last_updated: "2026-03-01T08:20:18.837Z"
+last_updated: "2026-03-01T09:07:43.252Z"
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 11
-  completed_plans: 11
+  total_phases: 5
+  completed_phases: 5
+  total_plans: 12
+  completed_plans: 12
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-28)
 
 **Core value:** Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
-**Current focus:** Phase 17 — Test Coverage
+**Current focus:** Phase 18 — Orchestrator Integration Fixes
 
 ## Current Position
 
-Phase: 17 of 17 (Test Coverage)
-Plan: 02 of 03 (in progress)
-Status: Plan 17-02 complete — 2 of 3 plans executed
-Last activity: 2026-03-01 — Completed plan 17-02 (Telegram agent comprehensive tests)
+Phase: 18 of 18 (Orchestrator Integration Fixes)
+Plan: 01 of 01 (complete)
+Status: Plan 18-01 complete — all plans executed
+Last activity: 2026-03-01 — Completed plan 18-01 (Orchestrator integration fixes)
 
-Progress: [█████████████░░░░░░░░░░░] 53%
+Progress: [████████████████████████] 100%
 
 ## Performance Metrics
 
@@ -57,6 +57,7 @@ Progress: [█████████████░░░░░░░░░░
 | Phase 16-telegram-agent P02 | 95 | 2 tasks | 2 files |
 | Phase 17-test-coverage P03 | 3 | 2 tasks | 1 files |
 | Phase 17-test-coverage P01 | 3 | 2 tasks | 1 files |
+| Phase 18 P01 | 3 | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -97,6 +98,8 @@ Recent decisions affecting current work:
 - [Phase 17-02]: test_analyze_invalid_direction_filtered asserts signals_found==0 because filtered rows are not counted in channel_signals
 - [Phase 17-test-coverage]: Patch fetch functions at nansen_agent import site not nansen_mcp to correctly mock CLI calls in analyze()
 - [Phase 17-test-coverage]: Use tmp_path fixture with patch.object for vault_logger file paths to avoid real filesystem writes in tests
+- [Phase 18]: Use model_dump(mode='json') for datetime-safe JSON serialization of Pydantic models in orchestrator journal
+- [Phase 18]: market_data parameter in NansenAgent.analyze() is intentionally unused - agent fetches own data via CLI/MCP
 
 ### Pending Todos
 
@@ -109,10 +112,10 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 17-01-PLAN.md (Nansen agent comprehensive unit tests)
+Stopped at: Completed 18-01-PLAN.md (Orchestrator integration fixes)
 Resume file: None
-Next action: Phase 17 complete - all 3 plans executed
+Next action: Phase 18 complete - all integration bugs closed (INT-01 through INT-04)
 
 ---
 
-*State updated: 2026-03-01 after completing plan 17-01*
+*State updated: 2026-03-01 after completing plan 18-01*
