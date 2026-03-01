@@ -36,7 +36,7 @@ Requirements for v0.5 Risk Agent + API + Dashboard. Each maps to roadmap phases.
 - [x] **DASH-01**: Next.js landing page shows morning report with ranked opportunity cards
 - [x] **DASH-02**: Signal cards are expandable to show TA, on-chain, Telegram, and risk details
 - [x] **DASH-03**: Chat sidebar accepts questions and displays signal Q&A responses
-- [x] **DASH-04**: Dashboard fetches data from /morning-report endpoint on load
+- [x] **DASH-04**: Dashboard fetches data from /morning-report endpoint on user action (Run Morning Report button)
 - [x] **DASH-05**: Dashboard displays confluence score and directional bias per symbol
 
 ### Integration & Cleanup
