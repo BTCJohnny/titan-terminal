@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Nansen Agent + Telegram Agent
 status: unknown
-last_updated: "2026-03-01T08:15:37.093Z"
+last_updated: "2026-03-01T08:16:56.653Z"
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 11
   completed_plans: 11
 ---
@@ -56,6 +56,7 @@ Progress: [█████████████░░░░░░░░░░
 | Phase 16-telegram-agent P01 | 80 | 2 tasks | 1 files |
 | Phase 16-telegram-agent P02 | 95 | 2 tasks | 2 files |
 | Phase 17-test-coverage P03 | 3 | 2 tasks | 1 files |
+| Phase 17-test-coverage P01 | 3 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -94,6 +95,8 @@ Recent decisions affecting current work:
 - [Phase 17-test-coverage]: _NoCloseConnection wrapper class required because sqlite3.Connection.close is read-only in Python 3.12+
 - [Phase 17-02]: Mock _query_signals at module boundary for agent.analyze() tests; patch get_signals_connection with in-memory SQLite for SQL-level filter tests
 - [Phase 17-02]: test_analyze_invalid_direction_filtered asserts signals_found==0 because filtered rows are not counted in channel_signals
+- [Phase 17-test-coverage]: Patch fetch functions at nansen_agent import site not nansen_mcp to correctly mock CLI calls in analyze()
+- [Phase 17-test-coverage]: Use tmp_path fixture with patch.object for vault_logger file paths to avoid real filesystem writes in tests
 
 ### Pending Todos
 
@@ -106,10 +109,10 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 17-03-PLAN.md (signals_db snapshot table and insert tests)
+Stopped at: Completed 17-01-PLAN.md (Nansen agent comprehensive unit tests)
 Resume file: None
 Next action: Phase 17 complete - all 3 plans executed
 
 ---
 
-*State updated: 2026-03-01 after completing plan 17-03*
+*State updated: 2026-03-01 after completing plan 17-01*

@@ -43,10 +43,10 @@ Requirements for milestone v0.4: Nansen Agent + Telegram Agent.
 
 ### Tests
 
-- [ ] **TEST-01**: Unit tests for each of the 5 Nansen signals (exchange flow, smart money, whales, top PnL, fresh wallets)
-- [ ] **TEST-02**: Unit tests for Nansen overall signal aggregation logic
-- [ ] **TEST-03**: Unit tests for Nansen vault logging (appends to signal-combinations.md)
-- [ ] **TEST-04**: Unit tests for Nansen graceful handling when MCP returns no data
+- [x] **TEST-01**: Unit tests for each of the 5 Nansen signals (exchange flow, smart money, whales, top PnL, fresh wallets)
+- [x] **TEST-02**: Unit tests for Nansen overall signal aggregation logic
+- [x] **TEST-03**: Unit tests for Nansen vault logging (appends to signal-combinations.md)
+- [x] **TEST-04**: Unit tests for Nansen graceful handling when MCP returns no data
 - [x] **TEST-05**: Unit tests for Telegram agent with signals present
 - [x] **TEST-06**: Unit tests for Telegram agent with no signals (empty result)
 - [x] **TEST-07**: Unit tests for Telegram confluence counting logic
@@ -103,10 +103,10 @@ Requirements for milestone v0.4: Nansen Agent + Telegram Agent.
 | DB-02 | Phase 14 | Complete |
 | DB-03 | Phase 14 | Complete |
 | DB-04 | Phase 14 | Complete |
-| TEST-01 | Phase 17 | Pending |
-| TEST-02 | Phase 17 | Pending |
-| TEST-03 | Phase 17 | Pending |
-| TEST-04 | Phase 17 | Pending |
+| TEST-01 | Phase 17 | Complete |
+| TEST-02 | Phase 17 | Complete |
+| TEST-03 | Phase 17 | Complete |
+| TEST-04 | Phase 17 | Complete |
 | TEST-05 | Phase 17 | Complete |
 | TEST-06 | Phase 17 | Complete |
 | TEST-07 | Phase 17 | Complete |
