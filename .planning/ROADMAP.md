@@ -68,7 +68,7 @@ See: `.planning/milestones/v0.4-ROADMAP.md`
 **Milestone Goal:** Complete the full stack — Risk Agent with S/R-based stops and position sizing, FastAPI endpoints for morning report and chat, and a working Next.js dashboard.
 
 - [x] **Phase 20: Risk Agent** - Complete RiskAgent with S/R stops, R:R enforcement, and position sizing (completed 2026-03-01)
-- [ ] **Phase 21: Watchlist + Orchestrator Integration** - Configurable watchlist, Telegram supplementation, chain RiskAgent into orchestrator
+- [ ] **Phase 21: Watchlist + Orchestrator Integration** - Configurable watchlist, Telegram supplementation, Mentor SDK synthesis, deprecated file cleanup
 - [ ] **Phase 22: API Endpoints** - Complete /morning-report, /analyze/{symbol}, and /chat FastAPI endpoints
 - [ ] **Phase 23: Dashboard** - Next.js morning report with expandable signal cards and chat sidebar
 - [ ] **Phase 24: Integration Tests** - End-to-end pipeline tests on BTC, ETH, SOL
@@ -102,12 +102,12 @@ Plans:
   3. Morning report analysis iterates the merged watchlist (settings symbols + Telegram symbols)
   4. Calling analyze_symbol() chains TA → Nansen → Telegram → Risk and returns a complete OrchestratorOutput
   5. Deprecated agent stub files are gone — the repository contains only production code
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 21-01: Configurable watchlist in settings with Telegram signal supplementation logic
-- [ ] 21-02: Chain RiskAgent into Orchestrator analyze_symbol() flow
-- [ ] 21-03: Remove deprecated files and verify clean import graph
+- [ ] 21-01-PLAN.md — Configurable watchlist in settings with Telegram signal supplementation (Wave 1)
+- [ ] 21-02-PLAN.md — Mentor SDK synthesis call, OrchestratorOutput with reasoning, Obsidian logging (Wave 2)
+- [ ] 21-03-PLAN.md — Remove deprecated files and verify clean import graph (Wave 2)
 
 ### Phase 22: API Endpoints
 **Goal**: FastAPI exposes working endpoints for morning report, single-symbol analysis, and chat
@@ -179,7 +179,7 @@ Plans:
 | 18. Orchestrator Integration Fixes | v0.4 | 1/1 | Complete | 2026-03-01 |
 | 19. DB Init & Test Isolation | v0.4 | 1/1 | Complete | 2026-03-01 |
 | 20. Risk Agent | 3/3 | Complete    | 2026-03-01 | - |
-| 21. Watchlist + Orchestrator Integration | v0.5 | 0/3 | Not started | - |
+| 21. Watchlist + Orchestrator Integration | v0.5 | 0/3 | Planned | - |
 | 22. API Endpoints | v0.5 | 0/3 | Not started | - |
 | 23. Dashboard | v0.5 | 0/3 | Not started | - |
 | 24. Integration Tests | v0.5 | 0/1 | Not started | - |
