@@ -18,14 +18,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
-**Current focus:** Phase 22 — FastAPI Endpoints
+**Current focus:** Phase 23 — Next.js Dashboard
 
 ## Current Position
 
-Phase: 22 of 24 (FastAPI Endpoints)
-Plan: 2 of 2 in current phase (plan 02 complete — /chat endpoint with Anthropic SDK)
-Status: Phase 22 complete — all plans done
-Last activity: 2026-03-01 — Phase 22 Plan 02 complete (/chat endpoint with Anthropic SDK + signal context)
+Phase: 23 of 24 (Next.js Dashboard)
+Plan: 1 of 3 in current phase (plan 01 complete — API foundation + three-column layout shell)
+Status: In progress — plan 01 complete
+Last activity: 2026-03-01 — Phase 23 Plan 01 complete (types.ts + api.ts rewrite, SymbolSidebar, three-column page shell)
 
 Progress: [███░░░░░░░] 33% (v0.5)
 
@@ -62,6 +62,8 @@ Recent decisions affecting current work:
 - [Phase 22-02]: ChatRequest uses 'question' field (not 'message') per CONTEXT.md locked decision
 - [Phase 22-02]: settings.MODEL_NAME used for /chat (not MENTOR_MODEL — that is for Orchestrator Mentor agent)
 - [Phase 22-02]: Signal context built from signal_journal via get_recent_signals(limit=10), top 5 shown in system prompt
+- [Phase 23-01]: Removed stale legacy components (market-context-bar, rich-signal-card, whale-alert-panel, stats-card, signal-card) — referenced deleted api.ts types, not imported by any active file
+- [Phase 23-01]: API_BASE updated from port 8001 to 8000 to match Phase 22 FastAPI backend
 
 ### Pending Todos
 
@@ -75,10 +77,10 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 22-02-PLAN.md (/chat endpoint with Anthropic SDK and signal context)
+Stopped at: Completed 23-01-PLAN.md (API types + api.ts rewrite, SymbolSidebar, three-column page shell)
 Resume file: None
-Next action: /gsd:execute-phase 23 (Phase 23 — Next.js Dashboard)
+Next action: /gsd:execute-phase 23 plan 02 (Phase 23 Plan 02 — SignalDetailPanel)
 
 ---
 
-*State updated: 2026-03-01 after Phase 22 Plan 02 completion*
+*State updated: 2026-03-01 after Phase 23 Plan 01 completion*

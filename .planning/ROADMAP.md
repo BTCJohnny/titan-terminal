@@ -181,7 +181,7 @@ Plans:
 | 20. Risk Agent | 3/3 | Complete    | 2026-03-01 | - |
 | 21. Watchlist + Orchestrator Integration | 4/4 | Complete    | 2026-03-01 | - |
 | 22. API Endpoints | 2/2 | Complete    | 2026-03-01 | - |
-| 23. Dashboard | v0.5 | 0/3 | Not started | - |
+| 23. Dashboard | 1/3 | In Progress|  | - |
 | 24. Integration Tests | v0.5 | 0/1 | Not started | - |
 
 ---
