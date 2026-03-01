@@ -10,6 +10,7 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field
 
 
+
 class KeyLevels(BaseModel):
     """Key price levels."""
 
@@ -105,17 +106,14 @@ class OrchestratorOutput(BaseModel):
     # Mentor critique
     mentor: Optional[MentorAssessment] = Field(None, description="Mentor assessment")
 
+    # Mentor synthesis fields
+    direction: Optional[Literal["BULLISH", "BEARISH", "NO SIGNAL"]] = Field(
+        None, description="Directional bias from Mentor synthesis"
+    )
+    # Full Mentor reasoning text — stored in journal for future dashboard display
+    reasoning: Optional[str] = Field(None, description="Full Mentor reasoning text from synthesis call")
+
     @property
     def is_actionable(self) -> bool:
         """Check if signal is actionable (not Avoid)."""
         return self.suggested_action != "Avoid"
-
-    @property
-    def direction(self) -> str:
-        """Extract direction from suggested action."""
-        if "Long" in self.suggested_action:
-            return "Long"
-        elif "Short" in self.suggested_action:
-            return "Short"
-        else:
-            return "None"

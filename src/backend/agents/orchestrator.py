@@ -4,17 +4,19 @@ from datetime import datetime
 from typing import Optional
 import uuid
 
+import anthropic
+
 from .base import BaseAgent
 from .wyckoff import WyckoffAgent
 from .nansen_agent import NansenAgent
 from .telegram_agent import TelegramAgent, get_recent_signal_symbols
 from .ta_ensemble import WeeklySubagent, DailySubagent, FourHourSubagent, TAMentor
 from .risk_agent import RiskAgent
-from .mentor import MentorCriticAgent
 from ..db import record_signal, get_similar_patterns, get_pattern_stats
 from ..config.constants import HYPERLIQUID_PERPS
 from ..config.settings import settings
 from ..models.risk_output import RiskOutput
+from ..models.orchestrator_output import OrchestratorOutput, EntryZoneSimple, ThreeLawsCheckSimple
 
 ORCHESTRATOR_SYSTEM_PROMPT = """You are Titan Terminal Orchestrator - the main brain that synthesizes all specialist agent outputs.
 
@@ -57,7 +59,8 @@ class Orchestrator(BaseAgent):
         self.fourhour_subagent = FourHourSubagent()
         self.ta_mentor = TAMentor()
         self.risk = RiskAgent()
-        self.mentor = MentorCriticAgent()
+        # Direct Anthropic client for Mentor synthesis call
+        self.mentor_client = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
 
     def get_merged_watchlist(self) -> list[str]:
         """Get merged watchlist: settings symbols + recent Telegram signal symbols.
@@ -72,11 +75,11 @@ class Orchestrator(BaseAgent):
         merged = list(dict.fromkeys(base_symbols + telegram_symbols))
         return merged
 
-    def analyze(self, symbol: str, context: dict) -> dict:
+    def analyze(self, symbol: str, context: dict) -> OrchestratorOutput:
         """Required by BaseAgent - delegates to analyze_symbol."""
         return self.analyze_symbol(symbol, context)
 
-    def analyze_symbol(self, symbol: str, market_data: dict) -> dict:
+    def analyze_symbol(self, symbol: str, market_data: dict) -> OrchestratorOutput:
         """Run full analysis pipeline for a single symbol."""
 
         # 1. Get self-learning context (past similar patterns)
@@ -124,8 +127,8 @@ class Orchestrator(BaseAgent):
         }
         risk_result = self.risk.analyze(symbol, risk_context)
 
-        # 3. Synthesize all results
-        synthesis = self._synthesize_results(
+        # 3. Build agent context for Mentor synthesis
+        agent_context = self._build_mentor_context(
             symbol=symbol,
             wyckoff=wyckoff_result,
             nansen=nansen_result,
@@ -133,210 +136,238 @@ class Orchestrator(BaseAgent):
             ta=ta_result,
             risk=risk_result,
             past_patterns=past_patterns,
-            wyckoff_stats=wyckoff_phase_stats
+            wyckoff_stats=wyckoff_phase_stats,
         )
 
-        # 4. Get mentor critique
-        mentor_critique = self.mentor.critique(synthesis)
+        # 4. Mentor synthesis — direct Anthropic SDK call
+        mentor_output = self._call_mentor(symbol, agent_context, risk_result)
 
-        # 5. Apply mentor adjustment
-        final_signal = self._apply_mentor_adjustment(synthesis, mentor_critique)
+        # 5. Log high-conviction signals to Obsidian vault
+        if mentor_output.confidence and mentor_output.confidence > 75:
+            self._log_to_obsidian(mentor_output)
 
-        # 6. Record to SignalJournal for self-learning
-        signal_id = self._record_to_journal(final_signal, wyckoff_result, nansen_result,
-                                            telegram_result, ta_result, risk_result,
-                                            mentor_critique)
-        final_signal['signal_id'] = signal_id
+        # 6. Record to SignalJournal
+        signal_id = self._record_to_journal_v2(mentor_output, wyckoff_result, nansen_result,
+                                               telegram_result, ta_result, risk_result)
+        mentor_output.signal_id = signal_id
 
-        return final_signal
+        return mentor_output
 
-    def _synthesize_results(self, symbol: str, wyckoff: dict, nansen: "NansenSignal",
-                           telegram: "TelegramSignal", ta: dict, risk: RiskOutput,
-                           past_patterns: list, wyckoff_stats: Optional[dict]) -> dict:
-        """Synthesize all specialist outputs into a unified signal."""
+    def _build_mentor_context(self, symbol, wyckoff, nansen, telegram, ta, risk, past_patterns, wyckoff_stats):
+        """Build structured context string for Mentor SDK call."""
+        # Format each agent's output as readable sections
+        context = f"""## Symbol: {symbol}
 
-        # Extract key data points
-        # wyckoff and ta are plain dicts; nansen and telegram are Pydantic models; risk is RiskOutput
-        wyckoff_composite = wyckoff.get('composite_analysis', {})
-        nansen_overall = nansen.overall_signal
-        ta_overall = ta.get('overall', {})
-        risk_verdict = risk.final_verdict
+### Wyckoff Analysis
+Phase: {wyckoff.get('composite_analysis', {}).get('overall_phase', 'Unknown')}
+Bias: {wyckoff.get('composite_analysis', {}).get('overall_bias', 'neutral')}
+Confluence Score: {wyckoff.get('composite_analysis', {}).get('confluence_score', 'N/A')}
+Notes: {wyckoff.get('composite_analysis', {}).get('notes', 'N/A')}
 
-        # Calculate accumulation/distribution score
-        wyckoff_bias = wyckoff_composite.get('overall_bias', 'neutral')
-        nansen_bias = nansen_overall.bias
-        ta_bias = ta_overall.get('bias', 'neutral')
+### On-Chain (Nansen)
+Overall Bias: {nansen.overall_signal.bias}
+Confidence: {nansen.overall_signal.confidence}
+Key Insights: {', '.join(nansen.overall_signal.key_insights) if nansen.overall_signal.key_insights else 'None'}
+Signal Ratio: {nansen.signal_count_bullish} bullish / {nansen.signal_count_bearish} bearish
 
-        acc_score, dist_score = self._calculate_acc_dist_scores(
-            wyckoff_bias, nansen_bias, ta_bias,
-            wyckoff_composite.get('confluence_score', 50),
-            nansen_overall.confidence,
-            ta_overall.get('confidence', 50)
-        )
+### TA Ensemble
+Unified Bias: {ta.get('unified_signal', {}).get('bias', 'N/A')}
+Confidence: {ta.get('overall', {}).get('confidence', 'N/A')}
+Summary: {ta.get('overall', {}).get('notes', 'N/A')}
 
-        # Determine suggested action
-        suggested_action = self._determine_action(
-            wyckoff_bias, risk_verdict.action,
-            acc_score, dist_score
-        )
+### Telegram Alpha
+Sentiment: {telegram.overall_sentiment}
+Confidence: {telegram.confidence}
+Signals Found: {telegram.signals_found}
+Confluence: {telegram.confluence_count}
+Reasoning: {telegram.reasoning}
 
-        # Calculate confidence (weighted average)
-        confidence = self._calculate_confidence(
-            wyckoff_composite.get('confluence_score', 50),
-            nansen_overall.confidence,
-            ta_overall.get('confidence', 50),
-            telegram.confidence,
-            risk_verdict.confidence
-        )
+### Risk Assessment
+Direction: {risk.trade_direction}
+Approved: {risk.approved}
+Rejection Reasons: {risk.rejection_reasons if risk.rejection_reasons else 'None'}
+Entry Zone: {risk.entry_zone.low} - {risk.entry_zone.high} (ideal: {risk.entry_zone.ideal})
+Stop Loss: {risk.stop_loss.price} ({risk.stop_loss.type})
+TP1: {risk.take_profits.tp1.price if risk.take_profits.tp1 else 'N/A'} (R:R {risk.risk_reward.to_tp1})
+TP2: {risk.take_profits.tp2.price if risk.take_profits.tp2 else 'N/A'} (R:R {risk.risk_reward.to_tp2 if risk.risk_reward.to_tp2 else 'N/A'})
+3 Laws: {risk.three_laws_check.overall}
 
-        # Build self-learning context
-        learning_context = ""
+### Self-Learning Context
+"""
         if past_patterns:
             wins = sum(1 for p in past_patterns if p.get('outcome') == 'win')
             total = len(past_patterns)
-            learning_context = f"Past similar signals: {wins}/{total} wins"
+            context += f"Past similar signals: {wins}/{total} wins\n"
         if wyckoff_stats:
-            learning_context += f" | {wyckoff_stats.get('pattern_type')}: {wyckoff_stats.get('win_rate', 0):.0%} win rate"
+            context += f"Phase stats: {wyckoff_stats.get('pattern_type')}: {wyckoff_stats.get('win_rate', 0):.0%} win rate\n"
+        if not past_patterns and not wyckoff_stats:
+            context += "No historical patterns available.\n"
 
-        return {
-            'symbol': symbol,
-            'timestamp': datetime.now().isoformat(),
-            'accumulation_score': acc_score,
-            'distribution_score': dist_score,
-            'confidence': confidence,
-            'suggested_action': suggested_action,
-            'wyckoff_phase': wyckoff_composite.get('overall_phase'),
-            'wyckoff_summary': wyckoff_composite.get('notes'),
-            'nansen_summary': nansen_overall.key_insights,
-            'ta_summary': ta_overall.get('notes'),
-            'telegram_signals': [s.model_dump() for s in telegram.relevant_signals],
-            'entry_zone': risk.entry_zone.model_dump(),
-            'stop_loss': risk.stop_loss.price,
-            'tp1': risk.take_profits.tp1.price if risk.take_profits.tp1 else None,
-            'tp2': risk.take_profits.tp2.price if risk.take_profits.tp2 else None,
-            'risk_reward': risk.risk_reward.to_tp1,
-            'three_laws_check': risk.three_laws_check.model_dump(),
-            'approved': risk.approved,
-            'rejection_reasons': risk.rejection_reasons,
-            'learning_context': learning_context,
-            'key_levels': ta.get('key_levels', {})
-        }
+        return context
 
-    def _calculate_acc_dist_scores(self, wyckoff_bias: str, nansen_bias: str,
-                                   ta_bias: str, wyckoff_conf: int,
-                                   nansen_conf: int, ta_conf: int) -> tuple:
-        """Calculate accumulation and distribution scores."""
+    def _call_mentor(self, symbol: str, agent_context: str, risk: RiskOutput) -> OrchestratorOutput:
+        """Call Anthropic SDK for Mentor synthesis — the centrepiece of v0.5.
 
-        def bias_to_score(bias: str) -> tuple:
-            if bias == 'accumulation' or bias == 'bullish':
-                return (1, 0)
-            elif bias == 'distribution' or bias == 'bearish':
-                return (0, 1)
-            return (0.5, 0.5)
+        Uses settings.MENTOR_MODEL (claude-opus-4-6) at temperature 0.2.
+        Reads all agent outputs and produces the final OrchestratorOutput.
+        """
+        mentor_system = """You are the Titan Terminal Mentor — a seasoned trading strategist who synthesizes multi-agent analysis into a final trading decision.
 
-        # Weight biases
-        w_acc, w_dist = 0, 0
+You receive outputs from 5 specialist agents: Wyckoff (structure), Nansen (on-chain), TA Ensemble (technicals), Telegram Alpha (sentiment), and Risk (levels/sizing).
 
-        # Wyckoff (30%)
-        acc, dist = bias_to_score(wyckoff_bias)
-        w_acc += acc * 0.3 * wyckoff_conf
-        w_dist += dist * 0.3 * wyckoff_conf
+Your job:
+1. Read ALL agent outputs carefully
+2. Identify confluence and conflicts between agents
+3. Produce a final directional call: BULLISH, BEARISH, or NO SIGNAL
+4. Set a confidence level (0-100) reflecting the strength of confluence
+5. Determine the suggested action: Long Spot, Long Hyperliquid, Short Hyperliquid, or Avoid
+6. Provide FULL reasoning — do not summarize or truncate. Explain what each agent found and how you weigh the evidence.
 
-        # Nansen (25%)
-        acc, dist = bias_to_score(nansen_bias)
-        w_acc += acc * 0.25 * nansen_conf
-        w_dist += dist * 0.25 * nansen_conf
+You weight the specialists:
+- Wyckoff: 30% (structure is king)
+- On-Chain/Nansen: 25% (smart money follows structure)
+- TA Ensemble: 25% (confirmation)
+- Telegram Alpha: 10% (sentiment/confluence)
+- Risk/Levels: 10% (execution quality)
 
-        # TA (25%)
-        acc, dist = bias_to_score(ta_bias)
-        w_acc += acc * 0.25 * ta_conf
-        w_dist += dist * 0.25 * ta_conf
+If the Risk agent rejected the trade (approved=false), you MUST set suggested_action to Avoid regardless of other signals.
 
-        # Normalize to 0-100
-        total = w_acc + w_dist
-        if total > 0:
-            acc_score = int((w_acc / total) * 100)
-            dist_score = int((w_dist / total) * 100)
-        else:
-            acc_score, dist_score = 50, 50
+Output ONLY valid JSON matching this exact schema — no markdown, no extra text:
+{
+    "direction": "BULLISH" | "BEARISH" | "NO SIGNAL",
+    "confidence": <int 0-100>,
+    "suggested_action": "Long Spot" | "Long Hyperliquid" | "Short Hyperliquid" | "Avoid",
+    "accumulation_score": <int 0-100>,
+    "distribution_score": <int 0-100>,
+    "reasoning": "<FULL reasoning text — multiple paragraphs OK, do not truncate>"
+}"""
 
-        return acc_score, dist_score
+        user_prompt = f"""Analyze {symbol} and produce your final trading decision.
 
-    def _determine_action(self, wyckoff_bias: str, risk_action: str,
-                         acc_score: int, dist_score: int) -> str:
-        """Determine suggested trading action."""
+{agent_context}
 
-        if risk_action == 'avoid':
-            return 'Avoid'
+Remember: Output ONLY valid JSON. reasoning MUST be complete — capture your full analysis."""
 
-        if acc_score > 65:
-            if risk_action == 'long_perp':
-                return 'Long Hyperliquid'
-            return 'Long Spot'
-        elif dist_score > 65:
-            return 'Short Hyperliquid'
-        else:
-            return 'Avoid'
-
-    def _calculate_confidence(self, wyckoff: int, nansen: int, ta: int,
-                             telegram: int, risk: int) -> int:
-        """Calculate weighted confidence score."""
-        # Weights: Wyckoff 30%, Nansen 25%, TA 25%, Telegram 10%, Risk 10%
-        weighted = (
-            wyckoff * 0.30 +
-            nansen * 0.25 +
-            ta * 0.25 +
-            telegram * 0.10 +
-            risk * 0.10
+        response = self.mentor_client.messages.create(
+            model=settings.MENTOR_MODEL,
+            max_tokens=4000,
+            temperature=0.2,
+            system=mentor_system,
+            messages=[{"role": "user", "content": user_prompt}]
         )
-        return int(weighted)
 
-    def _apply_mentor_adjustment(self, signal: dict, critique: dict) -> dict:
-        """Apply mentor's confidence adjustment and add critique."""
+        # Parse the Mentor response
+        response_text = response.content[0].text
+        try:
+            mentor_data = json.loads(response_text)
+        except json.JSONDecodeError:
+            # Try to extract JSON from response
+            import re
+            json_match = re.search(r'\{[\s\S]*\}', response_text)
+            if json_match:
+                mentor_data = json.loads(json_match.group())
+            else:
+                # Fallback — Mentor response was not valid JSON
+                mentor_data = {
+                    "direction": "NO SIGNAL",
+                    "confidence": 0,
+                    "suggested_action": "Avoid",
+                    "accumulation_score": 50,
+                    "distribution_score": 50,
+                    "reasoning": f"Mentor response could not be parsed: {response_text[:500]}"
+                }
 
-        adjustment = critique.get('confidence_adjustment', 0)
-        signal['confidence'] = max(0, min(100, signal['confidence'] + adjustment))
-        signal['mentor_verdict'] = critique.get('verdict')
-        signal['mentor_concerns'] = critique.get('concerns', [])
-        signal['mentor_notes'] = critique.get('mentor_notes')
+        # Build OrchestratorOutput from Mentor response + risk data
+        output = OrchestratorOutput(
+            symbol=symbol,
+            timestamp=datetime.now(),
+            direction=mentor_data.get("direction", "NO SIGNAL"),
+            confidence=max(0, min(100, mentor_data.get("confidence", 0))),
+            suggested_action=mentor_data.get("suggested_action", "Avoid"),
+            accumulation_score=max(0, min(100, mentor_data.get("accumulation_score", 50))),
+            distribution_score=max(0, min(100, mentor_data.get("distribution_score", 50))),
+            reasoning=mentor_data.get("reasoning", ""),
+            # Carry forward from risk agent
+            entry_zone=EntryZoneSimple(
+                low=risk.entry_zone.low,
+                high=risk.entry_zone.high,
+                ideal=risk.entry_zone.ideal
+            ) if risk.entry_zone else None,
+            stop_loss=risk.stop_loss.price if risk.stop_loss else None,
+            tp1=risk.take_profits.tp1.price if risk.take_profits and risk.take_profits.tp1 else None,
+            tp2=risk.take_profits.tp2.price if risk.take_profits and risk.take_profits.tp2 else None,
+            risk_reward=risk.risk_reward.to_tp1 if risk.risk_reward else None,
+            three_laws_check=ThreeLawsCheckSimple(
+                law_1_risk=risk.three_laws_check.law_1_risk,
+                law_2_rr=risk.three_laws_check.law_2_rr,
+                law_3_positions=risk.three_laws_check.law_3_positions,
+                overall=risk.three_laws_check.overall
+            ) if risk.three_laws_check else None,
+        )
+        return output
 
-        # If mentor rejects, change action to Avoid
-        if critique.get('verdict') == 'reject':
-            signal['suggested_action'] = 'Avoid'
-            signal['confidence'] = min(signal['confidence'], 30)
+    def _log_to_obsidian(self, output: OrchestratorOutput) -> None:
+        """Log high-conviction signal to Obsidian vault in plain English.
 
-        return signal
+        Per user decision: signals with confidence > 75 logged to
+        agents/orchestrator/session-notes.md
+        """
+        import os
+        from pathlib import Path
+        import logging
 
-    def _record_to_journal(self, signal: dict, wyckoff: dict, nansen: "NansenSignal",
-                          telegram: "TelegramSignal", ta: dict, risk: RiskOutput,
-                          mentor: dict) -> int:
+        vault_base = Path(settings.NANSEN_VAULT_PATH).parent.parent  # Up from agents/nansen to vault root
+        obsidian_path = vault_base / "agents" / "orchestrator" / "session-notes.md"
+
+        try:
+            os.makedirs(obsidian_path.parent, exist_ok=True)
+
+            entry = f"""
+---
+
+### {output.symbol} — {output.timestamp.strftime('%Y-%m-%d %H:%M')}
+
+**Direction:** {output.direction} | **Confidence:** {output.confidence}% | **Action:** {output.suggested_action}
+
+**Entry Zone:** {output.entry_zone.low if output.entry_zone else 'N/A'} - {output.entry_zone.high if output.entry_zone else 'N/A'}
+**Stop Loss:** {output.stop_loss or 'N/A'} | **TP1:** {output.tp1 or 'N/A'} | **TP2:** {output.tp2 or 'N/A'} | **R:R:** {output.risk_reward or 'N/A'}
+
+**Reasoning:**
+{output.reasoning or 'No reasoning provided.'}
+
+"""
+            with open(obsidian_path, 'a') as f:
+                f.write(entry)
+
+        except Exception as e:
+            logging.getLogger(__name__).warning(f"Failed to log to Obsidian vault: {e}")
+
+    def _record_to_journal_v2(self, output: OrchestratorOutput, wyckoff, nansen, telegram, ta, risk) -> int:
         """Record signal to SignalJournal for self-learning."""
-
         journal_data = {
-            'symbol': signal['symbol'],
-            'timestamp': signal['timestamp'],
-            'timeframe': 'D',  # Primary timeframe
-            'accumulation_score': signal.get('accumulation_score'),
-            'distribution_score': signal.get('distribution_score'),
-            'confidence': signal['confidence'],
-            'wyckoff_phase': signal.get('wyckoff_phase'),
-            'wyckoff_notes': signal.get('wyckoff_summary'),
-            'suggested_action': signal['suggested_action'],
-            'entry_zone_low': signal.get('entry_zone', {}).get('low'),
-            'entry_zone_high': signal.get('entry_zone', {}).get('high'),
-            'stop_loss': signal.get('stop_loss'),
-            'tp1': signal.get('tp1'),
-            'tp2': signal.get('tp2'),
-            'risk_reward': signal.get('risk_reward'),
+            'symbol': output.symbol,
+            'timestamp': output.timestamp.isoformat(),
+            'timeframe': 'D',
+            'accumulation_score': output.accumulation_score,
+            'distribution_score': output.distribution_score,
+            'confidence': output.confidence,
+            'wyckoff_phase': output.wyckoff_phase,
+            'wyckoff_notes': output.wyckoff_summary,
+            'suggested_action': output.suggested_action,
+            'entry_zone_low': output.entry_zone.low if output.entry_zone else None,
+            'entry_zone_high': output.entry_zone.high if output.entry_zone else None,
+            'stop_loss': output.stop_loss,
+            'tp1': output.tp1,
+            'tp2': output.tp2,
+            'risk_reward': output.risk_reward,
             'nansen_data': json.dumps(nansen.model_dump(mode='json')),
             'telegram_data': json.dumps(telegram.model_dump(mode='json')),
             'wyckoff_data': json.dumps(wyckoff),
             'ta_data': json.dumps(ta),
             'risk_data': json.dumps(risk.model_dump(mode='json')),
-            'mentor_critique': json.dumps(mentor),
+            'mentor_critique': json.dumps({"reasoning": output.reasoning}),
             'batch_id': str(uuid.uuid4())[:8]
         }
-
         return record_signal(journal_data)
 
     def run_morning_batch(self, market_data_fetcher, symbols: list = None) -> list:
@@ -367,11 +398,21 @@ class Orchestrator(BaseAgent):
                 })
 
         # Sort by confidence (highest first), filter out Avoid unless all are Avoid
-        actionable = [r for r in results if r.get('suggested_action') != 'Avoid']
+        def get_confidence(r):
+            if isinstance(r, OrchestratorOutput):
+                return r.confidence or 0
+            return r.get('confidence', 0)
+
+        def get_action(r):
+            if isinstance(r, OrchestratorOutput):
+                return r.suggested_action
+            return r.get('suggested_action', 'Avoid')
+
+        actionable = [r for r in results if get_action(r) != 'Avoid']
         if actionable:
-            results = sorted(actionable, key=lambda x: x.get('confidence', 0), reverse=True)
+            results = sorted(actionable, key=get_confidence, reverse=True)
         else:
-            results = sorted(results, key=lambda x: x.get('confidence', 0), reverse=True)
+            results = sorted(results, key=get_confidence, reverse=True)
 
         # Limit to top 8-20
         return results[:20]
