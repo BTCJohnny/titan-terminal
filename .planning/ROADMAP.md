@@ -124,10 +124,12 @@ Plans:
   8. Telegram 48h window filter has unit tests
   9. Database table creation has unit tests for onchain_snapshots and ta_snapshots
   10. Database insert operations have unit tests for both snapshot tables
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 17-01: TBD
+- [ ] 17-01-PLAN.md - Nansen agent tests (individual signals, aggregation, vault logging, graceful handling)
+- [ ] 17-02-PLAN.md - Telegram agent tests (signals present/empty, confluence counting, 48h filter)
+- [ ] 17-03-PLAN.md - Database tests (snapshot table creation, insert operations)
 
 ## Progress
 
@@ -152,7 +154,7 @@ Phases execute in numeric order: 1 → 2 → ... → 13 → 14 → 15 → 16 →
 | 14. Foundation | 2/2 | Complete    | 2026-02-28 | - |
 | 15. Nansen Agent | 4/4 | Complete    | 2026-03-01 | - |
 | 16. Telegram Agent | 2/2 | Complete    | 2026-03-01 | - |
-| 17. Test Coverage | v0.4 | 0/? | Not started | - |
+| 17. Test Coverage | v0.4 | 0/3 | Not started | - |
 
 ---
 *Roadmap updated: 2026-02-28 after v0.4 roadmap creation*
