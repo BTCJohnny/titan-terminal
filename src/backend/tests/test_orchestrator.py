@@ -1,8 +1,8 @@
-"""Smoke tests for Orchestrator agent."""
+"""Tests for Orchestrator with Mentor SDK synthesis."""
 import json
 from datetime import datetime
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, PropertyMock
 
 from src.backend.agents.orchestrator import Orchestrator
 from src.backend.models.orchestrator_output import OrchestratorOutput
@@ -40,110 +40,150 @@ def _make_risk_output(symbol="BTC"):
     )
 
 
+def _make_nansen_signal():
+    return NansenSignal(
+        symbol="BTC",
+        exchange_flows=ExchangeFlows(net_direction="outflow", magnitude="high", interpretation="test", confidence=70),
+        fresh_wallets=FreshWallets(activity_level="medium", trend="stable", notable_count=0, interpretation="test"),
+        smart_money=SmartMoney(direction="accumulating", confidence=75, notable_wallets=[], interpretation="test"),
+        top_pnl=TopPnL(traders_bias="bullish", average_position="long", confidence=70, interpretation="test"),
+        whale_activity=WhaleActivity(summary="test", notable_transactions=[], net_flow="accumulating", confidence=70),
+        overall_signal=OnChainOverall(bias="bullish", confidence=70, key_insights=["Smart money accumulating"]),
+        signal_count_bullish=4,
+        signal_count_bearish=1,
+        reasoning="4 of 5 signals bullish.",
+    )
+
+
+def _make_telegram_signal():
+    return TelegramSignal(
+        symbol="BTC",
+        signals_found=0,
+        active_signals=0,
+        relevant_signals=[],
+        overall_sentiment="neutral",
+        confluence_count=0,
+        confidence=0,
+        avg_confidence=0.0,
+        reasoning="No signals found.",
+    )
+
+
+def _make_mentor_response(direction="BULLISH", confidence=78, action="Long Spot"):
+    """Build mock Anthropic API response for Mentor call."""
+    mentor_json = json.dumps({
+        "direction": direction,
+        "confidence": confidence,
+        "suggested_action": action,
+        "accumulation_score": 72,
+        "distribution_score": 28,
+        "reasoning": "Wyckoff shows accumulation spring. Nansen confirms smart money inflow. TA ensemble bullish across timeframes. Risk approved with 3.5:1 R:R. Full conviction on this setup."
+    })
+    mock_response = MagicMock()
+    mock_response.content = [MagicMock(text=mentor_json)]
+    return mock_response
+
+
 class TestOrchestrator:
-    """Smoke tests for Orchestrator."""
+    """Tests for Orchestrator with Mentor SDK synthesis."""
 
-    def test_orchestrator_smoke(self):
-        """Verify Orchestrator can instantiate and return valid OrchestratorOutput."""
-        # Create expected final output structure
-        expected_output = {
-            "symbol": "BTC",
-            "signal_id": 1,
-            "timestamp": datetime.now().isoformat(),
-            "accumulation_score": 75,
-            "distribution_score": 25,
-            "confidence": 70,
-            "wyckoff_phase": "Phase C - Spring",
-            "wyckoff_summary": "Accumulation with spring detected",
-            "nansen_summary": ["Smart money accumulating", "Exchange outflows"],
-            "ta_summary": "Bullish across timeframes",
-            "telegram_signals": [],
-            "suggested_action": "Long Spot",
-            "entry_zone": {"low": 64000.0, "high": 65500.0, "ideal": 64500.0},
-            "stop_loss": 62000.0,
-            "tp1": 70000.0,
-            "tp2": 75000.0,
-            "risk_reward": 2.5,
-            "key_levels": {"support": 62000.0, "resistance": 70000.0, "invalidation": 60000.0},
-            "three_laws_check": {
-                "law_1_risk": "pass",
-                "law_2_rr": "pass",
-                "law_3_positions": "check_current_positions",
-                "overall": "approved"
-            },
-            "learning_context": "Past similar signals: 3/5 wins",
-            "mentor": {
-                "verdict": "proceed",
-                "concerns": [],
-                "notes": "Good setup"
-            }
-        }
+    def test_orchestrator_instantiates_without_mentor_critic(self):
+        """MentorCriticAgent is no longer initialized."""
+        orchestrator = Orchestrator()
+        assert not hasattr(orchestrator, 'mentor') or not hasattr(getattr(orchestrator, 'mentor', None), 'critique')
+        assert hasattr(orchestrator, 'mentor_client')
 
+    def test_analyze_symbol_returns_orchestrator_output(self):
+        """analyze_symbol returns OrchestratorOutput (not raw dict)."""
         orchestrator = Orchestrator()
 
-        # Build NansenSignal Pydantic model for mock (orchestrator uses attribute access)
-        mock_nansen_signal = NansenSignal(
-            symbol="BTC",
-            exchange_flows=ExchangeFlows(net_direction="outflow", magnitude="high", interpretation="test", confidence=70),
-            fresh_wallets=FreshWallets(activity_level="medium", trend="stable", notable_count=0, interpretation="test"),
-            smart_money=SmartMoney(direction="accumulating", confidence=75, notable_wallets=[], interpretation="test"),
-            top_pnl=TopPnL(traders_bias="bullish", average_position="long", confidence=70, interpretation="test"),
-            whale_activity=WhaleActivity(summary="test", notable_transactions=[], net_flow="accumulating", confidence=70),
-            overall_signal=OnChainOverall(bias="bullish", confidence=70, key_insights=[]),
-            signal_count_bullish=4,
-            signal_count_bearish=1,
-            reasoning="4 of 5 signals bullish.",
-        )
+        with patch.object(orchestrator.wyckoff, 'analyze', return_value={"composite_analysis": {"overall_phase": "Phase C", "overall_bias": "accumulation", "confluence_score": 75}}), \
+             patch.object(orchestrator.nansen, 'analyze', return_value=_make_nansen_signal()), \
+             patch.object(orchestrator.telegram, 'analyze', return_value=_make_telegram_signal()), \
+             patch.object(orchestrator.weekly_subagent, 'analyze', return_value={"overall": {"bias": "bullish", "confidence": 75}}), \
+             patch.object(orchestrator.daily_subagent, 'analyze', return_value={"overall": {"bias": "bullish", "confidence": 70}}), \
+             patch.object(orchestrator.fourhour_subagent, 'analyze', return_value={"overall": {"bias": "neutral", "confidence": 55}}), \
+             patch.object(orchestrator.ta_mentor, 'synthesize', return_value={"unified_signal": {"bias": "bullish"}, "overall": {"confidence": 70, "notes": "Bullish"}, "key_levels": {}}), \
+             patch.object(orchestrator.risk, 'analyze', return_value=_make_risk_output("BTC")), \
+             patch.object(orchestrator.mentor_client.messages, 'create', return_value=_make_mentor_response()), \
+             patch('src.backend.agents.orchestrator.get_similar_patterns', return_value=[]), \
+             patch('src.backend.agents.orchestrator.get_pattern_stats', return_value=None), \
+             patch('src.backend.agents.orchestrator.record_signal', return_value=1), \
+             patch.object(orchestrator, '_log_to_obsidian'):
+            result = orchestrator.analyze_symbol("BTC", {"current_price": 65000})
 
-        # Build TelegramSignal Pydantic model for mock (orchestrator uses attribute access)
-        mock_telegram_signal = TelegramSignal(
-            symbol="BTC",
-            signals_found=0,
-            active_signals=0,
-            relevant_signals=[],
-            overall_sentiment="neutral",
-            confluence_count=0,
-            confidence=0,
-            avg_confidence=0.0,
-            reasoning="No signals found.",
-        )
+        assert isinstance(result, OrchestratorOutput)
+        assert result.symbol == "BTC"
+        assert result.direction == "BULLISH"
+        assert result.confidence == 78
+        assert result.reasoning is not None
+        assert len(result.reasoning) > 0
+        assert result.suggested_action == "Long Spot"
 
-        # Mock all specialist agents and DB calls
-        with patch.object(orchestrator.wyckoff, 'analyze', return_value={"composite_analysis": {"overall_phase": "Phase C", "overall_bias": "accumulation", "confluence_score": 75}}):
-            with patch.object(orchestrator.nansen, 'analyze', return_value=mock_nansen_signal):
-                with patch.object(orchestrator.telegram, 'analyze', return_value=mock_telegram_signal):
-                    with patch.object(orchestrator.weekly_subagent, 'analyze', return_value={"overall": {"bias": "bullish", "confidence": 75}}):
-                        with patch.object(orchestrator.daily_subagent, 'analyze', return_value={"overall": {"bias": "bullish", "confidence": 70}}):
-                            with patch.object(orchestrator.fourhour_subagent, 'analyze', return_value={"overall": {"bias": "neutral", "confidence": 55}}):
-                                with patch.object(orchestrator.ta_mentor, 'synthesize', return_value={"unified_signal": {"bias": "bullish"}, "overall": {"confidence": 70, "notes": "Bullish"}, "key_levels": {}}):
-                                    with patch.object(orchestrator.risk, 'analyze', return_value=_make_risk_output("BTC")):
-                                        with patch.object(orchestrator.mentor, 'critique', return_value={"verdict": "proceed", "confidence_adjustment": 0, "concerns": []}):
-                                            with patch('src.backend.agents.orchestrator.get_similar_patterns', return_value=[]):
-                                                with patch('src.backend.agents.orchestrator.get_pattern_stats', return_value=None):
-                                                    with patch('src.backend.agents.orchestrator.record_signal', return_value=1):
-                                                        result = orchestrator.analyze_symbol("BTC", {"current_price": 65000})
-
-        # The result is a dict - validate key fields exist
-        assert result["symbol"] == "BTC"
-        assert "accumulation_score" in result
-        assert "distribution_score" in result
-        assert "confidence" in result
-        assert result["suggested_action"] in ["Long Spot", "Long Hyperliquid", "Short Hyperliquid", "Avoid"]
-
-        # Validate timestamp is parseable
-        datetime.fromisoformat(result["timestamp"])
-
-    def test_orchestrator_instantiates_all_agents(self):
-        """Verify Orchestrator correctly instantiates all specialist agents."""
+    def test_mentor_sdk_call_uses_correct_model(self):
+        """Mentor SDK call uses settings.MENTOR_MODEL."""
         orchestrator = Orchestrator()
 
-        # Check all agents are instantiated
-        assert orchestrator.wyckoff is not None
-        assert orchestrator.nansen is not None
-        assert orchestrator.telegram is not None
-        assert orchestrator.weekly_subagent is not None
-        assert orchestrator.daily_subagent is not None
-        assert orchestrator.fourhour_subagent is not None
-        assert orchestrator.ta_mentor is not None
-        assert orchestrator.risk is not None
-        assert orchestrator.mentor is not None
+        with patch.object(orchestrator.wyckoff, 'analyze', return_value={"composite_analysis": {"overall_phase": "Phase C", "overall_bias": "accumulation", "confluence_score": 75}}), \
+             patch.object(orchestrator.nansen, 'analyze', return_value=_make_nansen_signal()), \
+             patch.object(orchestrator.telegram, 'analyze', return_value=_make_telegram_signal()), \
+             patch.object(orchestrator.weekly_subagent, 'analyze', return_value={"overall": {"bias": "bullish", "confidence": 75}}), \
+             patch.object(orchestrator.daily_subagent, 'analyze', return_value={"overall": {"bias": "bullish", "confidence": 70}}), \
+             patch.object(orchestrator.fourhour_subagent, 'analyze', return_value={"overall": {"bias": "neutral", "confidence": 55}}), \
+             patch.object(orchestrator.ta_mentor, 'synthesize', return_value={"unified_signal": {"bias": "bullish"}, "overall": {"confidence": 70, "notes": "Bullish"}, "key_levels": {}}), \
+             patch.object(orchestrator.risk, 'analyze', return_value=_make_risk_output("BTC")), \
+             patch.object(orchestrator.mentor_client.messages, 'create', return_value=_make_mentor_response()) as mock_create, \
+             patch('src.backend.agents.orchestrator.get_similar_patterns', return_value=[]), \
+             patch('src.backend.agents.orchestrator.get_pattern_stats', return_value=None), \
+             patch('src.backend.agents.orchestrator.record_signal', return_value=1), \
+             patch.object(orchestrator, '_log_to_obsidian'):
+            orchestrator.analyze_symbol("BTC", {"current_price": 65000})
+
+        # Verify the SDK call used correct model and temperature
+        mock_create.assert_called_once()
+        call_kwargs = mock_create.call_args
+        assert call_kwargs.kwargs.get('model') or call_kwargs[1].get('model')
+        assert call_kwargs.kwargs.get('temperature', call_kwargs[1].get('temperature')) == 0.2
+
+    def test_high_conviction_signal_logs_to_obsidian(self):
+        """Signals with confidence > 75 trigger Obsidian logging."""
+        orchestrator = Orchestrator()
+
+        with patch.object(orchestrator.wyckoff, 'analyze', return_value={"composite_analysis": {"overall_phase": "Phase C", "overall_bias": "accumulation", "confluence_score": 75}}), \
+             patch.object(orchestrator.nansen, 'analyze', return_value=_make_nansen_signal()), \
+             patch.object(orchestrator.telegram, 'analyze', return_value=_make_telegram_signal()), \
+             patch.object(orchestrator.weekly_subagent, 'analyze', return_value={"overall": {"bias": "bullish", "confidence": 75}}), \
+             patch.object(orchestrator.daily_subagent, 'analyze', return_value={"overall": {"bias": "bullish", "confidence": 70}}), \
+             patch.object(orchestrator.fourhour_subagent, 'analyze', return_value={"overall": {"bias": "neutral", "confidence": 55}}), \
+             patch.object(orchestrator.ta_mentor, 'synthesize', return_value={"unified_signal": {"bias": "bullish"}, "overall": {"confidence": 70, "notes": "Bullish"}, "key_levels": {}}), \
+             patch.object(orchestrator.risk, 'analyze', return_value=_make_risk_output("BTC")), \
+             patch.object(orchestrator.mentor_client.messages, 'create', return_value=_make_mentor_response(confidence=80)), \
+             patch('src.backend.agents.orchestrator.get_similar_patterns', return_value=[]), \
+             patch('src.backend.agents.orchestrator.get_pattern_stats', return_value=None), \
+             patch('src.backend.agents.orchestrator.record_signal', return_value=1), \
+             patch.object(orchestrator, '_log_to_obsidian') as mock_obsidian:
+            result = orchestrator.analyze_symbol("BTC", {"current_price": 65000})
+
+        # Confidence 80 > 75 threshold — should log
+        mock_obsidian.assert_called_once()
+
+    def test_low_conviction_signal_skips_obsidian(self):
+        """Signals with confidence <= 75 do NOT trigger Obsidian logging."""
+        orchestrator = Orchestrator()
+
+        with patch.object(orchestrator.wyckoff, 'analyze', return_value={"composite_analysis": {"overall_phase": "Phase C", "overall_bias": "accumulation", "confluence_score": 75}}), \
+             patch.object(orchestrator.nansen, 'analyze', return_value=_make_nansen_signal()), \
+             patch.object(orchestrator.telegram, 'analyze', return_value=_make_telegram_signal()), \
+             patch.object(orchestrator.weekly_subagent, 'analyze', return_value={"overall": {"bias": "bullish", "confidence": 75}}), \
+             patch.object(orchestrator.daily_subagent, 'analyze', return_value={"overall": {"bias": "bullish", "confidence": 70}}), \
+             patch.object(orchestrator.fourhour_subagent, 'analyze', return_value={"overall": {"bias": "neutral", "confidence": 55}}), \
+             patch.object(orchestrator.ta_mentor, 'synthesize', return_value={"unified_signal": {"bias": "bullish"}, "overall": {"confidence": 70, "notes": "Bullish"}, "key_levels": {}}), \
+             patch.object(orchestrator.risk, 'analyze', return_value=_make_risk_output("BTC")), \
+             patch.object(orchestrator.mentor_client.messages, 'create', return_value=_make_mentor_response(confidence=50)), \
+             patch('src.backend.agents.orchestrator.get_similar_patterns', return_value=[]), \
+             patch('src.backend.agents.orchestrator.get_pattern_stats', return_value=None), \
+             patch('src.backend.agents.orchestrator.record_signal', return_value=1), \
+             patch.object(orchestrator, '_log_to_obsidian') as mock_obsidian:
+            result = orchestrator.analyze_symbol("BTC", {"current_price": 65000})
+
+        mock_obsidian.assert_not_called()
