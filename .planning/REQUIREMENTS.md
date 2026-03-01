@@ -22,12 +22,12 @@ Requirements for milestone v0.4: Nansen Agent + Telegram Agent.
 
 ### Telegram Agent
 
-- [ ] **TELE-01**: Agent queries `signals` table in signals.db (not telegram_signals)
-- [ ] **TELE-02**: Agent filters signals from last 48 hours with status pending/active
-- [ ] **TELE-03**: Agent extracts entry_1/2/3, stop_loss, target_1-5 from signals
-- [ ] **TELE-04**: Agent calculates confluence_count (number of signals agreeing on direction)
-- [ ] **TELE-05**: Agent identifies best_signal (highest confidence_score)
-- [ ] **TELE-06**: Agent outputs valid TelegramSignal Pydantic model
+- [x] **TELE-01**: Agent queries `signals` table in signals.db (not telegram_signals)
+- [x] **TELE-02**: Agent filters signals from last 48 hours with status pending/active
+- [x] **TELE-03**: Agent extracts entry_1/2/3, stop_loss, target_1-5 from signals
+- [x] **TELE-04**: Agent calculates confluence_count (number of signals agreeing on direction)
+- [x] **TELE-05**: Agent identifies best_signal (highest confidence_score)
+- [x] **TELE-06**: Agent outputs valid TelegramSignal Pydantic model
 
 ### Models
 
@@ -91,12 +91,12 @@ Requirements for milestone v0.4: Nansen Agent + Telegram Agent.
 | NANS-08 | Phase 15 | Complete |
 | NANS-09 | Phase 15 | Complete |
 | NANS-10 | Phase 15 | Complete |
-| TELE-01 | Phase 16 | Pending |
-| TELE-02 | Phase 16 | Pending |
-| TELE-03 | Phase 16 | Pending |
-| TELE-04 | Phase 16 | Pending |
-| TELE-05 | Phase 16 | Pending |
-| TELE-06 | Phase 16 | Pending |
+| TELE-01 | Phase 16 | Complete |
+| TELE-02 | Phase 16 | Complete |
+| TELE-03 | Phase 16 | Complete |
+| TELE-04 | Phase 16 | Complete |
+| TELE-05 | Phase 16 | Complete |
+| TELE-06 | Phase 16 | Complete |
 | MODL-01 | Phase 14 | Complete |
 | MODL-02 | Phase 14 | Complete |
 | DB-01 | Phase 14 | Complete |
