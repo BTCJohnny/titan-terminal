@@ -6,6 +6,11 @@ from unittest.mock import patch, MagicMock
 
 from src.backend.agents.orchestrator import Orchestrator
 from src.backend.models.orchestrator_output import OrchestratorOutput
+from src.backend.models.nansen_signal import (
+    NansenSignal, ExchangeFlows, FreshWallets, SmartMoney,
+    TopPnL, WhaleActivity, OnChainOverall
+)
+from src.backend.models.telegram_signal import TelegramSignal
 
 
 class TestOrchestrator:
@@ -49,10 +54,37 @@ class TestOrchestrator:
 
         orchestrator = Orchestrator()
 
+        # Build NansenSignal Pydantic model for mock (orchestrator uses attribute access)
+        mock_nansen_signal = NansenSignal(
+            symbol="BTC",
+            exchange_flows=ExchangeFlows(net_direction="outflow", magnitude="high", interpretation="test", confidence=70),
+            fresh_wallets=FreshWallets(activity_level="medium", trend="stable", notable_count=0, interpretation="test"),
+            smart_money=SmartMoney(direction="accumulating", confidence=75, notable_wallets=[], interpretation="test"),
+            top_pnl=TopPnL(traders_bias="bullish", average_position="long", confidence=70, interpretation="test"),
+            whale_activity=WhaleActivity(summary="test", notable_transactions=[], net_flow="accumulating", confidence=70),
+            overall_signal=OnChainOverall(bias="bullish", confidence=70, key_insights=[]),
+            signal_count_bullish=4,
+            signal_count_bearish=1,
+            reasoning="4 of 5 signals bullish.",
+        )
+
+        # Build TelegramSignal Pydantic model for mock (orchestrator uses attribute access)
+        mock_telegram_signal = TelegramSignal(
+            symbol="BTC",
+            signals_found=0,
+            active_signals=0,
+            relevant_signals=[],
+            overall_sentiment="neutral",
+            confluence_count=0,
+            confidence=0,
+            avg_confidence=0.0,
+            reasoning="No signals found.",
+        )
+
         # Mock all specialist agents and DB calls
         with patch.object(orchestrator.wyckoff, 'analyze', return_value={"composite_analysis": {"overall_phase": "Phase C", "overall_bias": "accumulation", "confluence_score": 75}}):
-            with patch.object(orchestrator.nansen, 'analyze', return_value={"overall_signal": {"bias": "bullish", "confidence": 70, "key_insights": []}}):
-                with patch.object(orchestrator.telegram, 'analyze', return_value={"relevant_signals": [], "confidence": 0}):
+            with patch.object(orchestrator.nansen, 'analyze', return_value=mock_nansen_signal):
+                with patch.object(orchestrator.telegram, 'analyze', return_value=mock_telegram_signal):
                     with patch.object(orchestrator.weekly_subagent, 'analyze', return_value={"overall": {"bias": "bullish", "confidence": 75}}):
                         with patch.object(orchestrator.daily_subagent, 'analyze', return_value={"overall": {"bias": "bullish", "confidence": 70}}):
                             with patch.object(orchestrator.fourhour_subagent, 'analyze', return_value={"overall": {"bias": "neutral", "confidence": 55}}):
