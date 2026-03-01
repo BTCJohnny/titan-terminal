@@ -10,10 +10,10 @@ Requirements for v0.5 Risk Agent + API + Dashboard. Each maps to roadmap phases.
 ### Risk Agent
 
 - [x] **RISK-01**: RiskAgent uses RiskOutput Pydantic model instead of returning raw dicts
-- [ ] **RISK-02**: User receives stop-loss zones derived from S/R levels in TA data
-- [ ] **RISK-03**: User receives target zones with R:R ratio (minimum 3:1 enforced)
+- [x] **RISK-02**: User receives stop-loss zones derived from S/R levels in TA data
+- [x] **RISK-03**: User receives target zones with R:R ratio (minimum 3:1 enforced)
 - [x] **RISK-04**: User receives position size when portfolio value is provided
-- [ ] **RISK-05**: Risk agent enforces 2% max risk per trade
+- [x] **RISK-05**: Risk agent enforces 2% max risk per trade
 - [x] **RISK-06**: Risk agent returns risk zones (stop/target/R:R) when no portfolio value given
 
 ### Watchlist
@@ -79,10 +79,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | RISK-01 | Phase 20 | Complete |
-| RISK-02 | Phase 20 | Pending |
-| RISK-03 | Phase 20 | Pending |
+| RISK-02 | Phase 20 | Complete |
+| RISK-03 | Phase 20 | Complete |
 | RISK-04 | Phase 20 | Complete |
-| RISK-05 | Phase 20 | Pending |
+| RISK-05 | Phase 20 | Complete |
 | RISK-06 | Phase 20 | Complete |
 | WTCH-01 | Phase 21 | Pending |
 | WTCH-02 | Phase 21 | Pending |
