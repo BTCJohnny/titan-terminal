@@ -7,12 +7,13 @@ import uuid
 from .base import BaseAgent
 from .wyckoff import WyckoffAgent
 from .nansen_agent import NansenAgent
-from .telegram_agent import TelegramAgent
+from .telegram_agent import TelegramAgent, get_recent_signal_symbols
 from .ta_ensemble import WeeklySubagent, DailySubagent, FourHourSubagent, TAMentor
 from .risk_agent import RiskAgent
 from .mentor import MentorCriticAgent
 from ..db import record_signal, get_similar_patterns, get_pattern_stats
 from ..config.constants import HYPERLIQUID_PERPS
+from ..config.settings import settings
 from ..models.risk_output import RiskOutput
 
 ORCHESTRATOR_SYSTEM_PROMPT = """You are Titan Terminal Orchestrator - the main brain that synthesizes all specialist agent outputs.
@@ -57,6 +58,19 @@ class Orchestrator(BaseAgent):
         self.ta_mentor = TAMentor()
         self.risk = RiskAgent()
         self.mentor = MentorCriticAgent()
+
+    def get_merged_watchlist(self) -> list[str]:
+        """Get merged watchlist: settings symbols + recent Telegram signal symbols.
+
+        Deduplication: uppercase all symbols, use dict.fromkeys() to preserve order
+        while removing duplicates (settings symbols first, then Telegram additions).
+        """
+        base_symbols = [s.upper().strip() for s in settings.WATCHLIST]
+        telegram_symbols = get_recent_signal_symbols(hours=72)
+
+        # Merge with dedup — settings symbols take priority in ordering
+        merged = list(dict.fromkeys(base_symbols + telegram_symbols))
+        return merged
 
     def analyze(self, symbol: str, context: dict) -> dict:
         """Required by BaseAgent - delegates to analyze_symbol."""
@@ -325,8 +339,15 @@ class Orchestrator(BaseAgent):
 
         return record_signal(journal_data)
 
-    def run_morning_batch(self, symbols: list, market_data_fetcher) -> list:
-        """Run morning batch analysis for all symbols."""
+    def run_morning_batch(self, market_data_fetcher, symbols: list = None) -> list:
+        """Run morning batch analysis for all symbols.
+
+        Args:
+            market_data_fetcher: Callable that takes symbol and returns market data dict
+            symbols: Optional override list. If None, uses merged watchlist.
+        """
+        if symbols is None:
+            symbols = self.get_merged_watchlist()
 
         results = []
         for symbol in symbols:
