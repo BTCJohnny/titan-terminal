@@ -1,4 +1,4 @@
-"""Tests for /morning-report and /analyze/{symbol} API endpoints."""
+"""Tests for /morning-report, /analyze/{symbol}, and /chat API endpoints."""
 import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import patch, MagicMock
@@ -201,3 +201,114 @@ def test_morning_report_empty_results():
     data = resp.json()
     assert data["count"] == 0
     assert data["signals"] == []
+
+
+# --- /chat endpoint tests ---
+
+def _mock_chat_client(response_text="BTC looks strong today."):
+    """Create a mock Anthropic client that returns a canned text response."""
+    mock_client = MagicMock()
+    mock_msg = MagicMock()
+    mock_msg.content = [MagicMock(text=response_text)]
+    mock_client.messages.create.return_value = mock_msg
+    return mock_client
+
+
+def test_chat_returns_200():
+    """POST /api/chat returns 200 with 'response' and 'timestamp' fields."""
+    mock_client = _mock_chat_client("BTC looks strong today.")
+
+    with patch(f"{_MODULE_PATH}.get_chat_client", return_value=mock_client), \
+         patch(f"{_MODULE_PATH}.get_recent_signals", return_value=[]):
+        client = TestClient(app)
+        resp = client.post("/api/chat", json={"question": "What looks good?"})
+
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "response" in data
+    assert "timestamp" in data
+    assert data["response"] == "BTC looks strong today."
+
+
+def test_chat_uses_model_name():
+    """POST /api/chat calls messages.create with settings.MODEL_NAME (not MENTOR_MODEL)."""
+    from ..config.settings import settings as _settings
+    mock_client = _mock_chat_client()
+
+    with patch(f"{_MODULE_PATH}.get_chat_client", return_value=mock_client), \
+         patch(f"{_MODULE_PATH}.get_recent_signals", return_value=[]):
+        client = TestClient(app)
+        client.post("/api/chat", json={"question": "What looks good?"})
+
+    call_kwargs = mock_client.messages.create.call_args
+    assert call_kwargs is not None
+    assert call_kwargs.kwargs.get("model") == _settings.MODEL_NAME
+    # Must NOT use MENTOR_MODEL
+    assert call_kwargs.kwargs.get("model") != _settings.MENTOR_MODEL
+
+
+def test_chat_includes_signal_context():
+    """POST /api/chat passes recent signal data in the system prompt to the LLM."""
+    mock_signal = {
+        "symbol": "BTC",
+        "confidence": 85,
+        "suggested_action": "Long Spot",
+        "direction": "BULLISH",
+        "entry_zone_low": 94000,
+        "entry_zone_high": 96000,
+        "stop_loss": 92000,
+        "tp1": 100000,
+        "tp2": 105000,
+        "risk_reward": 4.0,
+    }
+    mock_client = _mock_chat_client("BTC is looking bullish with 85% confidence.")
+
+    with patch(f"{_MODULE_PATH}.get_chat_client", return_value=mock_client), \
+         patch(f"{_MODULE_PATH}.get_recent_signals", return_value=[mock_signal]):
+        client = TestClient(app)
+        client.post("/api/chat", json={"question": "How does BTC look?"})
+
+    call_kwargs = mock_client.messages.create.call_args
+    system_prompt = call_kwargs.kwargs.get("system", "")
+    # Signal data (symbol and confidence) must appear in the system prompt
+    assert "BTC" in system_prompt
+    assert "85" in system_prompt
+
+
+def test_chat_handles_empty_signals():
+    """POST /api/chat returns 200 with fallback message when no signals exist."""
+    mock_client = _mock_chat_client("No recent signals found. Run /morning-report first.")
+
+    with patch(f"{_MODULE_PATH}.get_chat_client", return_value=mock_client), \
+         patch(f"{_MODULE_PATH}.get_recent_signals", return_value=[]):
+        client = TestClient(app)
+        resp = client.post("/api/chat", json={"question": "What's the market look like?"})
+
+    assert resp.status_code == 200
+    data = resp.json()
+    assert "response" in data
+    # The system prompt should note that no data is available
+    call_kwargs = mock_client.messages.create.call_args
+    system_prompt = call_kwargs.kwargs.get("system", "")
+    assert "No recent analysis data" in system_prompt
+
+
+def test_chat_request_format():
+    """POST /api/chat accepts {'question': '...'} (not 'message')."""
+    mock_client = _mock_chat_client("Answer here.")
+
+    with patch(f"{_MODULE_PATH}.get_chat_client", return_value=mock_client), \
+         patch(f"{_MODULE_PATH}.get_recent_signals", return_value=[]):
+        client = TestClient(app)
+        # Correct field name: 'question'
+        resp = client.post("/api/chat", json={"question": "Is BTC a buy?"})
+
+    assert resp.status_code == 200
+
+    # Wrong field name ('message') should return 422 Unprocessable Entity
+    with patch(f"{_MODULE_PATH}.get_chat_client", return_value=mock_client), \
+         patch(f"{_MODULE_PATH}.get_recent_signals", return_value=[]):
+        client = TestClient(app)
+        resp_wrong = client.post("/api/chat", json={"message": "Is BTC a buy?"})
+
+    assert resp_wrong.status_code == 422
