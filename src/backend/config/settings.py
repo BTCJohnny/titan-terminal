@@ -30,6 +30,10 @@ class Settings:
 
     # Database
     SIGNALS_DB_PATH: str = os.getenv("SIGNALS_DB_PATH", "/Users/johnny_main/Developer/data/signals/signals.db")
+    NANSEN_VAULT_PATH: str = os.getenv(
+        "NANSEN_VAULT_PATH",
+        "/Users/johnny_main/Developer/obsidian-vault/obsidian-vault/agents/nansen"
+    )
 
     def validate(self) -> None:
         """Validate critical settings and log warnings for missing keys."""

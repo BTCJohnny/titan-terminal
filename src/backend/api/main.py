@@ -8,7 +8,7 @@ import json
 
 from ..agents import Orchestrator
 from ..tools.market_data import get_market_data_fetcher
-from ..db import init_db, get_recent_signals, update_outcome, get_connection
+from ..db import init_db, init_snapshot_tables, get_recent_signals, update_outcome, get_connection
 from ..config.constants import HYPERLIQUID_PERPS
 
 # Initialize FastAPI app
@@ -34,6 +34,7 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup():
     init_db()
+    init_snapshot_tables()
 
 
 # Request/Response models

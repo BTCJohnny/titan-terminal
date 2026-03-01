@@ -14,6 +14,13 @@ from .nansen_mcp import (
 )
 from .vault_logger import log_nansen_analysis
 from ..db.signals_db import insert_onchain_snapshot
+from ..config.settings import settings
+from . import vault_logger as vault_logger_mod
+from pathlib import Path
+
+VAULT_PATH = settings.NANSEN_VAULT_PATH
+vault_logger_mod.VAULT_PATH = Path(settings.NANSEN_VAULT_PATH)
+vault_logger_mod.SIGNAL_LOG_FILE = vault_logger_mod.VAULT_PATH / "signal-combinations.md"
 
 logger = logging.getLogger(__name__)
 
