@@ -17,6 +17,19 @@ from ..config.settings import settings
 from ..models.risk_output import RiskOutput
 from ..models.orchestrator_output import OrchestratorOutput, EntryZoneSimple, ThreeLawsCheckSimple
 
+def _get_field(item, field, default=None):
+    """Extract field from OrchestratorOutput (attr) or error dict (.get()).
+
+    run_morning_batch() results contain a MIX of OrchestratorOutput instances
+    (success path) and plain dicts (error path).  Using .get() on a Pydantic
+    model raises AttributeError; using getattr on a dict silently returns None.
+    This helper abstracts the difference so sort/filter logic is type-safe.
+    """
+    if isinstance(item, dict):
+        return item.get(field, default)
+    return getattr(item, field, default)
+
+
 ORCHESTRATOR_SYSTEM_PROMPT = """You are Titan Terminal Orchestrator - the main brain that synthesizes all specialist agent outputs.
 
 Your role:
@@ -396,11 +409,12 @@ Remember: Output ONLY valid JSON. reasoning MUST be complete — capture your fu
                 })
 
         # Sort by confidence (highest first), filter out Avoid unless all are Avoid
-        actionable = [r for r in results if r.get('suggested_action') != 'Avoid']
+        # Use _get_field() because results can be OrchestratorOutput (attr) or error dict (.get())
+        actionable = [r for r in results if _get_field(r, 'suggested_action') != 'Avoid']
         if actionable:
-            results = sorted(actionable, key=lambda x: x.get('confidence', 0), reverse=True)
+            results = sorted(actionable, key=lambda x: _get_field(x, 'confidence', 0), reverse=True)
         else:
-            results = sorted(results, key=lambda x: x.get('confidence', 0), reverse=True)
+            results = sorted(results, key=lambda x: _get_field(x, 'confidence', 0), reverse=True)
 
         # Limit to top 8-20
         return results[:20]
