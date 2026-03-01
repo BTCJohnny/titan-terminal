@@ -3,13 +3,16 @@
 import { useEffect, useState, useCallback } from "react"
 import { Badge } from "@/components/ui/badge"
 import { SymbolSidebar } from "@/components/symbol-sidebar"
+import { SignalDetailPanel } from "@/components/signal-detail-panel"
+import { NansenSignalCards } from "@/components/nansen-signal-cards"
 import { getMorningReport, checkHealth } from "@/lib/api"
-import type { MorningReportResponse } from "@/lib/types"
+import type { AnalyzeResponse, MorningReportResponse } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 export default function Home() {
   const [report, setReport] = useState<MorningReportResponse | null>(null)
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null)
+  const [selectedSignal, setSelectedSignal] = useState<AnalyzeResponse | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [backendStatus, setBackendStatus] = useState<{ ok: boolean; message: string } | null>(null)
@@ -32,17 +35,18 @@ export default function Home() {
       const data = await getMorningReport()
       setReport(data)
       setLastRefresh(new Date())
-      // Auto-select first signal (highest confidence) if none selected
-      if (data.signals.length > 0 && selectedSymbol === null) {
-        const sorted = [...data.signals].sort((a, b) => b.confidence - a.confidence)
-        setSelectedSymbol(sorted[0].symbol)
-      }
+      // Auto-select first signal (highest confidence)
+      const firstSignal = data.signals.length > 0
+        ? [...data.signals].sort((a, b) => b.confidence - a.confidence)[0]
+        : null
+      setSelectedSignal(firstSignal ?? null)
+      setSelectedSymbol(firstSignal?.symbol ?? null)
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch morning report")
     } finally {
       setIsLoading(false)
     }
-  }, [selectedSymbol])
+  }, [])
 
   useEffect(() => {
     fetchReport()
@@ -87,14 +91,18 @@ export default function Home() {
             signals={report?.signals ?? []}
             selectedSymbol={selectedSymbol}
             isLoading={isLoading}
-            onSelectSymbol={setSelectedSymbol}
+            onSelectSymbol={(symbol) => {
+              setSelectedSymbol(symbol)
+              const match = report?.signals.find((s) => s.symbol === symbol) ?? null
+              setSelectedSignal(match)
+            }}
             onRunReport={fetchReport}
           />
         </aside>
 
-        {/* Center — signal detail (Plan 23-02) */}
-        <main className="flex-1 overflow-y-auto p-4">
-          {!selectedSymbol && !isLoading && (
+        {/* Center — signal detail */}
+        <main className="flex-1 overflow-y-auto p-4 space-y-4">
+          {!selectedSignal && !isLoading && (
             <div className="text-zinc-500 text-sm text-center mt-20">
               Select a symbol from the left sidebar
             </div>
@@ -112,7 +120,12 @@ export default function Home() {
               {error}
             </div>
           )}
-          {/* Plan 23-02 will render SignalDetailPanel here */}
+          {selectedSignal && !isLoading && (
+            <>
+              <SignalDetailPanel signal={selectedSignal} />
+              <NansenSignalCards nansenSummary={selectedSignal.nansen_summary} />
+            </>
+          )}
         </main>
 
         {/* Right sidebar — chat (Plan 23-03) */}
