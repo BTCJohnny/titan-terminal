@@ -50,8 +50,8 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
-    fetchReport()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Only check health on mount — report runs on button click
+    checkHealth().then(setBackendStatus)
   }, [])
 
   return (

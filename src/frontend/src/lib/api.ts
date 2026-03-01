@@ -43,8 +43,9 @@ export async function checkHealth(): Promise<{ ok: boolean; message: string }> {
  * Fetch the morning report — always on-demand, no caching.
  * GET /api/morning-report
  */
-export async function getMorningReport(): Promise<MorningReportResponse> {
-  const url = `${API_BASE}/api/morning-report`
+export async function getMorningReport(symbols?: string[]): Promise<MorningReportResponse> {
+  const params = symbols?.length ? `?symbols=${symbols.join(",")}` : ""
+  const url = `${API_BASE}/api/morning-report${params}`
   console.log("[Titan API] Fetching morning report:", url)
   const res = await fetch(url)
   if (!res.ok) {

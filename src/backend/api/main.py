@@ -168,19 +168,87 @@ async def api_health_test():
     return {"status": "ok", "path": "/api/health-test", "cors": "enabled"}
 
 
+@app.get("/api/morning-report-mock", response_model=MorningReportResponse)
+async def get_morning_report_mock():
+    """Temporary mock endpoint to test dashboard UI flow."""
+    mock_signals = [
+        AnalyzeResponse(
+            symbol="ETH", signal_id=1, timestamp=datetime.now().isoformat(),
+            direction="BULLISH", confidence=82, suggested_action="Long Spot",
+            accumulation_score=75, distribution_score=20,
+            reasoning="Strong accumulation pattern with rising on-chain activity. Smart money wallets increasing ETH positions over the past 72 hours. Wyckoff Spring pattern forming at key support level with declining sell pressure.",
+            entry_zone={"low": 3180.0, "high": 3350.0, "ideal": 3250.0},
+            stop_loss=3050.0, tp1=3600.0, tp2=3900.0, risk_reward=3.2,
+            three_laws_check={"law_1_risk": "pass", "law_2_rr": "pass", "law_3_positions": "pass", "overall": "approved"},
+            wyckoff_phase="Spring",
+            nansen_summary=[
+                "Smart money wallets accumulating — 12 large wallets added 45K ETH in past 48h, bullish signal",
+                "Exchange outflows accelerating — net 28K ETH withdrawn from exchanges, reducing sell-side supply",
+                "Fresh wallet activity rising — 340 new wallets with >10 ETH created this week, accumulation phase",
+                "Buy pressure dominant — top PnL traders 73% long, positive sentiment shift",
+                "Whale activity bullish — 3 whale wallets moved 15K ETH to cold storage, long-term holding signal",
+            ],
+            ta_summary="RSI at 58 with bullish divergence on 4H. MACD crossover forming. Volume profile shows strong support at 3200.",
+        ),
+        AnalyzeResponse(
+            symbol="BTC", signal_id=2, timestamp=datetime.now().isoformat(),
+            direction="BEARISH", confidence=45, suggested_action="Avoid",
+            accumulation_score=30, distribution_score=65,
+            reasoning="Distribution pattern detected. Exchange inflows increasing while on-chain metrics show weakening demand. Risk/reward unfavorable at current levels.",
+            entry_zone=None, stop_loss=None, tp1=None, tp2=None, risk_reward=None,
+            three_laws_check={"law_1_risk": "fail", "law_2_rr": "fail", "law_3_positions": "check_current_positions", "overall": "rejected"},
+            wyckoff_phase="Distribution",
+            nansen_summary=[
+                "Smart money reducing exposure — 8 large wallets sold 1200 BTC this week, bearish signal",
+                "Exchange inflows rising — net 5400 BTC deposited to exchanges, increasing sell-side pressure",
+                "On-chain holdings declining — long-term holder supply dropping for 3rd consecutive week",
+                "Sell pressure dominant — top PnL traders 62% short, negative sentiment",
+                "Whale activity mixed — some redistribution but no clear accumulation pattern",
+            ],
+            ta_summary="RSI at 42, trending down. Death cross forming on daily. Support at 58K under pressure.",
+        ),
+        AnalyzeResponse(
+            symbol="SOL", signal_id=3, timestamp=datetime.now().isoformat(),
+            direction="NO SIGNAL", confidence=55, suggested_action="Avoid",
+            accumulation_score=50, distribution_score=45,
+            reasoning="Neutral positioning. On-chain metrics are mixed with no clear directional bias. Wait for clearer setup before entering.",
+            entry_zone={"low": 145.0, "high": 160.0, "ideal": 152.0},
+            stop_loss=138.0, tp1=175.0, tp2=195.0, risk_reward=2.1,
+            three_laws_check={"law_1_risk": "pass", "law_2_rr": "pass", "law_3_positions": "check_current_positions", "overall": "caution"},
+            wyckoff_phase="Ranging",
+            nansen_summary=[
+                "Smart money neutral — no significant position changes detected",
+                "Exchange flows balanced — roughly equal inflows and outflows this week",
+                "Fresh wallet activity stable — no unusual patterns detected",
+            ],
+            ta_summary="Consolidating between 145-162. Bollinger bands tightening, breakout imminent but direction unclear.",
+        ),
+    ]
+    return MorningReportResponse(
+        timestamp=datetime.now().isoformat(),
+        count=len(mock_signals),
+        signals=mock_signals,
+    )
+
+
 @app.get("/api/morning-report", response_model=MorningReportResponse)
-async def get_morning_report():
+async def get_morning_report(symbols: str = None):
     """
     Get the morning report with ranked trading signals.
 
     Runs on-demand analysis via orchestrator.run_morning_batch() and returns
     top 3-5 opportunities ranked by confidence.
+
+    Query params:
+        symbols: Optional comma-separated symbol list (e.g. "ETH,BTC").
+                 If omitted, uses full merged watchlist.
     """
     orchestrator = get_orchestrator()
     fetcher = get_market_data_fetcher()
+    symbol_list = [s.strip().upper() for s in symbols.split(",")] if symbols else None
 
     try:
-        results = orchestrator.run_morning_batch(market_data_fetcher=fetcher.fetch)
+        results = orchestrator.run_morning_batch(market_data_fetcher=fetcher.fetch, symbols=symbol_list)
 
         # Filter to only valid OrchestratorOutput instances (skip error dicts)
         valid_outputs = [r for r in results if isinstance(r, OrchestratorOutput)]
