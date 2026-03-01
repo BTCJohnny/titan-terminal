@@ -13,6 +13,7 @@ from .risk_agent import RiskAgent
 from .mentor import MentorCriticAgent
 from ..db import record_signal, get_similar_patterns, get_pattern_stats
 from ..config.constants import HYPERLIQUID_PERPS
+from ..models.risk_output import RiskOutput
 
 ORCHESTRATOR_SYSTEM_PROMPT = """You are Titan Terminal Orchestrator - the main brain that synthesizes all specialist agent outputs.
 
@@ -103,7 +104,9 @@ class Orchestrator(BaseAgent):
             **market_data,
             'wyckoff_data': wyckoff_result,
             'ta_data': ta_result,
-            'suggested_bias': wyckoff_bias if wyckoff_bias != 'neutral' else ta_bias
+            'suggested_bias': wyckoff_bias if wyckoff_bias != 'neutral' else ta_bias,
+            'open_position_count': market_data.get('open_position_count', 0),
+            'account_size': market_data.get('account_size'),
         }
         risk_result = self.risk.analyze(symbol, risk_context)
 
@@ -134,16 +137,16 @@ class Orchestrator(BaseAgent):
         return final_signal
 
     def _synthesize_results(self, symbol: str, wyckoff: dict, nansen: "NansenSignal",
-                           telegram: "TelegramSignal", ta: dict, risk: dict,
+                           telegram: "TelegramSignal", ta: dict, risk: RiskOutput,
                            past_patterns: list, wyckoff_stats: Optional[dict]) -> dict:
         """Synthesize all specialist outputs into a unified signal."""
 
         # Extract key data points
-        # wyckoff, ta, risk are plain dicts; nansen and telegram are Pydantic models
+        # wyckoff and ta are plain dicts; nansen and telegram are Pydantic models; risk is RiskOutput
         wyckoff_composite = wyckoff.get('composite_analysis', {})
         nansen_overall = nansen.overall_signal
         ta_overall = ta.get('overall', {})
-        risk_verdict = risk.get('final_verdict', {})
+        risk_verdict = risk.final_verdict
 
         # Calculate accumulation/distribution score
         wyckoff_bias = wyckoff_composite.get('overall_bias', 'neutral')
@@ -159,7 +162,7 @@ class Orchestrator(BaseAgent):
 
         # Determine suggested action
         suggested_action = self._determine_action(
-            wyckoff_bias, risk_verdict.get('action', 'avoid'),
+            wyckoff_bias, risk_verdict.action,
             acc_score, dist_score
         )
 
@@ -169,7 +172,7 @@ class Orchestrator(BaseAgent):
             nansen_overall.confidence,
             ta_overall.get('confidence', 50),
             telegram.confidence,
-            risk_verdict.get('confidence', 50)
+            risk_verdict.confidence
         )
 
         # Build self-learning context
@@ -193,12 +196,14 @@ class Orchestrator(BaseAgent):
             'nansen_summary': nansen_overall.key_insights,
             'ta_summary': ta_overall.get('notes'),
             'telegram_signals': [s.model_dump() for s in telegram.relevant_signals],
-            'entry_zone': risk.get('entry_zone', {}),
-            'stop_loss': risk.get('stop_loss', {}).get('price'),
-            'tp1': risk.get('take_profits', {}).get('tp1', {}).get('price'),
-            'tp2': risk.get('take_profits', {}).get('tp2', {}).get('price'),
-            'risk_reward': risk.get('risk_reward', {}).get('to_tp1'),
-            'three_laws_check': risk.get('three_laws_check', {}),
+            'entry_zone': risk.entry_zone.model_dump(),
+            'stop_loss': risk.stop_loss.price,
+            'tp1': risk.take_profits.tp1.price if risk.take_profits.tp1 else None,
+            'tp2': risk.take_profits.tp2.price if risk.take_profits.tp2 else None,
+            'risk_reward': risk.risk_reward.to_tp1,
+            'three_laws_check': risk.three_laws_check.model_dump(),
+            'approved': risk.approved,
+            'rejection_reasons': risk.rejection_reasons,
             'learning_context': learning_context,
             'key_levels': ta.get('key_levels', {})
         }
@@ -289,7 +294,7 @@ class Orchestrator(BaseAgent):
         return signal
 
     def _record_to_journal(self, signal: dict, wyckoff: dict, nansen: "NansenSignal",
-                          telegram: "TelegramSignal", ta: dict, risk: dict,
+                          telegram: "TelegramSignal", ta: dict, risk: RiskOutput,
                           mentor: dict) -> int:
         """Record signal to SignalJournal for self-learning."""
 
@@ -313,7 +318,7 @@ class Orchestrator(BaseAgent):
             'telegram_data': json.dumps(telegram.model_dump(mode='json')),
             'wyckoff_data': json.dumps(wyckoff),
             'ta_data': json.dumps(ta),
-            'risk_data': json.dumps(risk),
+            'risk_data': json.dumps(risk.model_dump(mode='json')),
             'mentor_critique': json.dumps(mentor),
             'batch_id': str(uuid.uuid4())[:8]
         }
