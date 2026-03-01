@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { SymbolSidebar } from "@/components/symbol-sidebar"
 import { SignalDetailPanel } from "@/components/signal-detail-panel"
 import { NansenSignalCards } from "@/components/nansen-signal-cards"
+import { ChatPanel } from "@/components/chat-panel"
 import { getMorningReport, checkHealth } from "@/lib/api"
 import type { AnalyzeResponse, MorningReportResponse } from "@/lib/types"
 import { cn } from "@/lib/utils"
@@ -128,9 +129,9 @@ export default function Home() {
           )}
         </main>
 
-        {/* Right sidebar — chat (Plan 23-03) */}
-        <aside className="w-[320px] border-l border-zinc-800 flex flex-col overflow-hidden flex-none">
-          <div className="p-4 text-zinc-600 text-xs">Chat coming soon</div>
+        {/* Right sidebar — chat */}
+        <aside className="w-[320px] border-l border-zinc-800 flex-1 overflow-hidden flex-none flex flex-col">
+          <ChatPanel selectedSignal={selectedSignal} />
         </aside>
       </div>
     </div>
