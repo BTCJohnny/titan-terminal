@@ -1,6 +1,7 @@
 """Smoke tests for Telegram Agent."""
 import json
 import pytest
+from datetime import datetime
 from unittest.mock import patch, MagicMock
 
 from src.backend.agents.telegram_agent import TelegramAgent
@@ -15,47 +16,50 @@ class TestTelegramAgent:
         agent = TelegramAgent()
 
         # Mock DB to return no signals
-        with patch.object(agent, '_get_recent_signals', return_value=[]):
+        with patch('src.backend.agents.telegram_agent._query_signals', return_value=[]):
             result = agent.analyze("BTC", {})
 
         # Should return valid structure even with no signals
-        signal = TelegramSignal.model_validate(result)
-        assert signal.symbol == "BTC"
-        assert signal.signals_found == 0
-        assert signal.overall_sentiment == "neutral"
+        assert isinstance(result, TelegramSignal)
+        assert result.symbol == "BTC"
+        assert result.signals_found == 0
+        assert result.overall_sentiment == "neutral"
 
     def test_telegram_agent_smoke_with_signals(self):
         """Verify TelegramAgent processes signals and returns valid TelegramSignal."""
-        response = {
-            "symbol": "BTC",
-            "signals_found": 2,
-            "relevant_signals": [
-                {
-                    "channel": "CryptoAlpha",
-                    "action": "long",
-                    "entry_price": 65000.0,
-                    "stop_loss": 63000.0,
-                    "take_profits": [68000.0, 70000.0],
-                    "signal_quality": 75,
-                    "freshness": "fresh",
-                    "notes": "Strong setup"
-                }
-            ],
-            "overall_sentiment": "bullish",
-            "confluence_count": 2,
-            "confidence": 70,
-            "notes": "Multiple channels agree on long"
-        }
+        # Mock database row structure
+        mock_db_rows = [
+            {
+                'symbol': 'BTC',
+                'direction': 'long',
+                'signal_type': 'breakout',
+                'timeframe': '4h',
+                'entry_1': 65000.0,
+                'entry_2': None,
+                'entry_3': None,
+                'stop_loss': 63000.0,
+                'target_1': 68000.0,
+                'target_2': 70000.0,
+                'target_3': None,
+                'target_4': None,
+                'target_5': None,
+                'confidence_score': 75,
+                'pattern_type': 'bull_flag',
+                'setup_description': 'Strong setup',
+                'provider': 'CryptoAlpha',
+                'status': 'active',
+                'created_at': datetime.utcnow().isoformat(),
+                'pnl_percent': None
+            }
+        ]
 
         agent = TelegramAgent()
 
-        # Mock both DB query and Claude call
-        mock_signals = [{"channel": "CryptoAlpha", "content": "BTC long 65k"}]
-        with patch.object(agent, '_get_recent_signals', return_value=mock_signals):
-            with patch.object(agent, '_call_claude', return_value=json.dumps(response)):
-                result = agent.analyze("BTC", {})
+        # Mock _query_signals to return database rows
+        with patch('src.backend.agents.telegram_agent._query_signals', return_value=mock_db_rows):
+            result = agent.analyze("BTC", {})
 
-        signal = TelegramSignal.model_validate(result)
-        assert signal.symbol == "BTC"
-        assert signal.signals_found > 0
-        assert signal.overall_sentiment in ["bullish", "bearish", "mixed", "neutral"]
+        assert isinstance(result, TelegramSignal)
+        assert result.symbol == "BTC"
+        assert result.signals_found > 0
+        assert result.overall_sentiment in ["bullish", "bearish", "mixed", "neutral"]
