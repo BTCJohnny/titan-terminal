@@ -9,13 +9,13 @@ interface SignalDetailPanelProps {
   signal: AnalyzeResponse
 }
 
-function formatPrice(value: number | null): string {
-  if (value === null) return "—"
+function formatPrice(value: number | null | undefined): string {
+  if (value === null || value === undefined || value === 0) return "—"
   return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 })
 }
 
-function formatRR(value: number | null): string {
-  if (value === null) return "—"
+function formatRR(value: number | null | undefined): string {
+  if (value === null || value === undefined || value === 0) return "—"
   return value.toFixed(2)
 }
 
@@ -62,9 +62,9 @@ export function SignalDetailPanel({ signal }: SignalDetailPanelProps) {
       ? "bg-yellow-500"
       : "bg-red-500"
 
-  // R:R colour
+  // R:R colour (treat null and 0 as no-data)
   const rrClass =
-    risk_reward === null
+    risk_reward === null || risk_reward === 0
       ? "text-zinc-400"
       : risk_reward >= 3
       ? "text-green-400"
@@ -75,9 +75,8 @@ export function SignalDetailPanel({ signal }: SignalDetailPanelProps) {
   // Three Laws badge helper
   function lawBadgeClass(value: string): string {
     if (value === "pass") return "border-green-500/40 text-green-400 bg-green-500/10"
-    if (value === "fail") return "border-red-500/40 text-red-400 bg-red-500/10"
-    // check_current_positions
-    return "border-yellow-500/40 text-yellow-400 bg-yellow-500/10"
+    // fail (and any unexpected value)
+    return "border-red-500/40 text-red-400 bg-red-500/10"
   }
 
   function overallBadgeClass(value: string): string {
@@ -205,10 +204,7 @@ export function SignalDetailPanel({ signal }: SignalDetailPanelProps) {
                   lawBadgeClass(three_laws_check.law_3_positions)
                 )}
               >
-                Law 3 (Positions):{" "}
-                {three_laws_check.law_3_positions === "check_current_positions"
-                  ? "check positions"
-                  : three_laws_check.law_3_positions}
+                Law 3 (Positions): {three_laws_check.law_3_positions}
               </Badge>
               <Badge
                 variant="outline"

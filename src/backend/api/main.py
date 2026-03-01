@@ -133,7 +133,23 @@ def _build_chat_context() -> str:
 
 
 def _serialize_output(output: OrchestratorOutput) -> dict:
-    """Convert OrchestratorOutput to API response dict."""
+    """Convert OrchestratorOutput to API response dict.
+
+    Normalizes zero-value trade parameters to None so the frontend can
+    distinguish "no data" (Avoid signals) from meaningful zero-price values.
+    """
+    # Normalize entry zone: treat all-zero as None (Avoid/rejected trades have zeroed-out fields)
+    entry_zone_raw = output.entry_zone.model_dump() if output.entry_zone else None
+    if entry_zone_raw is not None:
+        if all(v in (0, 0.0, None) for v in entry_zone_raw.values()):
+            entry_zone_raw = None
+
+    # Normalize numeric trade params: treat 0.0 as None
+    stop_loss = output.stop_loss if output.stop_loss else None
+    tp1 = output.tp1 if output.tp1 else None
+    tp2 = output.tp2 if output.tp2 else None
+    risk_reward = output.risk_reward if output.risk_reward else None
+
     return {
         "symbol": output.symbol,
         "signal_id": output.signal_id,
@@ -144,11 +160,11 @@ def _serialize_output(output: OrchestratorOutput) -> dict:
         "accumulation_score": output.accumulation_score,
         "distribution_score": output.distribution_score,
         "reasoning": output.reasoning,
-        "entry_zone": output.entry_zone.model_dump() if output.entry_zone else None,
-        "stop_loss": output.stop_loss,
-        "tp1": output.tp1,
-        "tp2": output.tp2,
-        "risk_reward": output.risk_reward,
+        "entry_zone": entry_zone_raw,
+        "stop_loss": stop_loss,
+        "tp1": tp1,
+        "tp2": tp2,
+        "risk_reward": risk_reward,
         "three_laws_check": output.three_laws_check.model_dump() if output.three_laws_check else None,
         "wyckoff_phase": output.wyckoff_phase,
         "nansen_summary": output.nansen_summary,

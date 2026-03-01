@@ -12,7 +12,7 @@ export interface EntryZone {
 export interface ThreeLawsCheck {
   law_1_risk: "pass" | "fail"
   law_2_rr: "pass" | "fail"
-  law_3_positions: "pass" | "fail" | "check_current_positions"
+  law_3_positions: "pass" | "fail"
   overall: "approved" | "rejected" | "caution"
 }
 
