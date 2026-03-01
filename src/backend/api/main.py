@@ -1,4 +1,5 @@
 """FastAPI backend for Titan Terminal."""
+import anthropic
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -9,6 +10,7 @@ from ..agents import Orchestrator
 from ..tools.market_data import get_market_data_fetcher
 from ..db import init_db, init_snapshot_tables, get_recent_signals, update_outcome, get_connection
 from ..models.orchestrator_output import OrchestratorOutput
+from ..config.settings import settings
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -38,8 +40,7 @@ async def startup():
 
 # Request/Response models
 class ChatRequest(BaseModel):
-    message: str
-    context: Optional[dict] = None
+    question: str
 
 
 class ChatResponse(BaseModel):
@@ -92,6 +93,43 @@ def get_orchestrator() -> Orchestrator:
     if _orchestrator is None:
         _orchestrator = Orchestrator()
     return _orchestrator
+
+
+# Lazy-loaded Anthropic client for chat
+_chat_client = None
+
+
+def get_chat_client() -> anthropic.Anthropic:
+    global _chat_client
+    if _chat_client is None:
+        _chat_client = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
+    return _chat_client
+
+
+def _build_chat_context() -> str:
+    """Build signal context string from recent morning batch data.
+
+    Fetches recent signals from journal. If no recent signals, returns a
+    minimal context note prompting the user to run /morning-report first.
+    """
+    recent = get_recent_signals(limit=10)
+    if not recent:
+        return "No recent analysis data available. Suggest running /morning-report first."
+
+    context_parts = ["## Recent Signal Data\n"]
+    for sig in recent[:5]:
+        context_parts.append(
+            f"**{sig.get('symbol', '?')}** — "
+            f"Action: {sig.get('suggested_action', 'N/A')}, "
+            f"Confidence: {sig.get('confidence', 'N/A')}%, "
+            f"Direction: {sig.get('direction', 'N/A')}, "
+            f"Entry: {sig.get('entry_zone_low', 'N/A')}-{sig.get('entry_zone_high', 'N/A')}, "
+            f"Stop: {sig.get('stop_loss', 'N/A')}, "
+            f"TP1: {sig.get('tp1', 'N/A')}, TP2: {sig.get('tp2', 'N/A')}, "
+            f"R:R: {sig.get('risk_reward', 'N/A')}"
+        )
+
+    return "\n".join(context_parts)
 
 
 def _serialize_output(output: OrchestratorOutput) -> dict:
@@ -184,19 +222,45 @@ async def analyze_symbol(symbol: str):
 @app.post("/api/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     """
-    Chat endpoint for ad-hoc queries.
+    Chat endpoint for natural language signal Q&A.
+
+    Uses Anthropic SDK (settings.MODEL_NAME) to generate answers
+    grounded in live signal/journal data.
 
     Examples:
-    - "analyze SOL"
-    - "how's the market?"
-    - "mark SOL as win +18%"
+    - "What's the best setup today?"
+    - "How does SOL look?"
+    - "Which symbol has the highest confidence?"
     """
-    orchestrator = get_orchestrator()
+    client = get_chat_client()
+    signal_context = _build_chat_context()
+
+    system_prompt = (
+        "You are Titan Terminal's trading assistant. You answer questions about "
+        "crypto trading signals, setups, and market analysis.\n\n"
+        "You have access to recent signal analysis data (provided below). Use this "
+        "data to ground your answers in real analysis — never make up numbers or signals.\n\n"
+        "If the user asks about a specific symbol, reference the analysis data if available. "
+        "If no data exists for that symbol, say so clearly.\n\n"
+        "Keep answers concise, actionable, and clear. The user is learning to trade — "
+        "explain reasoning, not just conclusions.\n\n"
+        "## Signal Data\n"
+        + signal_context
+    )
 
     try:
-        response = orchestrator.chat(request.message, request.context)
+        response = client.messages.create(
+            model=settings.MODEL_NAME,
+            max_tokens=1000,
+            temperature=0.3,
+            system=system_prompt,
+            messages=[{"role": "user", "content": request.question}]
+        )
+
+        answer = response.content[0].text
+
         return ChatResponse(
-            response=response,
+            response=answer,
             timestamp=datetime.now().isoformat()
         )
     except Exception as e:
