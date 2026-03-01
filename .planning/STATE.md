@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: 23 of 24 (Next.js Dashboard)
-Plan: 1 of 3 in current phase (plan 01 complete — API foundation + three-column layout shell)
-Status: In progress — plan 01 complete
-Last activity: 2026-03-01 — Phase 23 Plan 01 complete (types.ts + api.ts rewrite, SymbolSidebar, three-column page shell)
+Plan: 2 of 3 in current phase (plan 02 complete — SignalDetailPanel + NansenSignalCards + center column wiring)
+Status: In progress — plan 02 complete
+Last activity: 2026-03-01 — Phase 23 Plan 02 complete (SignalDetailPanel, NansenSignalCards, selectedSignal state in page.tsx)
 
 Progress: [███░░░░░░░] 33% (v0.5)
 
@@ -64,6 +64,9 @@ Recent decisions affecting current work:
 - [Phase 22-02]: Signal context built from signal_journal via get_recent_signals(limit=10), top 5 shown in system prompt
 - [Phase 23-01]: Removed stale legacy components (market-context-bar, rich-signal-card, whale-alert-panel, stats-card, signal-card) — referenced deleted api.ts types, not imported by any active file
 - [Phase 23-01]: API_BASE updated from port 8001 to 8000 to match Phase 22 FastAPI backend
+- [Phase 23-02]: selectedSignal: AnalyzeResponse | null added alongside selectedSymbol: string | null — both kept in sync; symbol for sidebar highlight, full object for center panel
+- [Phase 23-02]: fetchReport useCallback dependency changed from [selectedSymbol] to [] — prevents stale closure re-creation and double-auto-select on symbol change
+- [Phase 23-02]: Nansen direction detection via keyword match (bullish/accumulating/outflow/positive vs bearish/distributing/inflow/negative) — anomalous = bearish = border-amber-500/50
 
 ### Pending Todos
 
@@ -77,9 +80,9 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 23-01-PLAN.md (API types + api.ts rewrite, SymbolSidebar, three-column page shell)
+Stopped at: Completed 23-02-PLAN.md (SignalDetailPanel, NansenSignalCards, center column wired)
 Resume file: None
-Next action: /gsd:execute-phase 23 plan 02 (Phase 23 Plan 02 — SignalDetailPanel)
+Next action: /gsd:execute-phase 23 plan 03 (Phase 23 Plan 03 — ChatPanel)
 
 ---
 
