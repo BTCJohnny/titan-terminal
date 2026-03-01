@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Nansen Agent + Telegram Agent
 status: unknown
-last_updated: "2026-02-28T21:23:29.600Z"
+last_updated: "2026-03-01T05:34:38.373Z"
 progress:
   total_phases: 2
   completed_phases: 2
-  total_plans: 6
-  completed_plans: 6
+  total_plans: 7
+  completed_plans: 7
 ---
 
 # Project State
@@ -23,25 +23,25 @@ See: .planning/PROJECT.md (updated 2026-02-28)
 ## Current Position
 
 Phase: 15 of 17 (Nansen Agent)
-Plan: 03 of 03 (completed)
-Status: Phase complete - all 3 plans executed
-Last activity: 2026-02-28 — Completed plan 15-03 (Obsidian Vault Logging Integration)
+Plan: 04 of 04 (completed)
+Status: Phase complete - all 4 plans executed
+Last activity: 2026-03-01 — Completed plan 15-04 (Live Nansen CLI Integration)
 
 Progress: [████████░░░░░░░░░░░░░░░░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
+- Total plans completed: 7
 - Average duration: 2 min
-- Total execution time: 0.20 hours
+- Total execution time: 0.24 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 14 | 2 | 4 min | 2 min |
-| 15 | 3 | 6 min | 2 min |
+| 15 | 4 | 9 min | 2 min |
 
 **Recent Trend:**
 - Last 5 plans: 2 min
@@ -51,6 +51,7 @@ Progress: [████████░░░░░░░░░░░░░░░
 | Phase 15 P01 | 2 | 3 tasks | 2 files |
 | Phase 15-nansen-agent P02 | 2 | 3 tasks | 1 files |
 | Phase 15-nansen-agent P03 | 2 | 3 tasks | 3 files |
+| Phase 15 P04 | 153 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,9 @@ Recent decisions affecting current work:
 - [Phase 15-nansen-agent]: Vault logging uses Python file I/O (not MCP) for direct vault access
 - [Phase 15-nansen-agent]: Log file auto-creates with header row if missing using os.makedirs
 - [Phase 15-nansen-agent]: log_to_vault parameter defaults to True but allows test override
+- [Phase 15-04]: Replaced MCP with subprocess CLI calls - production-ready without Claude Code dependency
+- [Phase 15-04]: All CLI errors (credits, rate limits, auth) return neutral signals with confidence=0
+- [Phase 15-04]: Funding rate inferred from perp position skew (>65% longs = crowded, <35% = crowded shorts)
 
 ### Pending Todos
 
@@ -90,11 +94,11 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-28
-Stopped at: Completed 15-03-PLAN.md (Obsidian Vault Logging Integration)
+Last session: 2026-03-01
+Stopped at: Completed 15-04-PLAN.md (Live Nansen CLI Integration)
 Resume file: None
 Next action: Phase 15 complete - ready for next phase or milestone completion
 
 ---
 
-*State updated: 2026-02-28 after completing plan 15-03*
+*State updated: 2026-03-01 after completing plan 15-04*
