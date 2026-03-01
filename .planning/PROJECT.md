@@ -8,6 +8,19 @@ A multi-agent crypto trading dashboard that aggregates technical analysis, on-ch
 
 Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
 
+## Current Milestone: v0.5 Risk Agent + API + Dashboard
+
+**Goal:** Complete the full stack — Risk agent with position sizing, FastAPI endpoints for morning report and chat, and Next.js dashboard.
+
+**Target features:**
+- Risk/Levels agent with S/R-based stops, dual mode (risk zones + position sizing)
+- Configurable watchlist (settings + Telegram signals)
+- FastAPI /morning-report endpoint (top 3-5 opportunities, on-demand)
+- FastAPI /chat endpoint (signal Q&A — "What's the setup on ETH?")
+- Next.js morning report dashboard with expandable signal cards
+- Integration tests on BTC, ETH, SOL
+- Complete market_data.py migration
+
 ## Current State
 
 **Shipped:** v0.4 Nansen Agent + Telegram Agent (2026-03-01)
@@ -88,11 +101,12 @@ Surface high-conviction trading setups by combining multi-timeframe technical an
 
 ### Active
 
-- [ ] Risk/Levels agent (2% max risk, 3:1 min R:R, S/R-based stops)
-- [ ] Integration tests on BTC, ETH, SOL
-- [ ] FastAPI /morning-report endpoint (top opportunities)
-- [ ] FastAPI /chat endpoint
-- [ ] Next.js dashboard with signal cards + chat
+- [ ] Risk/Levels agent with dual mode (risk zones default, position sizing with portfolio value)
+- [ ] Configurable watchlist (settings file + Telegram signal supplements)
+- [ ] Integration tests on BTC, ETH, SOL (full pipeline end-to-end)
+- [ ] FastAPI /morning-report endpoint (top 3-5 opportunities, on-demand analysis)
+- [ ] FastAPI /chat endpoint (signal Q&A via Anthropic SDK)
+- [ ] Next.js morning report dashboard with expandable signal cards
 - [ ] Complete market_data.py migration
 
 ### Out of Scope
@@ -176,4 +190,4 @@ Scoring: 4-5 bullish → ACCUMULATION, 2-3 → MIXED, 0-1 → DISTRIBUTION
 | model_dump(mode='json') for serialization (v0.4) | Handles datetime fields cleanly for Pydantic JSON serialization | ✓ Good |
 
 ---
-*Last updated: 2026-03-01 after v0.4 milestone*
+*Last updated: 2026-03-01 after v0.5 milestone started*
