@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Risk Agent + API + Dashboard
 status: unknown
-last_updated: "2026-03-01T13:59:09.313Z"
+last_updated: "2026-03-01T14:30:00.000Z"
 progress:
   total_phases: 3
   completed_phases: 3
@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: 23 of 24 (Next.js Dashboard)
-Plan: 2 of 3 in current phase (plan 02 complete — SignalDetailPanel + NansenSignalCards + center column wiring)
-Status: In progress — plan 02 complete
-Last activity: 2026-03-01 — Phase 23 Plan 02 complete (SignalDetailPanel, NansenSignalCards, selectedSignal state in page.tsx)
+Plan: 3 of 3 in current phase (plan 03 complete — ChatPanel + complete three-column dashboard verified)
+Status: Phase 23 complete
+Last activity: 2026-03-01 — Phase 23 Plan 03 complete (ChatPanel, "Open in Claude.ai", dashboard verified in browser)
 
 Progress: [███░░░░░░░] 33% (v0.5)
 
@@ -67,6 +67,10 @@ Recent decisions affecting current work:
 - [Phase 23-02]: selectedSignal: AnalyzeResponse | null added alongside selectedSymbol: string | null — both kept in sync; symbol for sidebar highlight, full object for center panel
 - [Phase 23-02]: fetchReport useCallback dependency changed from [selectedSymbol] to [] — prevents stale closure re-creation and double-auto-select on symbol change
 - [Phase 23-02]: Nansen direction detection via keyword match (bullish/accumulating/outflow/positive vs bearish/distributing/inflow/negative) — anomalous = bearish = border-amber-500/50
+- [Phase 23-03]: ChatPanel uses sendChat(question) — {question} field not {message} per CONTEXT.md locked decision
+- [Phase 23-03]: Health check only on mount; report fetch runs on explicit button click — prevents blocking initial render
+- [Phase 23-03]: /api/morning-report-mock retained in main.py for offline UI testing without live orchestrator
+- [Phase 23-03]: Optional symbols param added to /api/morning-report and getMorningReport() for future filtering
 
 ### Pending Todos
 
@@ -80,10 +84,10 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 23-02-PLAN.md (SignalDetailPanel, NansenSignalCards, center column wired)
+Stopped at: Completed 23-03-PLAN.md (ChatPanel, "Open in Claude.ai", full dashboard verified)
 Resume file: None
-Next action: /gsd:execute-phase 23 plan 03 (Phase 23 Plan 03 — ChatPanel)
+Next action: /gsd:execute-phase 24 (Phase 24 — Integration Tests)
 
 ---
 
-*State updated: 2026-03-01 after Phase 23 Plan 01 completion*
+*State updated: 2026-03-01 after Phase 23 Plan 03 completion (Phase 23 complete)*
