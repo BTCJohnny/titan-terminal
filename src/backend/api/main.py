@@ -4,12 +4,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
-import json
 
 from ..agents import Orchestrator
 from ..tools.market_data import get_market_data_fetcher
 from ..db import init_db, init_snapshot_tables, get_recent_signals, update_outcome, get_connection
-from ..config.constants import HYPERLIQUID_PERPS
+from ..models.orchestrator_output import OrchestratorOutput
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -55,59 +54,33 @@ class OutcomeRequest(BaseModel):
     notes: Optional[str] = None
 
 
-class WhaleAlert(BaseModel):
+class AnalyzeResponse(BaseModel):
+    """Single-symbol analysis response — serialized OrchestratorOutput."""
     symbol: str
-    alert_type: str  # 'whale_buy', 'whale_sell', 'fresh_wallet', 'smart_accumulation'
-    amount_usd: float
-    description: str
+    signal_id: Optional[int] = None
     timestamp: str
-    severity: str  # 'high', 'medium', 'low'
-
-
-class MarketContext(BaseModel):
-    btc_dominance: float
-    btc_price: float
-    btc_24h_change: float
-    total_market_cap: float
-    funding_skew: str  # 'long_heavy', 'short_heavy', 'neutral'
-    overall_mood: str  # 'greed', 'fear', 'neutral'
-    mood_score: int  # 0-100 fear/greed index
-
-
-class Signal(BaseModel):
-    symbol: str
-    accumulation_score: Optional[int] = None
-    distribution_score: Optional[int] = None
+    direction: Optional[str] = None  # BULLISH/BEARISH/NO SIGNAL
     confidence: int
     suggested_action: str
-    wyckoff_phase: Optional[str] = None
-    entry_zone: Optional[dict] = None
+    accumulation_score: int
+    distribution_score: int
+    reasoning: Optional[str] = None
+    entry_zone: Optional[dict] = None  # {low, high, ideal}
     stop_loss: Optional[float] = None
     tp1: Optional[float] = None
     tp2: Optional[float] = None
     risk_reward: Optional[float] = None
-    mentor_verdict: Optional[str] = None
-    mentor_concerns: Optional[List[str]] = None
-    learning_context: Optional[str] = None
-    signal_id: Optional[int] = None
-    # New smart money fields
-    unusual_activity_score: Optional[int] = None  # 0-100
-    smart_flow_usd: Optional[float] = None  # Net smart money flow
-    whale_count: Optional[int] = None  # Whales trading this
-    fresh_wallets: Optional[int] = None  # New wallets accumulating
-    narrative: Optional[str] = None  # "Why this matters" explanation
-    price_24h_change: Optional[float] = None
-    volume_24h: Optional[float] = None
-    sparkline: Optional[List[float]] = None  # 24h price data for mini chart
+    three_laws_check: Optional[dict] = None
+    wyckoff_phase: Optional[str] = None
+    nansen_summary: Optional[list] = None
+    ta_summary: Optional[str] = None
 
 
 class MorningReportResponse(BaseModel):
+    """Morning report: ranked list of AnalyzeResponse items."""
     timestamp: str
-    batch_id: str
-    signals: List[Signal]
-    market_summary: Optional[str] = None
-    market_context: Optional[MarketContext] = None
-    whale_alerts: Optional[List[WhaleAlert]] = None
+    count: int
+    signals: List[AnalyzeResponse]
 
 
 # Lazy-loaded orchestrator
@@ -119,6 +92,30 @@ def get_orchestrator() -> Orchestrator:
     if _orchestrator is None:
         _orchestrator = Orchestrator()
     return _orchestrator
+
+
+def _serialize_output(output: OrchestratorOutput) -> dict:
+    """Convert OrchestratorOutput to API response dict."""
+    return {
+        "symbol": output.symbol,
+        "signal_id": output.signal_id,
+        "timestamp": output.timestamp.isoformat(),
+        "direction": output.direction,
+        "confidence": output.confidence,
+        "suggested_action": output.suggested_action,
+        "accumulation_score": output.accumulation_score,
+        "distribution_score": output.distribution_score,
+        "reasoning": output.reasoning,
+        "entry_zone": output.entry_zone.model_dump() if output.entry_zone else None,
+        "stop_loss": output.stop_loss,
+        "tp1": output.tp1,
+        "tp2": output.tp2,
+        "risk_reward": output.risk_reward,
+        "three_laws_check": output.three_laws_check.model_dump() if output.three_laws_check else None,
+        "wyckoff_phase": output.wyckoff_phase,
+        "nansen_summary": output.nansen_summary,
+        "ta_summary": output.ta_summary,
+    }
 
 
 @app.get("/")
@@ -134,58 +131,52 @@ async def api_health_test():
 
 
 @app.get("/api/morning-report", response_model=MorningReportResponse)
-async def get_morning_report(refresh: bool = False):
+async def get_morning_report():
     """
     Get the morning report with ranked trading signals.
 
-    - If refresh=True or no cached report exists, runs full analysis
-    - Returns cached report otherwise
+    Runs on-demand analysis via orchestrator.run_morning_batch() and returns
+    top 3-5 opportunities ranked by confidence.
     """
     orchestrator = get_orchestrator()
     fetcher = get_market_data_fetcher()
 
-    # Check for cached report (within last 15 minutes)
-    if not refresh:
-        cached = _get_cached_report()
-        if cached:
-            return cached
-
-    # Run full morning batch
     try:
-        signals = orchestrator.run_morning_batch(
-            symbols=HYPERLIQUID_PERPS[:10],  # Start with top 10 for MVP
-            market_data_fetcher=fetcher.fetch
-        )
+        results = orchestrator.run_morning_batch(market_data_fetcher=fetcher.fetch)
 
-        cleaned_signals = [_clean_signal(s) for s in signals if not s.get('error')]
+        # Filter to only valid OrchestratorOutput instances (skip error dicts)
+        valid_outputs = [r for r in results if isinstance(r, OrchestratorOutput)]
 
-        response = MorningReportResponse(
+        # Limit to top 5 results (already sorted by confidence in run_morning_batch)
+        top_outputs = valid_outputs[:5]
+
+        signals = [AnalyzeResponse(**_serialize_output(output)) for output in top_outputs]
+
+        return MorningReportResponse(
             timestamp=datetime.now().isoformat(),
-            batch_id=signals[0].get('batch_id', 'unknown') if signals else 'empty',
-            signals=[Signal(**s) for s in cleaned_signals],
-            market_summary=_generate_market_summary(signals),
-            market_context=MarketContext(**_generate_market_context()),
-            whale_alerts=[WhaleAlert(**a) for a in _generate_whale_alerts(signals)]
+            count=len(signals),
+            signals=signals,
         )
-
-        return response
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating report: {str(e)}")
 
 
-@app.get("/api/analyze/{symbol}")
+@app.get("/api/analyze/{symbol}", response_model=AnalyzeResponse)
 async def analyze_symbol(symbol: str):
     """
     Analyze a specific symbol on demand.
+
+    Runs orchestrator.analyze_symbol() for one symbol and returns a
+    complete OrchestratorOutput.
     """
     orchestrator = get_orchestrator()
     fetcher = get_market_data_fetcher()
 
     try:
         market_data = fetcher.fetch(symbol.upper())
-        signal = orchestrator.analyze_symbol(symbol.upper(), market_data)
-        return Signal(**_clean_signal(signal))
+        output = orchestrator.analyze_symbol(symbol.upper(), market_data)
+        return AnalyzeResponse(**_serialize_output(output))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error analyzing {symbol}: {str(e)}")
 
@@ -285,176 +276,3 @@ async def get_stats():
         "avg_pnl": round(avg_pnl, 2),
         "total_closed_trades": total_closed
     }
-
-
-def _get_cached_report():
-    """Check for a recent cached report."""
-    # For MVP, we don't cache - always fresh
-    # In production, could use Redis or file-based cache
-    return None
-
-
-def _clean_signal(signal: dict) -> dict:
-    """Clean signal dict for Pydantic model with enhanced smart money data."""
-    import random
-
-    symbol = signal.get('symbol', '')
-    confidence = signal.get('confidence', 0)
-    acc_score = signal.get('accumulation_score', 50)
-
-    # Generate smart money metrics (simulated for MVP, will be real data in production)
-    unusual_score = min(100, int(confidence * 0.8 + random.randint(0, 30)))
-    is_bullish = acc_score > 50
-
-    # Generate narrative based on signal data
-    narrative = _generate_narrative(signal)
-
-    # Generate sparkline (24 data points for 24h)
-    base = 100
-    sparkline = []
-    for i in range(24):
-        change = random.uniform(-2, 2.5) if is_bullish else random.uniform(-2.5, 2)
-        base = base * (1 + change/100)
-        sparkline.append(round(base, 2))
-
-    return {
-        'symbol': symbol,
-        'accumulation_score': signal.get('accumulation_score'),
-        'distribution_score': signal.get('distribution_score'),
-        'confidence': confidence,
-        'suggested_action': signal.get('suggested_action', 'Avoid'),
-        'wyckoff_phase': signal.get('wyckoff_phase'),
-        'entry_zone': signal.get('entry_zone'),
-        'stop_loss': signal.get('stop_loss'),
-        'tp1': signal.get('tp1'),
-        'tp2': signal.get('tp2'),
-        'risk_reward': signal.get('risk_reward'),
-        'mentor_verdict': signal.get('mentor_verdict'),
-        'mentor_concerns': signal.get('mentor_concerns'),
-        'learning_context': signal.get('learning_context'),
-        'signal_id': signal.get('signal_id'),
-        # Enhanced smart money fields
-        'unusual_activity_score': unusual_score,
-        'smart_flow_usd': round(random.uniform(500000, 15000000) * (1 if is_bullish else -1), 0),
-        'whale_count': random.randint(2, 12) if unusual_score > 50 else random.randint(0, 3),
-        'fresh_wallets': random.randint(50, 500) if is_bullish else random.randint(10, 100),
-        'narrative': narrative,
-        'price_24h_change': round(random.uniform(-8, 12) if is_bullish else random.uniform(-12, 5), 2),
-        'volume_24h': round(random.uniform(10000000, 500000000), 0),
-        'sparkline': sparkline,
-    }
-
-
-def _generate_narrative(signal: dict) -> str:
-    """Generate a 'Why this matters' narrative for the signal."""
-    symbol = signal.get('symbol', 'Token')
-    phase = signal.get('wyckoff_phase', '')
-    acc = signal.get('accumulation_score', 50)
-    dist = signal.get('distribution_score', 50)
-    confidence = signal.get('confidence', 50)
-
-    narratives = []
-
-    if acc > 70:
-        narratives.append(f"Strong accumulation detected with smart money flowing in")
-    elif dist > 70:
-        narratives.append(f"Distribution underway as whales reduce positions")
-
-    if phase:
-        phase_narratives = {
-            'accumulation': "Wyckoff accumulation phase suggests institutional buying",
-            'markup': "In markup phase - trend continuation likely",
-            'distribution': "Distribution phase - consider taking profits",
-            'markdown': "Markdown phase - avoid longs, potential short opportunity",
-            'spring': "Spring pattern detected - potential reversal setup",
-            'upthrust': "Upthrust pattern - watch for breakdown",
-        }
-        if phase.lower() in phase_narratives:
-            narratives.append(phase_narratives[phase.lower()])
-
-    if confidence > 75:
-        narratives.append("High confluence across multiple indicators")
-    elif confidence < 40:
-        narratives.append("Low conviction setup - wait for confirmation")
-
-    return ". ".join(narratives) if narratives else f"{symbol} showing mixed signals - monitor for clarity"
-
-
-def _generate_market_context() -> dict:
-    """Generate market context data."""
-    import random
-
-    # Simulated market data (will be real API calls in production)
-    mood_score = random.randint(25, 75)
-    if mood_score > 60:
-        mood = 'greed'
-    elif mood_score < 40:
-        mood = 'fear'
-    else:
-        mood = 'neutral'
-
-    funding = random.choice(['long_heavy', 'short_heavy', 'neutral'])
-
-    return {
-        'btc_dominance': round(random.uniform(52, 58), 1),
-        'btc_price': round(random.uniform(85000, 105000), 0),
-        'btc_24h_change': round(random.uniform(-5, 7), 2),
-        'total_market_cap': round(random.uniform(2.8, 3.5) * 1e12, 0),
-        'funding_skew': funding,
-        'overall_mood': mood,
-        'mood_score': mood_score,
-    }
-
-
-def _generate_whale_alerts(signals: list) -> list:
-    """Generate whale alerts based on signals."""
-    import random
-
-    alerts = []
-    alert_types = [
-        ('whale_buy', 'Whale accumulated', 'high'),
-        ('whale_sell', 'Whale distribution detected', 'high'),
-        ('fresh_wallet', 'Fresh wallets clustering', 'medium'),
-        ('smart_accumulation', 'Smart money inflow', 'medium'),
-    ]
-
-    # Generate 3-6 alerts from top signals
-    for signal in signals[:6]:
-        if random.random() > 0.4:  # 60% chance of alert
-            symbol = signal.get('symbol', 'BTC')
-            alert_type, desc_prefix, severity = random.choice(alert_types)
-            amount = random.uniform(1000000, 25000000)
-
-            alerts.append({
-                'symbol': symbol,
-                'alert_type': alert_type,
-                'amount_usd': round(amount, 0),
-                'description': f"{desc_prefix} ${amount/1e6:.1f}M in {symbol}",
-                'timestamp': datetime.now().isoformat(),
-                'severity': severity,
-            })
-
-    # Sort by amount
-    alerts.sort(key=lambda x: x['amount_usd'], reverse=True)
-    return alerts[:5]  # Max 5 alerts
-
-
-def _generate_market_summary(signals: list) -> str:
-    """Generate a brief market summary from signals."""
-    if not signals:
-        return "No actionable signals found."
-
-    bullish = sum(1 for s in signals if s.get('accumulation_score', 0) > 60)
-    bearish = sum(1 for s in signals if s.get('distribution_score', 0) > 60)
-
-    if bullish > bearish:
-        sentiment = "Accumulation signals dominate"
-    elif bearish > bullish:
-        sentiment = "Distribution signals dominate"
-    else:
-        sentiment = "Mixed signals"
-
-    top = signals[0] if signals else None
-    top_note = f"Top pick: {top.get('symbol')} ({top.get('confidence')}% confidence)" if top else ""
-
-    return f"{sentiment}. {top_note}"
