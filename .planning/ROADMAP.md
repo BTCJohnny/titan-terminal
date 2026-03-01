@@ -52,7 +52,7 @@ See: `.planning/milestones/v0.3-ROADMAP.md`
 
 - [x] **Phase 14: Foundation** - Pydantic models and database schema for on-chain and TA snapshots (completed 2026-02-28)
 - [x] **Phase 15: Nansen Agent** - 5-signal on-chain framework with MCP integration and Obsidian vault logging (completed 2026-02-28)
-- [x] **Phase 16: Telegram Agent** - signals.db integration with 48h confluence tracking (completed 2026-03-01)
+- [ ] **Phase 16: Telegram Agent** - signals.db integration with 48h confluence tracking (gap closure pending)
 - [ ] **Phase 17: Test Coverage** - Comprehensive unit tests for both agents
 
 ## Phase Details
@@ -103,10 +103,11 @@ Plans:
   4. Agent calculates confluence_count (number of signals agreeing on direction)
   5. Agent identifies best_signal by highest confidence_score
   6. Agent outputs valid TelegramSignal Pydantic model matching MODL-02 schema
-**Plans**: 1 plan
+**Plans**: 2 plans
 
 Plans:
-- [ ] 16-01-PLAN.md - TelegramAgent implementation with database query and confluence logic
+- [x] 16-01-PLAN.md - TelegramAgent implementation with database query and confluence logic
+- [ ] 16-02-PLAN.md - Gap closure: Fix analyze() signature and test mocking
 
 ### Phase 17: Test Coverage
 **Goal**: Comprehensive unit test coverage for all Nansen and Telegram agent functionality
@@ -150,7 +151,7 @@ Phases execute in numeric order: 1 → 2 → ... → 13 → 14 → 15 → 16 →
 | 13. TAMentor Implementation | v0.3 | 2/2 | Complete | 2026-02-28 |
 | 14. Foundation | 2/2 | Complete    | 2026-02-28 | - |
 | 15. Nansen Agent | 4/4 | Complete    | 2026-03-01 | - |
-| 16. Telegram Agent | 1/1 | Complete   | 2026-03-01 | - |
+| 16. Telegram Agent | 1/2 | Gap closure | 2026-03-01 | - |
 | 17. Test Coverage | v0.4 | 0/? | Not started | - |
 
 ---
