@@ -68,7 +68,7 @@ See: `.planning/milestones/v0.4-ROADMAP.md`
 **Milestone Goal:** Complete the full stack — Risk Agent with S/R-based stops and position sizing, FastAPI endpoints for morning report and chat, and a working Next.js dashboard.
 
 - [x] **Phase 20: Risk Agent** - Complete RiskAgent with S/R stops, R:R enforcement, and position sizing (completed 2026-03-01)
-- [ ] **Phase 21: Watchlist + Orchestrator Integration** - Configurable watchlist, Telegram supplementation, Mentor SDK synthesis, deprecated file cleanup
+- [x] **Phase 21: Watchlist + Orchestrator Integration** - Configurable watchlist, Telegram supplementation, Mentor SDK synthesis, deprecated file cleanup (completed 2026-03-01)
 - [ ] **Phase 22: API Endpoints** - Complete /morning-report, /analyze/{symbol}, and /chat FastAPI endpoints
 - [ ] **Phase 23: Dashboard** - Next.js morning report with expandable signal cards and chat sidebar
 - [ ] **Phase 24: Integration Tests** - End-to-end pipeline tests on BTC, ETH, SOL
@@ -179,7 +179,7 @@ Plans:
 | 18. Orchestrator Integration Fixes | v0.4 | 1/1 | Complete | 2026-03-01 |
 | 19. DB Init & Test Isolation | v0.4 | 1/1 | Complete | 2026-03-01 |
 | 20. Risk Agent | 3/3 | Complete    | 2026-03-01 | - |
-| 21. Watchlist + Orchestrator Integration | 2/3 | In Progress|  | - |
+| 21. Watchlist + Orchestrator Integration | 3/3 | Complete   | 2026-03-01 | - |
 | 22. API Endpoints | v0.5 | 0/3 | Not started | - |
 | 23. Dashboard | v0.5 | 0/3 | Not started | - |
 | 24. Integration Tests | v0.5 | 0/1 | Not started | - |

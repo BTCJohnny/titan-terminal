@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Risk Agent + API + Dashboard
 status: unknown
-last_updated: "2026-03-01T12:08:00.000Z"
+last_updated: "2026-03-01T12:11:52.892Z"
 progress:
-  total_phases: 1
-  completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
+  total_phases: 2
+  completed_phases: 2
+  total_plans: 6
+  completed_plans: 6
 ---
 
 # Project State
@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: 21 of 24 (Watchlist + Orchestrator Integration)
-Plan: 2 of 3 in current phase (plan 02 complete)
-Status: Phase 21 in progress — Plans 01 and 02 complete
-Last activity: 2026-03-01 — Phase 21 Plan 02 complete (Mentor SDK Synthesis replacing MentorCriticAgent)
+Plan: 3 of 3 in current phase (plan 03 complete — phase 21 complete)
+Status: Phase 21 complete — all 3 plans done
+Last activity: 2026-03-01 — Phase 21 Plan 03 complete (Deprecated Agent Stubs Deletion)
 
 Progress: [██░░░░░░░░] 20% (v0.5)
 
@@ -55,6 +55,7 @@ Recent decisions affecting current work:
 - [Phase 21-02]: direction field added as proper OrchestratorOutput Pydantic field (Literal BULLISH/BEARISH/NO SIGNAL); @property direction removed
 - [Phase 21-02]: Mentor SDK call uses settings.MENTOR_MODEL at temperature=0.2, max_tokens=4000
 - [Phase 21-02]: Obsidian vault logging for confidence > 75 signals at agents/orchestrator/session-notes.md
+- [Phase 21-watchlist-orchestrator-integration]: Deprecated stubs (nansen.py, telegram.py, risk_levels.py, mentor.py) deleted — production agent module now clean
 
 ### Pending Todos
 
@@ -68,10 +69,10 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 21-02-PLAN.md (Mentor SDK Synthesis + Obsidian Vault Logging)
+Stopped at: Completed 21-03-PLAN.md (Deprecated Agent Stubs Deletion — Phase 21 complete)
 Resume file: None
-Next action: /gsd:execute-phase 21 (Phase 21 — Plan 03)
+Next action: /gsd:execute-phase 22 (Phase 22 — FastAPI Endpoints)
 
 ---
 
-*State updated: 2026-03-01 after Phase 21 Plan 02 completion*
+*State updated: 2026-03-01 after Phase 21 Plan 03 completion (Phase 21 complete)*
