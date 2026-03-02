@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v0.1
 milestone_name: Risk Agent + API + Dashboard
 status: unknown
-last_updated: "2026-03-01T17:45:01.471Z"
+last_updated: "2026-03-02T10:21:13.500Z"
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 14
-  completed_plans: 13
+  completed_plans: 14
 ---
 
 # Project State
@@ -74,6 +74,8 @@ Recent decisions affecting current work:
 - [Phase 24-integration-tests]: ThreeLawsCheckSimple.law_3_positions updated to Literal[pass,fail] — was ['pass','check_current_positions'], now matches RiskAgent ThreeLawsCheck
 - [Phase 24-integration-tests]: TAMentor.synthesize() returns plain dict (not TAMentorSignal) — orchestrator uses .get() pattern; validation errors fall back to raw LLM dict to avoid pipeline crashes
 - [Phase 24-integration-tests]: Integration test BASE_URL auto-detects backend on port 8000 (standard) or 8001 (fallback) via health check service field
+- [Phase 24-integration-tests]: NansenSignalCards shows 'No on-chain data available' fallback instead of rendering null — real BTC response returns nansen_summary: [] so fallback needed
+- [Phase 24-integration-tests]: Mock endpoint restored with BTC Avoid signal (null entry_zone, empty nansen_summary) to exercise null-field rendering paths in dashboard
 
 ### Pending Todos
 
