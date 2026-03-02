@@ -45,7 +45,16 @@ function directionBadgeClass(direction: NansenDirection): string {
 }
 
 export function NansenSignalCards({ nansenSummary }: NansenSignalCardsProps) {
-  if (!nansenSummary || nansenSummary.length === 0) return null
+  if (!nansenSummary || nansenSummary.length === 0) {
+    return (
+      <div>
+        <p className="text-sm font-semibold text-zinc-400 mb-3 uppercase tracking-wide">
+          On-Chain Intelligence
+        </p>
+        <p className="text-sm text-zinc-600 italic">No on-chain data available for this signal.</p>
+      </div>
+    )
+  }
 
   const entries = nansenSummary.slice(0, 5)
 
