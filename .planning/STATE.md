@@ -1,9 +1,9 @@
 ---
 gsd_state_version: 1.0
-milestone: v0.1
+milestone: v0.5
 milestone_name: Risk Agent + API + Dashboard
-status: unknown
-last_updated: "2026-03-02T10:21:13.500Z"
+status: complete
+last_updated: "2026-03-03T12:52:34.969Z"
 progress:
   total_phases: 5
   completed_phases: 5
@@ -15,67 +15,24 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-01)
+See: .planning/PROJECT.md (updated 2026-03-03)
 
 **Core value:** Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
-**Current focus:** Phase 24 — Integration Tests
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: 24 of 24 (Integration Tests)
-Plan: 1 of 2 in current phase (plan 01 complete — integration tests for BTC/ETH/SOL, all 6 tests green)
-Status: Phase 24 in progress
-Last activity: 2026-03-01 — Phase 24 Plan 01 complete (integration tests created, 5 pipeline bugs fixed, all 6 tests pass)
+Phase: 24 of 24 (all complete)
+Status: v0.5 milestone shipped
+Last activity: 2026-03-03 — Milestone v0.5 archived
 
-Progress: [███░░░░░░░] 33% (v0.5)
+Progress: [██████████] 100% (v0.5)
 
 ## Accumulated Context
 
 ### Decisions
 
 Decisions logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
-
-- RiskAgent is now a pure-Python deterministic validator (no LLM calls, no BaseAgent inheritance)
-- RiskOutput model updated: approved/rejection_reasons/position_size_units added; position_sizing and funding_filter made Optional
-- law_3_positions changed to Literal[pass, fail] — open_position_count is now an explicit input
-- Wider stop rule: when S/R-derived stop and proposed stop differ, use the wider (more conservative) stop
-- Law 1 (2% risk) passes by default when no account_size — cannot enforce without portfolio size
-- FastAPI already has /morning-report, /analyze/{symbol}, /chat endpoint stubs — Phase 22 completes them
-- Next.js already has rich-signal-card, market-context-bar, chat component stubs — Phase 23 completes them
-- market_data.py already removed per instructions — no migration needed
-- Plan 02: all 29 TDD tests pass; Law 1 auto-sizing prevents violation via normal paths; no code changes needed to Plan 01 implementation
-- [Phase 20-risk-agent]: Orchestrator type hints updated: risk parameter is now RiskOutput, not dict
-- [Phase 20-risk-agent]: approved and rejection_reasons added to synthesis output for calling code
-- [Phase 21-01]: WATCHLIST defaults to BTC,ETH,SOL,AVAX,ARB,LINK (sensible subset, not full HYPERLIQUID_PERPS)
-- [Phase 21-01]: run_morning_batch() signature changed — market_data_fetcher first, symbols optional second
-- [Phase 21-01]: MENTOR_MODEL default updated to claude-opus-4-6 per CONTEXT.md locked decision
-- [Phase 21-01]: Telegram 72h lookback for watchlist supplementation (not 48h used elsewhere)
-- [Phase 21-02]: analyze_symbol() now returns OrchestratorOutput directly (not raw dict)
-- [Phase 21-02]: direction field added as proper OrchestratorOutput Pydantic field (Literal BULLISH/BEARISH/NO SIGNAL); @property direction removed
-- [Phase 21-02]: Mentor SDK call uses settings.MENTOR_MODEL at temperature=0.2, max_tokens=4000
-- [Phase 21-02]: Obsidian vault logging for confidence > 75 signals at agents/orchestrator/session-notes.md
-- [Phase 21-watchlist-orchestrator-integration]: Deprecated stubs (nansen.py, telegram.py, risk_levels.py, mentor.py) deleted — production agent module now clean
-- [Phase 21-04]: _get_field() module-level helper added to orchestrator.py — type-safe field extraction for mixed OrchestratorOutput/error-dict result lists in run_morning_batch()
-- [Phase 22]: No caching on /morning-report — always on-demand via run_morning_batch()
-- [Phase 22]: Dynamic _MODULE_PATH detection for pytest patch namespace compatibility
-- [Phase 22-02]: ChatRequest uses 'question' field (not 'message') per CONTEXT.md locked decision
-- [Phase 22-02]: settings.MODEL_NAME used for /chat (not MENTOR_MODEL — that is for Orchestrator Mentor agent)
-- [Phase 22-02]: Signal context built from signal_journal via get_recent_signals(limit=10), top 5 shown in system prompt
-- [Phase 23-01]: Removed stale legacy components (market-context-bar, rich-signal-card, whale-alert-panel, stats-card, signal-card) — referenced deleted api.ts types, not imported by any active file
-- [Phase 23-01]: API_BASE updated from port 8001 to 8000 to match Phase 22 FastAPI backend
-- [Phase 23-02]: selectedSignal: AnalyzeResponse | null added alongside selectedSymbol: string | null — both kept in sync; symbol for sidebar highlight, full object for center panel
-- [Phase 23-02]: fetchReport useCallback dependency changed from [selectedSymbol] to [] — prevents stale closure re-creation and double-auto-select on symbol change
-- [Phase 23-02]: Nansen direction detection via keyword match (bullish/accumulating/outflow/positive vs bearish/distributing/inflow/negative) — anomalous = bearish = border-amber-500/50
-- [Phase 23-03]: ChatPanel uses sendChat(question) — {question} field not {message} per CONTEXT.md locked decision
-- [Phase 23-03]: Health check only on mount; report fetch runs on explicit button click — prevents blocking initial render
-- [Phase 23-03]: /api/morning-report-mock retained in main.py for offline UI testing without live orchestrator
-- [Phase 23-03]: Optional symbols param added to /api/morning-report and getMorningReport() for future filtering
-- [Phase 24-integration-tests]: ThreeLawsCheckSimple.law_3_positions updated to Literal[pass,fail] — was ['pass','check_current_positions'], now matches RiskAgent ThreeLawsCheck
-- [Phase 24-integration-tests]: TAMentor.synthesize() returns plain dict (not TAMentorSignal) — orchestrator uses .get() pattern; validation errors fall back to raw LLM dict to avoid pipeline crashes
-- [Phase 24-integration-tests]: Integration test BASE_URL auto-detects backend on port 8000 (standard) or 8001 (fallback) via health check service field
-- [Phase 24-integration-tests]: NansenSignalCards shows 'No on-chain data available' fallback instead of rendering null — real BTC response returns nansen_summary: [] so fallback needed
-- [Phase 24-integration-tests]: Mock endpoint restored with BTC Avoid signal (null entry_zone, empty nansen_summary) to exercise null-field rendering paths in dashboard
 
 ### Pending Todos
 
@@ -83,16 +40,15 @@ None.
 
 ### Blockers/Concerns
 
-- Phase 24 (Integration Tests) depends on Phase 21 (Orchestrator Integration), not Phase 22 or 23.
-  Can be executed in parallel with API + Dashboard phases once Phase 21 is complete.
+None — milestone complete.
 
 ## Session Continuity
 
-Last session: 2026-03-01
-Stopped at: Completed 24-01-PLAN.md (integration tests for BTC/ETH/SOL, 5 pipeline bugs fixed, all 6 tests green)
+Last session: 2026-03-03
+Stopped at: v0.5 milestone completion
 Resume file: None
-Next action: /gsd:execute-phase 24 (Phase 24 Plan 02 — remaining integration tests if any)
+Next action: /gsd:new-milestone (define next version)
 
 ---
 
-*State updated: 2026-03-01 after Phase 24 Plan 01 completion (integration tests green, 5 pipeline bugs fixed)*
+*State updated: 2026-03-03 after v0.5 milestone completion*

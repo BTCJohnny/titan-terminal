@@ -6,7 +6,7 @@
 - ✅ **v0.2 Data Foundation** - Phases 5-7 (shipped 2026-02-27)
 - ✅ **v0.3 TA Ensemble** - Phases 8-13 (shipped 2026-02-28)
 - ✅ **v0.4 Nansen Agent + Telegram Agent** - Phases 14-19 (shipped 2026-03-01)
-- 🚧 **v0.5 Risk Agent + API + Dashboard** - Phases 20-24 (in progress)
+- ✅ **v0.5 Risk Agent + API + Dashboard** - Phases 20-24 (shipped 2026-03-03)
 
 ## Phases
 
@@ -61,100 +61,18 @@ See: `.planning/milestones/v0.4-ROADMAP.md`
 
 </details>
 
----
+<details>
+<summary>✅ v0.5 Risk Agent + API + Dashboard (Phases 20-24) - SHIPPED 2026-03-03</summary>
 
-### 🚧 v0.5 Risk Agent + API + Dashboard (In Progress)
+- [x] Phase 20: Risk Agent (3/3 plans) - completed 2026-03-01
+- [x] Phase 21: Watchlist + Orchestrator Integration (4/4 plans) - completed 2026-03-01
+- [x] Phase 22: API Endpoints (2/2 plans) - completed 2026-03-01
+- [x] Phase 23: Dashboard (3/3 plans) - completed 2026-03-01
+- [x] Phase 24: Integration Tests (2/2 plans) - completed 2026-03-02
 
-**Milestone Goal:** Complete the full stack — Risk Agent with S/R-based stops and position sizing, FastAPI endpoints for morning report and chat, and a working Next.js dashboard.
+See: `.planning/milestones/v0.5-ROADMAP.md`
 
-- [x] **Phase 20: Risk Agent** - Complete RiskAgent with S/R stops, R:R enforcement, and position sizing (completed 2026-03-01)
-- [x] **Phase 21: Watchlist + Orchestrator Integration** - Configurable watchlist, Telegram supplementation, Mentor SDK synthesis, deprecated file cleanup (completed 2026-03-01)
-- [x] **Phase 22: API Endpoints** - Complete /morning-report, /analyze/{symbol}, and /chat FastAPI endpoints (completed 2026-03-01)
-- [x] **Phase 23: Dashboard** - Next.js morning report with expandable signal cards and chat sidebar (completed 2026-03-01)
-- [x] **Phase 24: Integration Tests** - End-to-end pipeline tests on BTC, ETH, SOL (2 plans) (completed 2026-03-02)
-
-## Phase Details
-
-### Phase 20: Risk Agent
-**Goal**: Users receive actionable risk parameters (stops, targets, position size) derived from S/R levels
-**Depends on**: Phase 19
-**Requirements**: RISK-01, RISK-02, RISK-03, RISK-04, RISK-05, RISK-06
-**Success Criteria** (what must be TRUE):
-  1. User receives stop-loss zones anchored to S/R levels from TA data, not arbitrary ATR multiples
-  2. User receives target zones with a displayed R:R ratio, and any setup with R:R below 3:1 is flagged or suppressed
-  3. User receives a calculated position size when a portfolio value is provided as input
-  4. When no portfolio value is provided, the agent returns risk zones (stop/target/R:R) without errors
-  5. RiskAgent returns a valid RiskOutput Pydantic model in all code paths — no raw dicts
-**Plans**: 3 plans
-
-Plans:
-- [ ] 20-01-PLAN.md — Rewrite RiskOutput model + deterministic RiskAgent (Wave 1)
-- [ ] 20-02-PLAN.md — TDD: S/R stop/target derivation, 2% risk cap, 3:1 R:R enforcement (Wave 2)
-- [ ] 20-03-PLAN.md — Wire RiskOutput into Orchestrator + update orchestrator tests (Wave 2)
-
-### Phase 21: Watchlist + Orchestrator Integration
-**Goal**: Orchestrator runs the complete agent chain on a configurable, dynamically extended watchlist
-**Depends on**: Phase 20
-**Requirements**: WTCH-01, WTCH-02, WTCH-03, INTG-04, INTG-05
-**Success Criteria** (what must be TRUE):
-  1. User can edit a watchlist in settings (not constants.py) and analysis picks it up without code changes
-  2. Symbols from Telegram signals in the last 48-72h are automatically merged into the watchlist
-  3. Morning report analysis iterates the merged watchlist (settings symbols + Telegram symbols)
-  4. Calling analyze_symbol() chains TA → Nansen → Telegram → Risk and returns a complete OrchestratorOutput
-  5. Deprecated agent stub files are gone — the repository contains only production code
-**Plans**: 3 plans
-
-Plans:
-- [ ] 21-01-PLAN.md — Configurable watchlist in settings with Telegram signal supplementation (Wave 1)
-- [ ] 21-02-PLAN.md — Mentor SDK synthesis call, OrchestratorOutput with reasoning, Obsidian logging (Wave 2)
-- [ ] 21-03-PLAN.md — Remove deprecated files and verify clean import graph (Wave 2)
-
-### Phase 22: API Endpoints
-**Goal**: FastAPI exposes working endpoints for morning report, single-symbol analysis, and chat
-**Depends on**: Phase 21
-**Requirements**: API-01, API-02, API-03, API-04, API-05, API-06
-**Success Criteria** (what must be TRUE):
-  1. GET /morning-report returns a ranked list of 3-5 opportunities each containing TA, on-chain, Telegram, and risk data
-  2. Every /morning-report call triggers fresh on-demand analysis — no stale cached response is served
-  3. GET /analyze/{symbol} runs the full pipeline for one symbol and returns complete signal data
-  4. POST /chat accepts a natural language question and returns a coherent natural language answer grounded in live signal data
-  5. /chat uses the Anthropic SDK to generate responses — not hardcoded templates
-**Plans**: TBD
-
-Plans:
-- [ ] 22-01: /morning-report endpoint (on-demand analysis, ranked by confluence, full signal payload)
-- [ ] 22-02: /analyze/{symbol} endpoint (single-symbol full pipeline)
-- [ ] 22-03: /chat endpoint (Anthropic SDK natural language Q&A over pipeline data)
-
-### Phase 23: Dashboard
-**Goal**: Next.js dashboard renders morning report and supports conversational signal Q&A
-**Depends on**: Phase 22
-**Requirements**: DASH-01, DASH-02, DASH-03, DASH-04, DASH-05
-**Success Criteria** (what must be TRUE):
-  1. Dashboard landing page loads and displays ranked opportunity cards fetched from /morning-report
-  2. Each card shows the symbol's confluence score and directional bias (BULLISH / BEARISH / NO SIGNAL)
-  3. User can expand a signal card to see full TA, on-chain, Telegram, and risk details for that symbol
-  4. User can type a question in the chat sidebar and receive a signal Q&A response from /chat
-**Plans**: TBD
-
-Plans:
-- [ ] 23-01: Landing page with ranked signal cards (fetch from /morning-report on load, confluence + bias visible)
-- [ ] 23-02: Expandable card detail panels (TA, on-chain, Telegram, risk sections)
-- [ ] 23-03: Chat sidebar wired to /chat endpoint
-
-### Phase 24: Integration Tests
-**Goal**: Full pipeline verified on BTC, ETH, and SOL with live data — no crashes, complete output
-**Depends on**: Phase 21
-**Requirements**: INTG-01, INTG-02, INTG-03
-**Success Criteria** (what must be TRUE):
-  1. BTC integration test runs TA → Nansen → Telegram → Risk and produces a complete OrchestratorOutput without errors
-  2. ETH integration test runs the same full pipeline and produces a complete OrchestratorOutput without errors
-  3. SOL integration test runs the same full pipeline and produces a complete OrchestratorOutput without errors
-**Plans**: 2 plans
-
-Plans:
-- [ ] 24-01-PLAN.md — Backend integration tests: BTC, ETH, SOL via live /morning-report and /analyze/{symbol} (Wave 1)
-- [ ] 24-02-PLAN.md — Dashboard rendering test: mock-vs-real fix + human verify (Wave 2)
+</details>
 
 ## Progress
 
@@ -179,12 +97,12 @@ Plans:
 | 17. Test Coverage | v0.4 | 3/3 | Complete | 2026-03-01 |
 | 18. Orchestrator Integration Fixes | v0.4 | 1/1 | Complete | 2026-03-01 |
 | 19. DB Init & Test Isolation | v0.4 | 1/1 | Complete | 2026-03-01 |
-| 20. Risk Agent | 3/3 | Complete    | 2026-03-01 | - |
-| 21. Watchlist + Orchestrator Integration | 4/4 | Complete    | 2026-03-01 | - |
-| 22. API Endpoints | 2/2 | Complete    | 2026-03-01 | - |
-| 23. Dashboard | 3/3 | Complete    | 2026-03-01 | - |
-| 24. Integration Tests | 2/2 | Complete   | 2026-03-02 | - |
+| 20. Risk Agent | v0.5 | 3/3 | Complete | 2026-03-01 |
+| 21. Watchlist + Orchestrator Integration | v0.5 | 4/4 | Complete | 2026-03-01 |
+| 22. API Endpoints | v0.5 | 2/2 | Complete | 2026-03-01 |
+| 23. Dashboard | v0.5 | 3/3 | Complete | 2026-03-01 |
+| 24. Integration Tests | v0.5 | 2/2 | Complete | 2026-03-02 |
 
 ---
 
-*Roadmap updated: 2026-03-01 after v0.5 milestone roadmap creation*
+*Roadmap updated: 2026-03-03 after v0.5 milestone completion*

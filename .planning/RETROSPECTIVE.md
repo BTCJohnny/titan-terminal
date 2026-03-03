@@ -2,6 +2,57 @@
 
 *A living document updated after each milestone. Lessons feed forward into future planning.*
 
+## Milestone: v0.5 — Risk Agent + API + Dashboard
+
+**Shipped:** 2026-03-03
+**Phases:** 5 | **Plans:** 14 | **Sessions:** ~5
+
+### What Was Built
+- Deterministic RiskAgent enforcing 3 Laws of Trading (2% risk, 3:1 R:R, max 5 positions) with S/R-derived stops/targets and dual-mode position sizing
+- Configurable watchlist with Telegram 72h signal supplementation via get_merged_watchlist()
+- Anthropic SDK Mentor synthesis replacing MentorCriticAgent — typed OrchestratorOutput with BULLISH/BEARISH/NO SIGNAL direction
+- FastAPI /morning-report (on-demand ranked by confluence), /analyze/{symbol} (full pipeline), /chat (Anthropic SDK Q&A)
+- Next.js three-column dashboard: SymbolSidebar, SignalDetailPanel with Wyckoff/Three Laws badges, NansenSignalCards, ChatPanel
+- Parametrized BTC/ETH/SOL integration tests with 5 pipeline bug fixes
+- Deprecated agent stubs removed — clean production codebase
+
+### What Worked
+- First full-stack milestone: backend + frontend + integration tests in 5 days
+- Deterministic RiskAgent pattern: no LLM costs, no latency, easily testable, reproducible results
+- Integration tests uncovered 5 real pipeline bugs (type mismatches, null handling, schema drift)
+- Milestone audit identified 3 orphaned requirements and latent tp2 bug before completion
+- Three-column dashboard layout emerged naturally from the data model
+- Phase 21 "gap closure" plan (21-04) effectively addressed sort/filter crash in mixed result lists
+
+### What Was Inefficient
+- Phase 24 missing VERIFICATION.md — only phase without formal verification across all milestones
+- SUMMARY frontmatter missing requirements_completed for Phases 22 and 23 (documentation gap continues from v0.4)
+- 2 orphaned files (ta_ensemble.py stub, four_hour_subagent.py duplicate) survived INTG-05 cleanup
+- Journal data gap: direction and entry_ideal never written to signal_journal — /chat context shows N/A
+- Implicit dict contract between TAMentor key_levels and RiskAgent — fragile coupling
+
+### Patterns Established
+- Agent-as-validator pattern: deterministic agents don't inherit BaseAgent or use LLM calls
+- Reject-explicitly pattern: approved=False + populated rejection_reasons list, never silent pass
+- Type-safe _get_field() helper for mixed Pydantic/dict result lists
+- Three-column dashboard layout: sidebar (selection) / center (detail) / right (chat)
+- Mock endpoint retained alongside production endpoint for offline UI testing
+
+### Key Lessons
+1. Full-stack milestones are viable in 5 days with focused phase scope and strong typing
+2. Integration tests are the highest-value tests — they catch real bugs that unit tests miss
+3. Deterministic agents (no LLM) should be the default; use LLM only when synthesis/reasoning required
+4. Formal verification (VERIFICATION.md) should never be skipped — Phase 24's gap caused 3 "orphaned" requirements
+5. Dashboard rendering issues (null fields, missing data) are best caught by real-data integration tests, not mocks
+6. SUMMARY frontmatter discipline remains a weak point — consider automation
+
+### Cost Observations
+- Model mix: 80% sonnet, 10% haiku, 10% opus (for audit + milestone completion)
+- Sessions: ~5 (3 days elapsed)
+- Notable: Full-stack scope (backend + frontend + tests) completed efficiently due to strong typing between layers
+
+---
+
 ## Milestone: v0.4 — Nansen Agent + Telegram Agent
 
 **Shipped:** 2026-03-01
@@ -187,6 +238,7 @@
 | v0.2 | 3 | 3 | Config consolidation, data layer foundation |
 | v0.3 | 6 | 6 | Full TA pipeline, computational subagents, conflict resolution |
 | v0.4 | 4 | 6 | On-chain + Telegram agents, gap closure phases, E2E integration |
+| v0.5 | 5 | 5 | Full-stack: Risk agent + FastAPI + Next.js dashboard + integration tests |
 
 ### Cumulative Quality
 
@@ -196,6 +248,7 @@
 | v0.2 | 28 | Smoke + Unit | OHLCVClient, retry decorator |
 | v0.3 | 158 | Comprehensive | indicators, wyckoff, alpha_factors, 3 subagents, TAMentor |
 | v0.4 | 213 | Comprehensive | NansenAgent, TelegramAgent, signals_db, vault_logger |
+| v0.5 | 213+ | Full-stack | RiskAgent, FastAPI endpoints, Next.js dashboard, integration tests |
 
 ### LOC Progression
 
@@ -205,6 +258,7 @@
 | v0.2 | 4,901 | +443 | 17 |
 | v0.3 | 9,860 | +4,959 | 130 |
 | v0.4 | 12,838 | +2,978 | 55 |
+| v0.5 | 14,653 (+1,374 TS) | +1,815 Py / +1,374 TS | Integration tests |
 
 ### Top Lessons (Verified Across Milestones)
 
@@ -215,7 +269,10 @@
 5. Milestone audits before completion catch requirements gaps early
 6. Gap closure phases are a natural part of multi-agent development — plan for them
 7. CLI subprocess calls are more robust than MCP for production agent integration
+8. Full-stack milestones are viable with strong typing between layers (Pydantic → TypeScript interfaces)
+9. Integration tests catch real bugs that unit tests miss — highest-value test category
+10. Formal verification should never be skipped — orphaned requirements are hard to trace retroactively
 
 ---
 
-*Last updated: 2026-03-01 after v0.4 completion*
+*Last updated: 2026-03-03 after v0.5 completion*

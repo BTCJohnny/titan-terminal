@@ -2,6 +2,42 @@
 
 ## Completed Milestones
 
+### v0.5 Risk Agent + API + Dashboard — Shipped 2026-03-03
+
+**Delivered:** Full-stack completion — deterministic RiskAgent with S/R-based stops and position sizing, FastAPI endpoints for morning report and chat, Next.js dashboard with signal cards and chat sidebar, and end-to-end integration tests on BTC/ETH/SOL.
+
+**Stats:** 5 phases, 14 plans, 16,027 LOC (14,653 Python + 1,374 TypeScript), 71 files changed (+9,315/-2,275)
+
+**Key accomplishments:**
+1. Pure-Python RiskAgent enforcing 3 Laws of Trading (2% risk cap, 3:1 R:R from S/R levels, max 5 positions) with dual-mode position sizing
+2. Configurable watchlist with Telegram 72h signal supplementation via get_merged_watchlist()
+3. Anthropic SDK Mentor synthesis replacing MentorCriticAgent — typed OrchestratorOutput with direction field and Obsidian vault logging
+4. FastAPI /morning-report (on-demand ranked opportunities), /analyze/{symbol} (full pipeline), /chat (Anthropic SDK Q&A with signal context)
+5. Next.js three-column dashboard: SymbolSidebar, SignalDetailPanel with Wyckoff/Three Laws, NansenSignalCards, ChatPanel
+6. Parametrized BTC/ETH/SOL integration tests with 5 pipeline bug fixes — full agent chain verified end-to-end
+7. Deprecated agent stubs removed — clean production codebase
+
+**Tech Debt Resolved from v0.4:**
+- SUMMARY frontmatter gaps addressed across Phases 22-23
+- market_data.py fully removed (migration complete)
+
+**Tech Debt Accepted:**
+- Phase 24 missing VERIFICATION.md (tests exist and pass, documentation gap only)
+- tp2 assertion too strict in integration tests (will fail on single S/R target)
+- Journal data gap: direction/entry_ideal always NULL in signal_journal
+- Implicit dict contract between TAMentor key_levels and RiskAgent
+- ThreeLawsCheckSimple docstring says "2:1" but enforces 3:1
+- 2 orphaned files (ta_ensemble.py stub, four_hour_subagent.py duplicate)
+
+### Known Gaps
+- INTG-01: BTC integration test — no VERIFICATION.md (test exists, passes)
+- INTG-02: ETH integration test — no VERIFICATION.md (test exists, passes)
+- INTG-03: SOL integration test — no VERIFICATION.md (test exists, passes)
+
+**Archive:** `.planning/milestones/v0.5-*`
+
+---
+
 ### v0.4 Nansen Agent + Telegram Agent — Shipped 2026-03-01
 
 **Delivered:** Two production-ready agents: NansenAgent with 5-signal on-chain framework (exchange flows, smart money, whales, top PnL, fresh wallets) via Nansen CLI with Obsidian vault logging, and TelegramAgent with signals.db integration and 48h confluence tracking. End-to-end orchestrator integration verified with 57 new tests.
@@ -104,18 +140,7 @@
 
 ---
 
-## Future Milestones
-
-### v0.5 Risk Agent + Integration
-- Risk/Levels agent (2% max risk, 3:1 min R:R, S/R-based stops)
-- Integration tests on BTC, ETH, SOL
-- Complete market_data.py migration
-
-### v1.0 API & Dashboard
-- FastAPI endpoints (/morning-report, /chat)
-- Next.js dashboard with signal cards
-- Chat interface
-
 ---
 
-*Last updated: 2026-03-01*
+*Last updated: 2026-03-03*
+

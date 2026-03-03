@@ -109,6 +109,15 @@ None - no external service configuration required.
 - RiskAgent.analyze(symbol, context_dict) is orchestrator-compatible without any changes to orchestrator code
 - All 6 edge cases verified: approved trade, Law 1 rejection, Law 2 rejection, Law 3 rejection, no account_size mode, no S/R levels
 
+## Self-Check: PASSED
+
+- src/backend/models/risk_output.py: FOUND
+- src/backend/agents/risk_agent.py: FOUND
+- .planning/phases/20-risk-agent/20-01-SUMMARY.md: FOUND
+- Task 1 commit c2f7241: FOUND
+- Task 2 commit dbf6b45: FOUND
+- Metadata commit 61aa6a4: FOUND
+
 ---
 *Phase: 20-risk-agent*
 *Completed: 2026-03-01*

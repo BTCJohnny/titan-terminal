@@ -2,49 +2,30 @@
 
 ## What This Is
 
-A multi-agent crypto trading dashboard that aggregates technical analysis, on-chain intelligence, and Telegram signal tracking into actionable trading opportunities. Backend in Python/FastAPI with 9 specialized agents (3 TA subagents, TAMentor, NansenAgent, TelegramAgent, RiskAgent, Orchestrator), frontend in Next.js, type-safe Pydantic output models, comprehensive test coverage, and production-ready data infrastructure.
+A full-stack crypto trading dashboard that surfaces high-conviction setups by combining multi-timeframe TA, on-chain smart money tracking, and Telegram signal intelligence. Backend: Python/FastAPI with 8 specialized agents and deterministic risk management. Frontend: Next.js dashboard with morning report, expandable signal detail, and conversational chat. Verified end-to-end on BTC/ETH/SOL.
 
 ## Core Value
 
 Surface high-conviction trading setups by combining multi-timeframe technical analysis with on-chain smart money tracking — no signal without confluence.
 
-## Current Milestone: v0.5 Risk Agent + API + Dashboard
-
-**Goal:** Complete the full stack — Risk agent with position sizing, FastAPI endpoints for morning report and chat, and Next.js dashboard.
-
-**Target features:**
-- Risk/Levels agent with S/R-based stops, dual mode (risk zones + position sizing)
-- Configurable watchlist (settings + Telegram signals)
-- FastAPI /morning-report endpoint (top 3-5 opportunities, on-demand)
-- FastAPI /chat endpoint (signal Q&A — "What's the setup on ETH?")
-- Next.js morning report dashboard with expandable signal cards
-- Integration tests on BTC, ETH, SOL
-- Complete market_data.py migration
-
 ## Current State
 
-**Shipped:** v0.4 Nansen Agent + Telegram Agent (2026-03-01)
+**Shipped:** v0.5 Risk Agent + API + Dashboard (2026-03-03)
 
-**Codebase:** 12,838 Python LOC across 9 agents, 10 Pydantic models, 213 tests (11 smoke + 202 unit).
+**Codebase:** 14,653 Python LOC + 1,374 TypeScript LOC across 8 agents, 10 Pydantic models, full FastAPI backend, Next.js dashboard.
 
 **What's Working:**
-- 3 pure computational subagents (WeeklySubagent, DailySubagent, FourHourSubagent) with weighted confluence scoring
-- Shared indicators module (RSI, MACD, Bollinger Bands, ADX, OBV, VWAP, ATR, S/R)
-- Wyckoff pattern detection (Phase A-E, springs, upthrusts, SOS/SOW)
-- Alpha factors (momentum score, volume anomaly, MA deviation, volatility)
-- TAMentor with direct Anthropic SDK and 4 conflict resolution rules
-- NansenAgent with 5-signal on-chain framework via Nansen CLI subprocess calls
-- Obsidian vault logging for every Nansen analysis
-- TelegramAgent with signals.db integration, 48h query window, confluence counting
-- Database infrastructure: onchain_snapshots and ta_snapshots tables initialized at startup
-- End-to-end orchestrator flow: analyze_symbol() chains NansenAgent + TelegramAgent → synthesis → journal
-- OHLCV client with CCXT/Binance for BTC/ETH/SOL on 1w/1d/4h timeframes
+- Full agent pipeline: OHLCV → TA (3 subagents) → Nansen (5-signal) → Telegram → Risk (3 Laws) → Mentor synthesis
+- Deterministic RiskAgent: S/R-derived stops/targets, 3:1 R:R enforcement, 2% risk cap, dual-mode position sizing
+- Configurable watchlist with Telegram 72h signal supplementation
+- FastAPI: /morning-report (on-demand ranked opportunities), /analyze/{symbol} (full pipeline), /chat (Anthropic SDK Q&A)
+- Next.js dashboard: three-column layout with SymbolSidebar, SignalDetailPanel, NansenSignalCards, ChatPanel
+- Integration tests: BTC/ETH/SOL verified end-to-end via live backend
+- Obsidian vault logging for high-confidence signals
 
 **Agent Architecture:**
 - `ta_ensemble/` — WeeklySubagent, DailySubagent, FourHourSubagent, TAMentor
-- Root agents — NansenAgent (production), TelegramAgent (production), RiskAgent (shell), Orchestrator (production)
-
-**Test Status:** 213/213 tests passing
+- Root agents — NansenAgent, TelegramAgent, RiskAgent (deterministic), Orchestrator
 
 ## Requirements
 
@@ -99,15 +80,17 @@ Surface high-conviction trading setups by combining multi-timeframe technical an
 - ✓ Unit tests for DB snapshot operations (13 tests) — v0.4
 - ✓ End-to-end orchestrator integration — v0.4
 
+- ✓ Risk/Levels agent with dual mode (risk zones + position sizing) — v0.5
+- ✓ Configurable watchlist (settings + Telegram signal supplements) — v0.5
+- ✓ Integration tests on BTC, ETH, SOL (full pipeline end-to-end) — v0.5
+- ✓ FastAPI /morning-report endpoint (on-demand analysis, ranked) — v0.5
+- ✓ FastAPI /chat endpoint (signal Q&A via Anthropic SDK) — v0.5
+- ✓ Next.js morning report dashboard with expandable signal cards — v0.5
+- ✓ market_data.py removed (migration complete) — v0.5
+
 ### Active
 
-- [ ] Risk/Levels agent with dual mode (risk zones default, position sizing with portfolio value)
-- [ ] Configurable watchlist (settings file + Telegram signal supplements)
-- [ ] Integration tests on BTC, ETH, SOL (full pipeline end-to-end)
-- [ ] FastAPI /morning-report endpoint (top 3-5 opportunities, on-demand analysis)
-- [ ] FastAPI /chat endpoint (signal Q&A via Anthropic SDK)
-- [ ] Next.js morning report dashboard with expandable signal cards
-- [ ] Complete market_data.py migration
+(To be defined in next milestone — run `/gsd:new-milestone`)
 
 ### Out of Scope
 
@@ -116,6 +99,7 @@ Surface high-conviction trading setups by combining multi-timeframe technical an
 - Mobile app — web dashboard first
 - Real-time websocket streaming — polling sufficient for v1
 - Modifying existing signals table — snapshot tables are append-only
+- OAuth/user authentication — single-user tool, no auth needed
 
 ## Context
 
@@ -126,11 +110,12 @@ Surface high-conviction trading setups by combining multi-timeframe technical an
 **Architecture:**
 - Backend: `src/backend/` — Python/FastAPI
 - Frontend: `src/frontend/` — Next.js
-- Agents: `src/backend/agents/` — 8 agent files exist
+- Agents: `src/backend/agents/` — 8 production agents (no stubs)
 - Analysis: `src/backend/analysis/` — indicators, wyckoff, alpha_factors modules
 - Data: `src/backend/data/` — OHLCV client for market data
 - Models: `src/backend/models/` — Pydantic models for all signals
-- Database: `src/backend/db/` — signals_db module for snapshot storage
+- Database: `src/backend/db/` — signals_db module for snapshot + journal storage
+- API: `src/backend/api/main.py` — FastAPI with /morning-report, /analyze/{symbol}, /chat
 
 **TAMentor Conflict Resolution:**
 - Higher timeframe wins direction (Weekly/Daily override 4H)
@@ -169,12 +154,12 @@ Scoring: 4-5 bullish → ACCUMULATION, 2-3 → MIXED, 0-1 → DISTRIBUTION
 |----------|-----------|---------|
 | Higher timeframe wins direction | Structural trends override short-term noise | ✓ Implemented in TAMentor v0.3 |
 | S/R levels from TA drive stops/targets | Technical levels more meaningful than arbitrary ATR multiples | ✓ Implemented in indicators v0.3 |
-| Dynamic watchlist | System discovers opportunities vs fixed list maintenance | — Pending |
-| Morning report = top opportunities only | Focus on highest conviction, not information overload | — Pending |
+| Dynamic watchlist | System discovers opportunities vs fixed list maintenance | ✓ Implemented in v0.5 (settings + Telegram 72h supplement) |
+| Morning report = top opportunities only | Focus on highest conviction, not information overload | ✓ Implemented in v0.5 (ranked by confluence score) |
 | Multi-timeframe TA pattern (v0.1) | Separate subagents per timeframe, TAMentor synthesizes with confluence scoring | ✓ Good |
 | Nested Pydantic models (v0.1) | Better type safety and validation for hierarchical data | ✓ Good |
 | Confidence 0-100 integers (v0.1) | Consistent confidence representation makes signal comparison easier | ✓ Good |
-| Keep deprecated files for rollback (v0.1) | Safe migration path during scaffold phase | ⚠️ Revisit in v1.0 |
+| Keep deprecated files for rollback (v0.1) | Safe migration path during scaffold phase | ✓ Resolved in v0.5 — deprecated stubs deleted |
 | Settings class for env vars, constants.py for static (v0.2) | Clear separation of environment vs static configuration | ✓ Good |
 | CCXT/Binance public API for OHLCV (v0.2) | No authentication needed, robust retry logic for rate limits | ✓ Good |
 | Exponential backoff retry (1s, 2s, 4s + jitter) (v0.2) | Handles Binance rate limits gracefully without manual intervention | ✓ Good |
@@ -188,6 +173,11 @@ Scoring: 4-5 bullish → ACCUMULATION, 2-3 → MIXED, 0-1 → DISTRIBUTION
 | Separate snapshot tables (v0.4) | Append-only snapshots preserve history without modifying signals table | ✓ Good |
 | Module-level vault path override (v0.4) | Import vault_logger as module, override VAULT_PATH attribute — keeps vault_logger.py untouched | ✓ Good |
 | model_dump(mode='json') for serialization (v0.4) | Handles datetime fields cleanly for Pydantic JSON serialization | ✓ Good |
+| Deterministic RiskAgent (no LLM) (v0.5) | Pure-Python validator: no API costs, no latency, no non-determinism | ✓ Good |
+| Wider stop wins rule (v0.5) | When S/R stop and proposed stop differ, use more conservative (further from entry) | ✓ Good |
+| Direct Anthropic SDK for Mentor synthesis (v0.5) | Replaces MentorCriticAgent stub with explicit SDK call at temperature=0.2 | ✓ Good |
+| On-demand /morning-report (v0.5) | No caching — always fresh analysis per request | ✓ Good — may revisit with scheduling |
+| Three-column dashboard layout (v0.5) | SymbolSidebar / SignalDetailPanel / ChatPanel for clear information hierarchy | ✓ Good |
 
 ---
-*Last updated: 2026-03-01 after v0.5 milestone started*
+*Last updated: 2026-03-03 after v0.5 milestone*
